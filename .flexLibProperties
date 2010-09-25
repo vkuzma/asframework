@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<flexLibProperties includeAllClasses="true" version="3">
+  <includeClasses>
+    <classEntry path="ch.allink.micrositeframework.model.ModelCollectionEvent"/>
+    <classEntry path="ch.allink.micrositeframework.view.AbstractView"/>
+    <classEntry path="ch.allink.micrositeframework.view.iView"/>
+    <classEntry path="ch.allink.micrositeframework.view.BaseWebsiteView"/>
+    <classEntry path="ch.allink.micrositeframework.cmsmodel.Navigation"/>
+    <classEntry path="ch.allink.micrositeframework.model.ModelEvent"/>
+    <classEntry path="ch.allink.micrositeframework.cmsmodel.NavigationService"/>
+    <classEntry path="ch.allink.micrositeframework.util.Translator"/>
+  </includeClasses>
+  <includeResources/>
+  <namespaceManifests/>
+</flexLibProperties>
