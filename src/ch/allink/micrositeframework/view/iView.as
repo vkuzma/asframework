@@ -1,6 +1,6 @@
 package ch.allink.micrositeframework.view
 {
-	public interface iView
+	public interface IView
 	{
 		
 		 function build():void
