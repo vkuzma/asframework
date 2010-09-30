@@ -12,7 +12,7 @@ package ch.allink.micrositeframework.model
 	import mx.events.Request;
 	
 	
-	[Event (name='modelLoaded', type='ch.allink.micrositeframeworkdj.model.ModelEvent')]
+	[Event (name='modelLoaded', type='ch.allink.micrositeframework.model.ModelEvent')]
 	
 	public class ModelFactory extends EventDispatcher
 	{

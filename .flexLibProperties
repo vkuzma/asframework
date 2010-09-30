@@ -9,6 +9,7 @@
     <classEntry path="ch.allink.micrositeframework.model.ModelEvent"/>
     <classEntry path="ch.allink.micrositeframework.cmsmodel.NavigationService"/>
     <classEntry path="ch.allink.micrositeframework.util.Translator"/>
+    <classEntry path="ch.allink.micrositeframework.view.ImageView"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
