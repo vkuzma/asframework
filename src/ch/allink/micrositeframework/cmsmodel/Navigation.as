@@ -16,15 +16,12 @@ public class Navigation extends AllinkCMSBaseModel
 	public var visiblecontent:Boolean = false
 	public var indexpagefileid:int = 0
 	public var indexpagetitle:String = ""
-		
 	public var indexpageformats:String = ""
 	public var title:String = ""
-	private var _pages:String
+
 	
 	public static var languages:Array
 	
-	
-	private var _children:Vector.<Navigation>
 	
 	//-------------------------------------------------------------------------
 	//
@@ -39,10 +36,22 @@ public class Navigation extends AllinkCMSBaseModel
 	
 	//-------------------------------------------------------------------------
 	//
+	//	Public methods
+	//
+	//-------------------------------------------------------------------------
+	
+	public function addChild(navigation:Navigation):void
+	{
+		_children.push(navigation)
+	}
+	
+	//-------------------------------------------------------------------------
+	//
 	//	Properties
 	//
 	//-------------------------------------------------------------------------
 	
+	private var _pages:String
 	public function set pages(value:String):void
 	{
 		_pages = value
@@ -53,12 +62,13 @@ public class Navigation extends AllinkCMSBaseModel
 		return _pages
 	}
 	
-	public function addChild(n:Navigation):void
+	private var _children:Vector.<Navigation>
+	public function set children(value:Vector.<Navigation>):void
 	{
-		_children.push(n)
+		_children = value
 	}
 	
-	public function get Children():Vector.<Navigation>
+	public function get children():Vector.<Navigation>
 	{
 		return _children
 	}

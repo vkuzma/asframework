@@ -1,5 +1,6 @@
 package ch.allink.micrositeframework.cmsmodel
 {
+import ch.allink.micrositeframework.model.ModelEvent;
 import ch.allink.micrositeframework.view.NavigationView;
 
 import flash.events.EventDispatcher;
@@ -46,10 +47,63 @@ public class NavigationService extends EventDispatcher
 		for each(var navigationView:NavigationView in _navigationViews)
 		{
 			if(activatedNavigationView == navigationView)
-				navigationView.activate()
+				navigationView.active = true
 			else
-				navigationView.deactivate()
+				navigationView.active = false
 		}
+	}
+	
+	public function navigationForIDInNavigations(id:int,
+							 		navigations:Vector.<Navigation>):Navigation
+	{
+		var targetNavigation:Navigation
+		
+		for each(var navigation:Navigation in navigations)
+		{
+			if(navigation.id == id)	
+			{
+				targetNavigation = navigation
+				break
+			}
+			else if(navigation.children != null)
+			{
+				targetNavigation = navigationForIDInNavigations(id, 
+															navigation.children)
+				break
+			}
+			else
+			{
+				targetNavigation = null
+			}
+		}
+		return targetNavigation
+	}
+	
+	private function navigationForIDInNavigationViews(id:int,
+							 navigationViews:Vector.<NavigationView>):Navigation
+	{
+		var targetNavigation:Navigation
+		
+		for each(var navigationView:NavigationView in navigationViews)
+		{
+			var navigation:Navigation = navigationView.navigation
+			if(navigation.children)
+			{
+				targetNavigation = navigationForIDInNavigations(id, 
+															navigation.children)
+				break
+			}	
+			else if(navigation.id == id)
+			{
+				targetNavigation = navigation
+				break
+			}
+			else
+			{
+				targetNavigation = null	
+			}
+		}
+		return targetNavigation
 	}
 	
 	//-------------------------------------------------------------------------
@@ -97,6 +151,26 @@ public class NavigationService extends EventDispatcher
 		return navigationsNew
 	}
 	
+	public function navigationForID(id:int):Navigation
+	{
+//		Könnte auch eine statische Methode sein
+		var targetNavigation:Navigation
+		if(navigations)
+			targetNavigation = navigationForIDInNavigations(id, navigations)
+		else if(navigationViews)
+			targetNavigation = navigationForIDInNavigationViews(id, 
+																navigationViews)
+		else
+			targetNavigation = null
+				
+			
+		return targetNavigation
+	}
+	
+//	public function openAnimation()
+		
+//	public function closeAnimation()
+	
 	//-------------------------------------------------------------------------
 	//
 	//	Event handlers
@@ -109,6 +183,22 @@ public class NavigationService extends EventDispatcher
 		activate(navigationView)
 	}
 	
+	private function navigationView_activatedHandler(event:ModelEvent):void
+	{
+			
+		if(_parentNavigationView)
+			_parentNavigationView.active = true
+	}
+	
+	private function parentNavigationView_clickHandler(event:MouseEvent):void
+	{
+		
+	}
+	
+	private function parentNavigationV_deactivateHandler(event:ModelEvent):void
+	{
+		activate(null)	
+	}
 	
 	//-------------------------------------------------------------------------
 	//
@@ -120,16 +210,38 @@ public class NavigationService extends EventDispatcher
 	public function set navigationViews(value:Vector.<NavigationView>):void
 	{
 		_navigationViews = value
+//		Es ist nicht nötig die navigations und navigationViews zugleich 
+//		zu speichern
+		navigations = null
+			
 		for each(var navigationView:NavigationView in _navigationViews)
 		{
 			navigationView.addEventListener(MouseEvent.CLICK, 
 											navigationView_clickHandler)
+			navigationView.addEventListener(NavigationView.ACTIVATED,
+											navigationView_activatedHandler)
 		}
 	}
-	
+
 	public function get navigationViews():Vector.<NavigationView>
 	{
 		return _navigationViews
+	}
+
+	private var _parentNavigationView:NavigationView
+	public function set parentNavigationView(value:NavigationView):void
+	{
+		_parentNavigationView = value
+		//TODO: Handler ist noch leer
+		_parentNavigationView.addEventListener(MouseEvent.CLICK,
+											  parentNavigationView_clickHandler)
+		_parentNavigationView.addEventListener(NavigationView.DEACTIVATED,
+										 parentNavigationV_deactivateHandler)
+	}
+	
+	public function get parentNavigationView():NavigationView
+	{
+		return _parentNavigationView
 	}
 }
 }

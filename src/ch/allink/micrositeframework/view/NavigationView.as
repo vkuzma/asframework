@@ -3,6 +3,7 @@ package ch.allink.micrositeframework.view
 import caurina.transitions.Tweener;
 
 import ch.allink.micrositeframework.cmsmodel.Navigation;
+import ch.allink.micrositeframework.cmsmodel.NavigationService;
 import ch.allink.micrositeframework.model.ModelEvent;
 
 import flash.events.FocusEvent;
@@ -13,8 +14,23 @@ import flash.text.TextField;
 import flash.text.TextFieldAutoSize;
 import flash.ui.Keyboard;
 
+/** 
+ * Darstellung eines Navigationselement
+ * 
+ * @author Vladimir Kuzma
+ */
+
 public class NavigationView extends AbstractView
 {
+	//-------------------------------------------------------------------------
+	//
+	//	Constats
+	//
+	//-------------------------------------------------------------------------
+	
+	public static const ACTIVATED:String = "activated"
+	public static const DEACTIVATED:String = "deActivated"
+	
 	//-------------------------------------------------------------------------
 	//
 	//	Variables
@@ -24,10 +40,11 @@ public class NavigationView extends AbstractView
 	public var defaultColor:uint
 	public var activeColor:uint
 	public var rollOverColor:uint
-	public var active:Boolean
+	
 	public var textField:TextField
 	public var navigation:Navigation
 	
+
 	public var tweeningTime:Number
 		
 	//-------------------------------------------------------------------------
@@ -40,7 +57,7 @@ public class NavigationView extends AbstractView
 	{
 		this.navigation = navigation
 		//init default values	
-		active = false
+		_active = false
 		defaultColor = 0x000000
 		rollOverColor = 0x000000
 		activeColor = 0xFFFFFF
@@ -59,29 +76,6 @@ public class NavigationView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 
-	public function activate():void
-	{
-		active = true
-		
-		Tweener.addTween(textField, 
-			{
-				time: tweeningTime,
-				textColor: activeColor
-				
-			})
-	}
-	
-	public function deactivate():void
-	{
-		active = false
-		
-		Tweener.addTween(textField, 
-			{
-				time: tweeningTime,
-				textColor: defaultColor
-			})
-	}
-	
 	public function reset():void
 	{
 		var newColor:uint
@@ -152,6 +146,57 @@ public class NavigationView extends AbstractView
 	//	Properties
 	//
 	//-------------------------------------------------------------------------
+	
+	private var _navigationService:NavigationService
+	public function set navigationService(value:NavigationService):void
+	{
+		_navigationService = value
+		_navigationService.parentNavigationView
+	}
+	
+	public function get navigationService():NavigationService
+	{
+		return _navigationService
+	}
+	
+	private var _active:Boolean
+	public function set active(value:Boolean):void
+	{
+		_active = value
+			
+		var newColor:uint 
+		if(active)
+			newColor = activeColor
+		else
+			newColor = defaultColor
+		Tweener.addTween(textField, 
+			{
+				time: tweeningTime,
+				textColor: newColor
+				
+			})
+			
+		var modelEvent:ModelEvent
+		if(active)
+		{
+			//Bedingte Animation zum öffnen der Unternavigation
+			//zB. navigationservice.openAnimation()
+			modelEvent = new ModelEvent(ACTIVATED)
+		}
+		else
+		{
+			//Bedingte Animation zum schliessen der Unternavigation
+			//zB. navigationservice.closeAnimation()
+			modelEvent = new ModelEvent(DEACTIVATED)
+		}
+				
+		dispatchEvent(modelEvent)
+	}
+	
+	public function get active():Boolean
+	{
+		return _active
+	}
 	
 	//---------------------------------
 	// TextField text
