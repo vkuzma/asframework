@@ -1,8 +1,8 @@
 package ch.allink.micrositeframework.cmsmodel
 {
-import ch.allink.micrositeframework.model.ModelEvent;
 import ch.allink.micrositeframework.view.NavigationView;
 
+import flash.events.Event;
 import flash.events.EventDispatcher;
 import flash.events.IEventDispatcher;
 import flash.events.MouseEvent;
@@ -183,7 +183,7 @@ public class NavigationService extends EventDispatcher
 		activate(navigationView)
 	}
 	
-	private function navigationView_activatedHandler(event:ModelEvent):void
+	private function navigationView_activatedHandler(event:Event):void
 	{
 			
 		if(_parentNavigationView)
@@ -195,7 +195,7 @@ public class NavigationService extends EventDispatcher
 		
 	}
 	
-	private function parentNavigationV_deactivateHandler(event:ModelEvent):void
+	private function parentNavigationV_deactivateHandler(event:Event):void
 	{
 		activate(null)	
 	}

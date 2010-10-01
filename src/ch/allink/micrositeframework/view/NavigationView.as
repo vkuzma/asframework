@@ -4,8 +4,8 @@ import caurina.transitions.Tweener;
 
 import ch.allink.micrositeframework.cmsmodel.Navigation;
 import ch.allink.micrositeframework.cmsmodel.NavigationService;
-import ch.allink.micrositeframework.model.ModelEvent;
 
+import flash.events.Event;
 import flash.events.FocusEvent;
 import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
@@ -176,18 +176,18 @@ public class NavigationView extends AbstractView
 				
 			})
 			
-		var modelEvent:ModelEvent
+		var modelEvent:Event
 		if(active)
 		{
 			//Bedingte Animation zum öffnen der Unternavigation
 			//zB. navigationservice.openAnimation()
-			modelEvent = new ModelEvent(ACTIVATED)
+			modelEvent = new Event(ACTIVATED)
 		}
 		else
 		{
 			//Bedingte Animation zum schliessen der Unternavigation
 			//zB. navigationservice.closeAnimation()
-			modelEvent = new ModelEvent(DEACTIVATED)
+			modelEvent = new Event(DEACTIVATED)
 		}
 				
 		dispatchEvent(modelEvent)
