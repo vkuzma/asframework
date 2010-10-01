@@ -20,11 +20,7 @@ public class NavigationView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	public static const EVENT_NAVIGATION_CLICKED:String = "EVENT_NAVIGATION_CLICKED"
-	public static const EVENT_NAVIGATION_ACTIVATED:String = "EVENT_NAVIGATION_ACTIVATED"
-	public static const EVENT_NAVIGATION_ROLLOVER:String = "EVENT_NAVIGATION_ROLLOVER"
-	public static const EVENT_NAVIGATION_ROLLOUT:String = "EVENT_NAVIGATION_ROLLOUT"
-	public static const EVENT_NAVIGATION_RESET:String = "EVENT_NAVIGATION_RESET"
+	public static const ACTIVATED:String = "activated"
 		
 	//-------------------------------------------------------------------------
 	//
@@ -53,6 +49,9 @@ public class NavigationView extends AbstractView
 		activeColor = 0x000000
 		
 		this.addChild(textField)
+			
+		this.addEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler)
+		this.addEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler)
 	}
 	
 	//-------------------------------------------------------------------------
@@ -61,18 +60,41 @@ public class NavigationView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 
+	public function activate():void
+	{
+		pressed = true
+		
+		Tweener.addTween(textField, 
+			{
+				time: 1,
+				_color: activeColor
+			})
+	}
+	
+	public function deactivate():void
+	{
+		pressed = false
+		
+		Tweener.addTween(textField, 
+			{
+				time: 1,
+				_color: defaultColor
+			})
+	}
+	
 	public function reset():void
 	{
-		var newColor:uint = defaultColor
+		var newColor:uint
 		if (pressed)
 			newColor = activeColor
+		else
+			newColor= defaultColor
 				
 		Tweener.addTween(textField, 
 			{
 				time: 1,
 				_color: newColor
 			})
-		dispatchEvent(new ModelEvent(EVENT_NAVIGATION_RESET))
 	}
 
 	//-------------------------------------------------------------------------
@@ -85,53 +107,45 @@ public class NavigationView extends AbstractView
 	//	User inputs
 	//---------------------------------
 	
-	private function stage_KeyDownHandler(event:KeyboardEvent):void
-	{
-		if (event.keyCode == Keyboard.ENTER || event.keyCode == Keyboard.SPACE)
-			clickHandler(null)
-	}
-	
-	public function rollOverHandler(event:MouseEvent):void
+	public function mouseOverHandler(event:MouseEvent):void
 	{
 		Tweener.addTween(textField,
 			{
 				time: 1,
 				_color: rollOverColor
 			})
-		dispatchEvent(new ModelEvent(EVENT_NAVIGATION_ROLLOVER))
 	}
 	
-	public function rollOutHandler(event:MouseEvent):void
+	public function mouseOutHandler(event:MouseEvent):void
 	{
 		reset()
-		dispatchEvent(new ModelEvent(EVENT_NAVIGATION_ROLLOUT))
 	}
 	
-	public function clickHandler(event:MouseEvent):void
-	{
-		pressed = true
-		dispatchEvent(new ModelEvent(EVENT_NAVIGATION_CLICKED))
-	}
+//	private function stage_KeyDownHandler(event:KeyboardEvent):void
+//	{
+//		if (event.keyCode == Keyboard.ENTER || event.keyCode == Keyboard.SPACE)
+//			clickHandler(null)
+//	}
 	
 	public function stage_MouseMoveHandler(event:MouseEvent):void
 	{
-		rollOutHandler(null)
+		mouseOverHandler(null)
 		stage.removeEventListener(MouseEvent.MOUSE_MOVE, stage_MouseMoveHandler)
 	}
 	
-	public function focusInHandler(event:FocusEvent):void
-	{
-		stage.addEventListener(KeyboardEvent.KEY_DOWN, stage_KeyDownHandler)
-		stage.addEventListener(MouseEvent.MOUSE_MOVE, stage_MouseMoveHandler)
-		rollOverHandler(null)
-	}
-	
-	public function focusOutHandler(event:FocusEvent):void
-	{
-		stage.removeEventListener(MouseEvent.MOUSE_MOVE, stage_MouseMoveHandler)
-		stage.removeEventListener(KeyboardEvent.KEY_DOWN, stage_KeyDownHandler)
-		rollOutHandler(null)
-	}
+//	public function focusInHandler(event:FocusEvent):void
+//	{
+//		stage.addEventListener(KeyboardEvent.KEY_DOWN, stage_KeyDownHandler)
+//		stage.addEventListener(MouseEvent.MOUSE_MOVE, stage_MouseMoveHandler)
+//		mouseOverHandler(null)
+//	}
+//	
+//	public function focusOutHandler(event:FocusEvent):void
+//	{
+//		stage.removeEventListener(MouseEvent.MOUSE_MOVE, stage_MouseMoveHandler)
+//		stage.removeEventListener(KeyboardEvent.KEY_DOWN, stage_KeyDownHandler)
+//		mouseOutHandler(null)
+//	}
 	
 	//-------------------------------------------------------------------------
 	//
