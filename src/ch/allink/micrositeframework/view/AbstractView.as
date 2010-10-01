@@ -3,7 +3,7 @@ package ch.allink.micrositeframework.view
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	
-	public class AbstractView extends Sprite implements iView
+	public class AbstractView extends Sprite implements IView
 	{
 		public function AbstractView()
 		{
@@ -17,7 +17,7 @@ package ch.allink.micrositeframework.view
 		
 		public function dispose():void
 		{
-		
+
 		}
 	}
 }

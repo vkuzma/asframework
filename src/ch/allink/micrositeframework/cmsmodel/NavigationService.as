@@ -15,22 +15,23 @@ package ch.allink.micrositeframework.cmsmodel
 		
 		public function buildTree(collection:Vector.<Navigation>):void
 		{
+			var navigation:Navigation
 			languages = []
-			for each (var navigation:Navigation in collection)
+			for each (navigation in collection)
 			{
 				var langID:Number = navigation.languageid
 				if (!languages[langID])
 					languages[langID] = new Vector.<Navigation>
 			}
 			
-			for each (var navigation_l:Navigation in collection)
+			for each (navigation in collection)
 			{	
-				languages[navigation.languageid].push(navigation_l);
+				languages[navigation.languageid].push(navigation);
 				for each (var parentNav:Navigation in collection)
 				{
-					if (navigation_l.parentid != 0 && navigation_l.parentid == parentNav.id && navigation_l.languageid == parentNav.languageid)
+					if (navigation.parentid != 0 && navigation.parentid == parentNav.id && navigation.languageid == parentNav.languageid)
 					{
-						parentNav.addChild(navigation_l)
+						parentNav.addChild(navigation)
 						break;
 					}
 				}
