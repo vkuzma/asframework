@@ -2,6 +2,7 @@ package ch.allink.micrositeframework.model
 {
 	
 	import mx.events.CollectionEvent;
+	import ch.allink.micrositeframework.net.ModelFactory;
 
 	public class AbstractModel extends Object
 	{

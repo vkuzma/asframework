@@ -1,6 +1,6 @@
 package ch.allink.micrositeframework.cmsmodel
 {
-	import ch.allink.micrositeframework.model.ModelFactory;
+	import ch.allink.micrositeframework.net.ModelFactory;
 	
 	import mx.core.UIComponent;
 	
