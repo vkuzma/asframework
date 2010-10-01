@@ -6,6 +6,13 @@ import flash.events.EventDispatcher;
 import flash.events.IEventDispatcher;
 import flash.events.MouseEvent;
 
+/** 
+ * Verwaltet einen Navigationsbaum
+ * 
+ * @author Vladimir Kuzma
+ */
+
+
 public class NavigationService extends EventDispatcher
 {
 	//-------------------------------------------------------------------------
@@ -102,10 +109,6 @@ public class NavigationService extends EventDispatcher
 		activate(navigationView)
 	}
 	
-	private function navigationView_activatedHandler(event:NavigationView):void
-	{
-		
-	}
 	
 	//-------------------------------------------------------------------------
 	//
@@ -121,8 +124,6 @@ public class NavigationService extends EventDispatcher
 		{
 			navigationView.addEventListener(MouseEvent.CLICK, 
 											navigationView_clickHandler)
-			navigationView.addEventListener(NavigationView.ACTIVATED,
-											navigationView_activatedHandler)
 		}
 	}
 	

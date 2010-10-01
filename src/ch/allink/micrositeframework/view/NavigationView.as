@@ -8,20 +8,13 @@ import ch.allink.micrositeframework.model.ModelEvent;
 import flash.events.FocusEvent;
 import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
+import flash.text.TextColorType;
 import flash.text.TextField;
 import flash.text.TextFieldAutoSize;
 import flash.ui.Keyboard;
 
 public class NavigationView extends AbstractView
 {
-	//-------------------------------------------------------------------------
-	//
-	//	Constants
-	//
-	//-------------------------------------------------------------------------
-	
-	public static const ACTIVATED:String = "activated"
-		
 	//-------------------------------------------------------------------------
 	//
 	//	Variables
@@ -31,8 +24,11 @@ public class NavigationView extends AbstractView
 	public var defaultColor:uint
 	public var activeColor:uint
 	public var rollOverColor:uint
-	public var pressed:Boolean
+	public var active:Boolean
 	public var textField:TextField
+	public var navigation:Navigation
+	
+	public var tweeningTime:Number
 		
 	//-------------------------------------------------------------------------
 	//
@@ -42,16 +38,19 @@ public class NavigationView extends AbstractView
 		
 	public function NavigationView(navigation:Navigation)
 	{
+		this.navigation = navigation
 		//init default values	
-		pressed = false
+		active = false
 		defaultColor = 0x000000
 		rollOverColor = 0x000000
-		activeColor = 0x000000
+		activeColor = 0xFFFFFF
+		tweeningTime = 1
 		
-		this.addChild(textField)
+		textField = new TextField()
+		textField.textColor = defaultColor
 			
-		this.addEventListener(MouseEvent.MOUSE_OVER, mouseOverHandler)
-		this.addEventListener(MouseEvent.MOUSE_OUT, mouseOutHandler)
+		this.addEventListener(MouseEvent.ROLL_OVER, rollOverHandler)
+		this.addEventListener(MouseEvent.ROLL_OUT, rollOutHandler)
 	}
 	
 	//-------------------------------------------------------------------------
@@ -62,38 +61,39 @@ public class NavigationView extends AbstractView
 
 	public function activate():void
 	{
-		pressed = true
+		active = true
 		
 		Tweener.addTween(textField, 
 			{
-				time: 1,
-				_color: activeColor
+				time: tweeningTime,
+				textColor: activeColor
+				
 			})
 	}
 	
 	public function deactivate():void
 	{
-		pressed = false
+		active = false
 		
 		Tweener.addTween(textField, 
 			{
-				time: 1,
-				_color: defaultColor
+				time: tweeningTime,
+				textColor: defaultColor
 			})
 	}
 	
 	public function reset():void
 	{
 		var newColor:uint
-		if (pressed)
+		if (active)
 			newColor = activeColor
 		else
 			newColor= defaultColor
 				
 		Tweener.addTween(textField, 
 			{
-				time: 1,
-				_color: newColor
+				time: tweeningTime,
+				textColor: newColor
 			})
 	}
 
@@ -107,16 +107,16 @@ public class NavigationView extends AbstractView
 	//	User inputs
 	//---------------------------------
 	
-	public function mouseOverHandler(event:MouseEvent):void
+	public function rollOverHandler(event:MouseEvent):void
 	{
 		Tweener.addTween(textField,
 			{
-				time: 1,
-				_color: rollOverColor
+				time: tweeningTime,
+				textColor: rollOverColor
 			})
 	}
 	
-	public function mouseOutHandler(event:MouseEvent):void
+	public function rollOutHandler(event:MouseEvent):void
 	{
 		reset()
 	}
@@ -129,11 +129,11 @@ public class NavigationView extends AbstractView
 	
 	public function stage_MouseMoveHandler(event:MouseEvent):void
 	{
-		mouseOverHandler(null)
+		rollOverHandler(null)
 		stage.removeEventListener(MouseEvent.MOUSE_MOVE, stage_MouseMoveHandler)
 	}
 	
-//	public function focusInHandler(event:FocusEvent):void
+//	public function 	(event:FocusEvent):void
 //	{
 //		stage.addEventListener(KeyboardEvent.KEY_DOWN, stage_KeyDownHandler)
 //		stage.addEventListener(MouseEvent.MOUSE_MOVE, stage_MouseMoveHandler)
