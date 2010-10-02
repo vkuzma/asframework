@@ -3,10 +3,8 @@
   <includeClasses>
     <classEntry path="ch.allink.micrositeframework.model.ModelCollectionEvent"/>
     <classEntry path="ch.allink.micrositeframework.view.AbstractView"/>
-    <classEntry path="ch.allink.micrositeframework.view.iView"/>
     <classEntry path="ch.allink.micrositeframework.view.BaseWebsiteView"/>
     <classEntry path="ch.allink.micrositeframework.cmsmodel.Navigation"/>
-    <classEntry path="ch.allink.micrositeframework.model.ModelEvent"/>
     <classEntry path="ch.allink.micrositeframework.cmsmodel.NavigationService"/>
     <classEntry path="ch.allink.micrositeframework.util.Translator"/>
     <classEntry path="ch.allink.micrositeframework.view.ImageView"/>

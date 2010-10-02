@@ -1,6 +1,8 @@
 package ch.allink.micrositeframework.model
 {
 	
+	import ch.allink.micrositeframework.net.ModelFactory;
+	
 	import mx.events.CollectionEvent;
 
 	public class AbstractModel extends Object

@@ -1,55 +1,247 @@
 package ch.allink.micrositeframework.cmsmodel
 {
-	import flash.events.EventDispatcher;
-	import flash.events.IEventDispatcher;
+import ch.allink.micrositeframework.view.NavigationView;
+
+import flash.events.Event;
+import flash.events.EventDispatcher;
+import flash.events.IEventDispatcher;
+import flash.events.MouseEvent;
+
+/** 
+ * Verwaltet einen Navigationsbaum
+ * 
+ * @author Vladimir Kuzma
+ */
+
+
+public class NavigationService extends EventDispatcher
+{
+	//-------------------------------------------------------------------------
+	//
+	//	Variables
+	//
+	//-------------------------------------------------------------------------
 	
-	public class NavigationService extends EventDispatcher
+	private var languages:Array
+	public var navigations:Vector.<Navigation>
+	
+	//-------------------------------------------------------------------------
+	//
+	//	Constructor
+	//
+	//-------------------------------------------------------------------------
+	
+	public function NavigationService(target:IEventDispatcher = null)
 	{
-		private var languages:Array
-		
-		public function NavigationService(target:IEventDispatcher=null)
+		super(target)
+	}
+	
+	//-------------------------------------------------------------------------
+	//
+	//	Public methods
+	//
+	//-------------------------------------------------------------------------
+	
+	private function activate(activatedNavigationView:NavigationView):void
+	{
+		for each(var navigationView:NavigationView in _navigationViews)
 		{
-			super(target);
-		}
-		
-		
-		public function buildTree(collection:Vector.<Navigation>):void
-		{
-			languages = []
-			for each (var navigation:Navigation in collection)
-			{
-				var langID:Number = navigation.languageid
-				if (!languages[langID])
-					languages[langID] = new Vector.<Navigation>
-			}
-			
-			for each (var navigation_l:Navigation in collection)
-			{	
-				languages[navigation.languageid].push(navigation_l);
-				for each (var parentNav:Navigation in collection)
-				{
-					if (navigation_l.parentid != 0 && navigation_l.parentid == parentNav.id && navigation_l.languageid == parentNav.languageid)
-					{
-						parentNav.addChild(navigation_l)
-						break;
-					}
-				}
-			}
-			
-		}
-		
-		public function getRootElements(languageID:Number):Vector.<Navigation>
-		{
-			var ret:Vector.<Navigation> = new Vector.<Navigation>;
-			var navs:Vector.<Navigation> = languages[languageID];
-			for each (var n:Navigation in navs)
-			{
-				if (n.parentid == 0)
-				{
-					ret.push(n);
-				}
-			}
-			return ret;
+			if(activatedNavigationView == navigationView)
+				navigationView.active = true
+			else
+				navigationView.active = false
 		}
 	}
+	
+	public function navigationForIDInNavigations(id:int,
+							 		navigations:Vector.<Navigation>):Navigation
+	{
+		var targetNavigation:Navigation
+		
+		for each(var navigation:Navigation in navigations)
+		{
+			if(navigation.id == id)	
+			{
+				targetNavigation = navigation
+				break
+			}
+			else if(navigation.children != null)
+			{
+				targetNavigation = navigationForIDInNavigations(id, 
+															navigation.children)
+				break
+			}
+			else
+			{
+				targetNavigation = null
+			}
+		}
+		return targetNavigation
+	}
+	
+	private function navigationForIDInNavigationViews(id:int,
+							 navigationViews:Vector.<NavigationView>):Navigation
+	{
+		var targetNavigation:Navigation
+		
+		for each(var navigationView:NavigationView in navigationViews)
+		{
+			var navigation:Navigation = navigationView.navigation
+			if(navigation.children)
+			{
+				targetNavigation = navigationForIDInNavigations(id, 
+															navigation.children)
+				break
+			}	
+			else if(navigation.id == id)
+			{
+				targetNavigation = navigation
+				break
+			}
+			else
+			{
+				targetNavigation = null	
+			}
+		}
+		return targetNavigation
+	}
+	
+	//-------------------------------------------------------------------------
+	//
+	//	Public methods
+	//
+	//-------------------------------------------------------------------------
+	
+	public function buildTree(collection:Vector.<Navigation>):void
+	{
+		var navigation:Navigation
+		languages = []
+		for each (navigation in collection)
+		{
+			var langID:Number = navigation.languageid
+			if (!languages[langID])
+				languages[langID] = new Vector.<Navigation>
+		}
+		
+		for each (navigation in collection)
+		{	
+			languages[navigation.languageid].push(navigation)
+			for each (var parentNavigation:Navigation in collection)
+			{
+				if (navigation.parentid != 0 
+					&& navigation.parentid == parentNavigation.id 
+					&& navigation.languageid == parentNavigation.languageid)
+				{
+					parentNavigation.addChild(navigation)
+					break
+				}
+			}
+		}
+	}
+	
+	public function rootElements(languageID:Number):Vector.<Navigation>
+	{
+		var navigationsNew:Vector.<Navigation> = new Vector.<Navigation>;
+		var navigations:Vector.<Navigation> = languages[languageID];
+		for each (var navigation:Navigation in navigations)
+		{
+			if (navigation.parentid == 0)
+				navigationsNew.push(navigation)
+		}
+		return navigationsNew
+	}
+	
+	public function navigationForID(id:int):Navigation
+	{
+//		Könnte auch eine statische Methode sein
+		var targetNavigation:Navigation
+		if(navigations)
+			targetNavigation = navigationForIDInNavigations(id, navigations)
+		else if(navigationViews)
+			targetNavigation = navigationForIDInNavigationViews(id, 
+																navigationViews)
+		else
+			targetNavigation = null
+				
+			
+		return targetNavigation
+	}
+	
+//	public function openAnimation()
+		
+//	public function closeAnimation()
+	
+	//-------------------------------------------------------------------------
+	//
+	//	Event handlers
+	//
+	//-------------------------------------------------------------------------
+	
+	private function navigationView_clickHandler(event:MouseEvent):void
+	{
+		var navigationView:NavigationView = event.target as NavigationView
+		activate(navigationView)
+	}
+	
+	private function navigationView_activatedHandler(event:Event):void
+	{
+			
+		if(_parentNavigationView)
+			_parentNavigationView.active = true
+	}
+	
+	private function parentNavigationView_clickHandler(event:MouseEvent):void
+	{
+		
+	}
+	
+	private function parentNavigationV_deactivateHandler(event:Event):void
+	{
+		activate(null)	
+	}
+	
+	//-------------------------------------------------------------------------
+	//
+	//	Properties
+	//
+	//-------------------------------------------------------------------------
+	
+	private var _navigationViews:Vector.<NavigationView>
+	public function set navigationViews(value:Vector.<NavigationView>):void
+	{
+		_navigationViews = value
+//		Es ist nicht nötig die navigations und navigationViews zugleich 
+//		zu speichern
+		navigations = null
+			
+		for each(var navigationView:NavigationView in _navigationViews)
+		{
+			navigationView.addEventListener(MouseEvent.CLICK, 
+											navigationView_clickHandler)
+			navigationView.addEventListener(NavigationView.ACTIVATED,
+											navigationView_activatedHandler)
+		}
+	}
+
+	public function get navigationViews():Vector.<NavigationView>
+	{
+		return _navigationViews
+	}
+
+	private var _parentNavigationView:NavigationView
+	public function set parentNavigationView(value:NavigationView):void
+	{
+		_parentNavigationView = value
+		//TODO: Handler ist noch leer
+		_parentNavigationView.addEventListener(MouseEvent.CLICK,
+											  parentNavigationView_clickHandler)
+		_parentNavigationView.addEventListener(NavigationView.DEACTIVATED,
+										 parentNavigationV_deactivateHandler)
+	}
+	
+	public function get parentNavigationView():NavigationView
+	{
+		return _parentNavigationView
+	}
+}
 }
