@@ -3,7 +3,7 @@ package ch.allink.micrositeframework.view
 import caurina.transitions.Tweener;
 
 import ch.allink.micrositeframework.cmsmodel.Navigation;
-import ch.allink.micrositeframework.cmsmodel.NavigationService;
+import ch.allink.micrositeframework.cmsmodel.NavigationViewService;
 
 import flash.events.Event;
 import flash.events.FocusEvent;
@@ -30,6 +30,8 @@ public class NavigationView extends AbstractView
 	
 	public static const ACTIVATED:String = "activated"
 	public static const DEACTIVATED:String = "deActivated"
+	public static const REQUEST_ACTIVATE:String = "requestActivate"
+	public static const SUB_NAVIGATION_CLICKED:String = "subNavigationClicked"
 	
 	//-------------------------------------------------------------------------
 	//
@@ -37,14 +39,12 @@ public class NavigationView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 
-	public var defaultColor:uint
 	public var activeColor:uint
 	public var rollOverColor:uint
 	
 	public var textField:TextField
 	public var navigation:Navigation
 	
-
 	public var tweeningTime:Number
 		
 	//-------------------------------------------------------------------------
@@ -58,7 +58,7 @@ public class NavigationView extends AbstractView
 		this.navigation = navigation
 		//init default values	
 		_active = false
-		defaultColor = 0x000000
+		_defaultColor = 0x000000
 		rollOverColor = 0x000000
 		activeColor = 0xFFFFFF
 		tweeningTime = 1
@@ -89,6 +89,11 @@ public class NavigationView extends AbstractView
 				time: tweeningTime,
 				textColor: newColor
 			})
+	}
+	
+	public function requestActivate():void
+	{
+		dispatchEvent(new Event(REQUEST_ACTIVATE))
 	}
 
 	//-------------------------------------------------------------------------
@@ -127,6 +132,11 @@ public class NavigationView extends AbstractView
 		stage.removeEventListener(MouseEvent.MOUSE_MOVE, stage_MouseMoveHandler)
 	}
 	
+	private function bubbleEvent(event:Event):void
+	{
+		dispatchEvent(new Event(SUB_NAVIGATION_CLICKED))
+	}
+	
 //	public function 	(event:FocusEvent):void
 //	{
 //		stage.addEventListener(KeyboardEvent.KEY_DOWN, stage_KeyDownHandler)
@@ -147,14 +157,16 @@ public class NavigationView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	private var _navigationService:NavigationService
-	public function set navigationService(value:NavigationService):void
+	private var _navigationService:NavigationViewService
+	public function set navigationService(value:NavigationViewService):void
 	{
 		_navigationService = value
-		_navigationService.parentNavigationView
+		_navigationService.parentNavigationView = this
+		_navigationService.addEventListener(NavigationViewService.
+											NAVIGATION_CLICKED, bubbleEvent)
 	}
 	
-	public function get navigationService():NavigationService
+	public function get navigationService():NavigationViewService
 	{
 		return _navigationService
 	}
@@ -177,7 +189,7 @@ public class NavigationView extends AbstractView
 			})
 			
 		var modelEvent:Event
-		if(active)
+		if(_active)
 		{
 			//Bedingte Animation zum öffnen der Unternavigation
 			//zB. navigationservice.openAnimation()
@@ -189,13 +201,24 @@ public class NavigationView extends AbstractView
 			//zB. navigationservice.closeAnimation()
 			modelEvent = new Event(DEACTIVATED)
 		}
-				
 		dispatchEvent(modelEvent)
 	}
 	
 	public function get active():Boolean
 	{
 		return _active
+	}
+	
+	private var _defaultColor:uint
+	public function set defaultColor(value:uint):void
+	{
+		_defaultColor = value
+		textField.textColor = _defaultColor
+	}
+	
+	public function get defaultColor():uint
+	{
+		return _defaultColor		
 	}
 	
 	//---------------------------------
