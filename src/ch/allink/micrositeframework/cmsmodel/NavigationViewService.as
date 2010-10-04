@@ -25,7 +25,6 @@ public class NavigationViewService extends EventDispatcher
 	//
 	//-------------------------------------------------------------------------
 	
-	private var languages:Array
 	public var navigations:Vector.<Navigation>
 	public var pageID:int
 	
@@ -43,7 +42,7 @@ public class NavigationViewService extends EventDispatcher
 	
 	//-------------------------------------------------------------------------
 	//
-	//	Public methods
+	//	Private methods
 	//
 	//-------------------------------------------------------------------------
 	
@@ -102,48 +101,9 @@ public class NavigationViewService extends EventDispatcher
 	
 	//-------------------------------------------------------------------------
 	//
-	//	Private methods
+	//	Public methods
 	//
 	//-------------------------------------------------------------------------
-	
-	public function buildTree(collection:Vector.<Navigation>):void
-	{
-		var navigation:Navigation
-		languages = []
-		for each (navigation in collection)
-		{
-			var langID:Number = navigation.languageid
-			if (!languages[langID])
-				languages[langID] = new Vector.<Navigation>
-		}
-		
-		for each (navigation in collection)
-		{	
-			languages[navigation.languageid].push(navigation)
-			for each (var parentNavigation:Navigation in collection)
-			{
-				if (navigation.parentid != 0 
-					&& navigation.parentid == parentNavigation.id 
-					&& navigation.languageid == parentNavigation.languageid)
-				{
-					parentNavigation.addChild(navigation)
-					break
-				}
-			}
-		}
-	}
-	
-	public function rootElements(languageID:Number):Vector.<Navigation>
-	{
-		var navigationsNew:Vector.<Navigation> = new Vector.<Navigation>;
-		var navigations:Vector.<Navigation> = languages[languageID];
-		for each (var navigation:Navigation in navigations)
-		{
-			if (navigation.parentid == 0)
-				navigationsNew.push(navigation)
-		}
-		return navigationsNew
-	}
 	
 	public function navigationByPageID(id:int):Navigation
 	{
@@ -171,7 +131,6 @@ public class NavigationViewService extends EventDispatcher
 				navigationView.active = false
 		}
 	}
-	
 	
 //	public function openAnimation()
 		
