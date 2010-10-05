@@ -5,9 +5,8 @@
     <classEntry path="ch.allink.micrositeframework.view.AbstractView"/>
     <classEntry path="ch.allink.micrositeframework.view.BaseWebsiteView"/>
     <classEntry path="ch.allink.micrositeframework.cmsmodel.Navigation"/>
-    <classEntry path="ch.allink.micrositeframework.cmsmodel.NavigationViewService"/>
     <classEntry path="ch.allink.micrositeframework.util.Translator"/>
-    <classEntry path="ch.allink.micrositeframework.cmsmodel.NavigationTreeService"/>
+    <classEntry path="ch.allink.micrositeframework.view.ImageView"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
