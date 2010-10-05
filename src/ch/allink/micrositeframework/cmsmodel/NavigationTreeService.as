@@ -8,7 +8,8 @@ public class NavigationTreeService
 	//
 	//-------------------------------------------------------------------------
 	
-	private var languages:Array
+	public var languages:Array
+	public var currentLanguageID:int
 	
 	//-------------------------------------------------------------------------
 	//
@@ -18,6 +19,7 @@ public class NavigationTreeService
 	
 	public function NavigationTreeService()
 	{
+		currentLanguageID = 1
 	}
 	
 	//-------------------------------------------------------------------------
@@ -32,7 +34,7 @@ public class NavigationTreeService
 	//
 	//-------------------------------------------------------------------------
 	
-	public function buildTree(collection:Vector.<Navigation>):void
+	public function build(collection:Vector.<Navigation>):void
 	{
 		var navigation:Navigation
 		languages = []
@@ -49,7 +51,7 @@ public class NavigationTreeService
 			for each (var parentNavigation:Navigation in collection)
 			{
 				if (navigation.parentid != 0 
-					&& navigation.parentid == parentNavigation.id 
+					&& navigation.parentid == parentNavigation.navigationid 
 					&& navigation.languageid == parentNavigation.languageid)
 				{
 					parentNavigation.addChild(navigation)
@@ -59,10 +61,10 @@ public class NavigationTreeService
 		}
 	}
 	
-	public function rootElements(languageID:Number):Vector.<Navigation>
+	public function rootElements():Vector.<Navigation>
 	{
-		var navigationsNew:Vector.<Navigation> = new Vector.<Navigation>;
-		var navigations:Vector.<Navigation> = languages[languageID];
+		var navigationsNew:Vector.<Navigation> = new Vector.<Navigation>
+		var navigations:Vector.<Navigation> = languages[currentLanguageID]
 		for each (var navigation:Navigation in navigations)
 		{
 			if (navigation.parentid == 0)
@@ -78,7 +80,7 @@ public class NavigationTreeService
 		
 		for each(var navigation:Navigation in navigations)
 		{
-			if(navigation.id == id)	
+			if(navigation.navigationid == id)	
 			{
 				targetNavigation = navigation
 				break

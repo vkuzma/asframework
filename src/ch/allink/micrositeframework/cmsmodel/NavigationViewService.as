@@ -53,7 +53,7 @@ public class NavigationViewService extends EventDispatcher
 		
 		for each(var navigation:Navigation in navigations)
 		{
-			if(navigation.id == id)	
+			if(navigation.navigationid == id)	
 			{
 				targetNavigation = navigation
 				break
@@ -86,7 +86,7 @@ public class NavigationViewService extends EventDispatcher
 															navigation.children)
 				break
 			}	
-			else if(navigation.id == id)
+			else if(navigation.navigationid == id)
 			{
 				targetNavigation = navigation
 				break
@@ -144,9 +144,9 @@ public class NavigationViewService extends EventDispatcher
 	
 	private function navigationView_clickHandler(event:MouseEvent):void
 	{
-		var navigationView:NavigationView = event.target as NavigationView
+		var navigationView:NavigationView = event.currentTarget as NavigationView
 		activate(navigationView)
-		pageID = navigationView.navigation.id
+		pageID = navigationView.navigation.navigationid
 		dispatchEvent(new Event(NAVIGATION_CLICKED))
 	}
 	

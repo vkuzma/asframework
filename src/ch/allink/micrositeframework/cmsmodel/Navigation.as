@@ -8,7 +8,6 @@ public class Navigation extends AllinkCMSBaseModel
 	//
 	//-------------------------------------------------------------------------
 	
-	public var id:int = 0
 	public var navigationid:int = 0
 	public var languageid:int = 0
 	public var parentid:int = 0

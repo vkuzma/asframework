@@ -6,13 +6,9 @@ import ch.allink.micrositeframework.cmsmodel.Navigation;
 import ch.allink.micrositeframework.cmsmodel.NavigationViewService;
 
 import flash.events.Event;
-import flash.events.FocusEvent;
-import flash.events.KeyboardEvent;
 import flash.events.MouseEvent;
-import flash.text.TextColorType;
 import flash.text.TextField;
 import flash.text.TextFieldAutoSize;
-import flash.ui.Keyboard;
 
 /** 
  * Darstellung eines Navigationselement
@@ -62,9 +58,14 @@ public class NavigationView extends AbstractView
 		rollOverColor = 0x000000
 		activeColor = 0xFFFFFF
 		tweeningTime = 1
+
 		
 		textField = new TextField()
+		this.addChild(textField)
+		textField.selectable = false
+		textField.text = navigation.title
 		textField.textColor = defaultColor
+		textField.autoSize = TextFieldAutoSize.LEFT
 			
 		this.addEventListener(MouseEvent.ROLL_OVER, rollOverHandler)
 		this.addEventListener(MouseEvent.ROLL_OUT, rollOutHandler)
@@ -79,7 +80,7 @@ public class NavigationView extends AbstractView
 	public function reset():void
 	{
 		var newColor:uint
-		if (active)
+		if (_active)
 			newColor = activeColor
 		else
 			newColor= defaultColor
@@ -87,7 +88,7 @@ public class NavigationView extends AbstractView
 		Tweener.addTween(textField, 
 			{
 				time: tweeningTime,
-				textColor: newColor
+				_color: newColor
 			})
 	}
 	
@@ -111,7 +112,7 @@ public class NavigationView extends AbstractView
 		Tweener.addTween(textField,
 			{
 				time: tweeningTime,
-				textColor: rollOverColor
+				_color: rollOverColor
 			})
 	}
 	
@@ -177,14 +178,14 @@ public class NavigationView extends AbstractView
 		_active = value
 			
 		var newColor:uint 
-		if(active)
+		if(_active)
 			newColor = activeColor
 		else
 			newColor = defaultColor
 		Tweener.addTween(textField, 
 			{
 				time: tweeningTime,
-				textColor: newColor
+				_color: newColor
 				
 			})
 			

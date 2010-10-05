@@ -1,11 +1,17 @@
 package ch.allink.micrositeframework.view
 {
+	import caurina.transitions.properties.ColorShortcuts;
+	
 	import ch.allink.micrositeframework.model.AbstractModel;
 	
 	import flash.display.DisplayObject;
 	import flash.display.Sprite;
 	
 	import mx.messaging.messages.AbstractMessage;
+	
+	{
+		ColorShortcuts.init()
+	}
 	
 	public class AbstractView extends Sprite implements IView
 	{
