@@ -14,16 +14,19 @@ import flash.events.MouseEvent;
  */
 
 
-public class NavigationService extends EventDispatcher
+public class NavigationViewService extends EventDispatcher
 {
+	
+	public static const NAVIGATION_CLICKED:String = "navigationClicks"
+		
 	//-------------------------------------------------------------------------
 	//
 	//	Variables
 	//
 	//-------------------------------------------------------------------------
 	
-	private var languages:Array
 	public var navigations:Vector.<Navigation>
+	public var pageID:int
 	
 	//-------------------------------------------------------------------------
 	//
@@ -31,29 +34,19 @@ public class NavigationService extends EventDispatcher
 	//
 	//-------------------------------------------------------------------------
 	
-	public function NavigationService(target:IEventDispatcher = null)
+	public function NavigationViewService(target:IEventDispatcher = null)
 	{
 		super(target)
+
 	}
 	
 	//-------------------------------------------------------------------------
 	//
-	//	Public methods
+	//	Private methods
 	//
 	//-------------------------------------------------------------------------
 	
-	private function activate(activatedNavigationView:NavigationView):void
-	{
-		for each(var navigationView:NavigationView in _navigationViews)
-		{
-			if(activatedNavigationView == navigationView)
-				navigationView.active = true
-			else
-				navigationView.active = false
-		}
-	}
-	
-	public function navigationForIDInNavigations(id:int,
+	private function navigationForIDInNavigations(id:int,
 							 		navigations:Vector.<Navigation>):Navigation
 	{
 		var targetNavigation:Navigation
@@ -68,7 +61,7 @@ public class NavigationService extends EventDispatcher
 			else if(navigation.children != null)
 			{
 				targetNavigation = navigationForIDInNavigations(id, 
-															navigation.children)
+														   navigation.children)
 				break
 			}
 			else
@@ -80,7 +73,7 @@ public class NavigationService extends EventDispatcher
 	}
 	
 	private function navigationForIDInNavigationViews(id:int,
-							 navigationViews:Vector.<NavigationView>):Navigation
+							navigationViews:Vector.<NavigationView>):Navigation
 	{
 		var targetNavigation:Navigation
 		
@@ -112,46 +105,7 @@ public class NavigationService extends EventDispatcher
 	//
 	//-------------------------------------------------------------------------
 	
-	public function buildTree(collection:Vector.<Navigation>):void
-	{
-		var navigation:Navigation
-		languages = []
-		for each (navigation in collection)
-		{
-			var langID:Number = navigation.languageid
-			if (!languages[langID])
-				languages[langID] = new Vector.<Navigation>
-		}
-		
-		for each (navigation in collection)
-		{	
-			languages[navigation.languageid].push(navigation)
-			for each (var parentNavigation:Navigation in collection)
-			{
-				if (navigation.parentid != 0 
-					&& navigation.parentid == parentNavigation.id 
-					&& navigation.languageid == parentNavigation.languageid)
-				{
-					parentNavigation.addChild(navigation)
-					break
-				}
-			}
-		}
-	}
-	
-	public function rootElements(languageID:Number):Vector.<Navigation>
-	{
-		var navigationsNew:Vector.<Navigation> = new Vector.<Navigation>;
-		var navigations:Vector.<Navigation> = languages[languageID];
-		for each (var navigation:Navigation in navigations)
-		{
-			if (navigation.parentid == 0)
-				navigationsNew.push(navigation)
-		}
-		return navigationsNew
-	}
-	
-	public function navigationForID(id:int):Navigation
+	public function navigationByPageID(id:int):Navigation
 	{
 //		Könnte auch eine statische Methode sein
 		var targetNavigation:Navigation
@@ -165,6 +119,17 @@ public class NavigationService extends EventDispatcher
 				
 			
 		return targetNavigation
+	}
+	
+	public function activate(activatedNavigationView:NavigationView):void
+	{
+		for each(var navigationView:NavigationView in _navigationViews)
+		{
+			if(activatedNavigationView == navigationView)
+				navigationView.active = true
+			else
+				navigationView.active = false
+		}
 	}
 	
 //	public function openAnimation()
@@ -181,23 +146,34 @@ public class NavigationService extends EventDispatcher
 	{
 		var navigationView:NavigationView = event.target as NavigationView
 		activate(navigationView)
+		pageID = navigationView.navigation.id
+		dispatchEvent(new Event(NAVIGATION_CLICKED))
 	}
 	
 	private function navigationView_activatedHandler(event:Event):void
 	{
-			
 		if(_parentNavigationView)
-			_parentNavigationView.active = true
+			_parentNavigationView.requestActivate()
 	}
 	
-	private function parentNavigationView_clickHandler(event:MouseEvent):void
+	public function navigationView_requestActivatedHandler(event:Event):void
 	{
-		
+		var navigationView:NavigationView = event.target as NavigationView
+		activate(navigationView)
 	}
 	
 	private function parentNavigationV_deactivateHandler(event:Event):void
 	{
 		activate(null)	
+	}
+	
+	private function navigationView_subNavigationClicked(event:Event):void
+	{
+		var navigationView:NavigationView = event.target as NavigationView
+		var navigationViewService:NavigationViewService = navigationView.
+														  navigationService
+		pageID = navigationViewService.pageID
+		dispatchEvent(new Event(NAVIGATION_CLICKED))
 	}
 	
 	//-------------------------------------------------------------------------
@@ -220,6 +196,11 @@ public class NavigationService extends EventDispatcher
 											navigationView_clickHandler)
 			navigationView.addEventListener(NavigationView.ACTIVATED,
 											navigationView_activatedHandler)
+			navigationView.addEventListener(NavigationView.REQUEST_ACTIVATE,
+										navigationView_requestActivatedHandler)
+			navigationView.addEventListener(NavigationView.
+											SUB_NAVIGATION_CLICKED,
+											navigationView_subNavigationClicked)
 		}
 	}
 
@@ -232,11 +213,8 @@ public class NavigationService extends EventDispatcher
 	public function set parentNavigationView(value:NavigationView):void
 	{
 		_parentNavigationView = value
-		//TODO: Handler ist noch leer
-		_parentNavigationView.addEventListener(MouseEvent.CLICK,
-											  parentNavigationView_clickHandler)
 		_parentNavigationView.addEventListener(NavigationView.DEACTIVATED,
-										 parentNavigationV_deactivateHandler)
+										    parentNavigationV_deactivateHandler)
 	}
 	
 	public function get parentNavigationView():NavigationView
