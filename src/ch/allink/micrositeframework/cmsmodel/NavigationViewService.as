@@ -79,7 +79,7 @@ public class NavigationViewService extends EventDispatcher
 		
 		for each(var navigationView:NavigationView in navigationViews)
 		{
-			var navigation:Navigation = navigationView.navigation
+			var navigation:Navigation = navigationView.model as Navigation
 			if(navigation.children)
 			{
 				targetNavigation = navigationForIDInNavigations(id, 
@@ -146,7 +146,7 @@ public class NavigationViewService extends EventDispatcher
 	{
 		var navigationView:NavigationView = event.currentTarget as NavigationView
 		activate(navigationView)
-		pageID = navigationView.navigation.navigationid
+		pageID = Navigation(navigationView.model).navigationid
 		dispatchEvent(new Event(NAVIGATION_CLICKED))
 	}
 	

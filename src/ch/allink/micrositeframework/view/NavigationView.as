@@ -39,7 +39,6 @@ public class NavigationView extends AbstractView
 	public var rollOverColor:uint
 	
 	public var textField:TextField
-	public var navigation:Navigation
 	
 	public var tweeningTime:Number
 		
@@ -51,7 +50,7 @@ public class NavigationView extends AbstractView
 		
 	public function NavigationView(navigation:Navigation)
 	{
-		this.navigation = navigation
+		model = navigation
 		//init default values	
 		_active = false
 		_defaultColor = 0x000000
