@@ -17,8 +17,6 @@ import flash.events.MouseEvent;
 public class NavigationViewService extends EventDispatcher
 {
 	
-	public static const NAVIGATION_CLICKED:String = "navigationClicks"
-		
 	//-------------------------------------------------------------------------
 	//
 	//	Variables
@@ -147,7 +145,9 @@ public class NavigationViewService extends EventDispatcher
 		var navigationView:NavigationView = event.currentTarget as NavigationView
 		activate(navigationView)
 		pageID = Navigation(navigationView.model).navigationid
-		dispatchEvent(new Event(NAVIGATION_CLICKED))
+		var bubbleEvent:NavigationViewEvent = new NavigationViewEvent(
+			NavigationViewEvent.NAVIGATION_CLICK, false, false, navigationView)
+		dispatchEvent(bubbleEvent)
 	}
 	
 	private function navigationView_activatedHandler(event:Event):void
@@ -173,7 +173,7 @@ public class NavigationViewService extends EventDispatcher
 		var navigationViewService:NavigationViewService = navigationView.
 														  navigationService
 		pageID = navigationViewService.pageID
-		dispatchEvent(new Event(NAVIGATION_CLICKED))
+		dispatchEvent(event)
 	}
 	
 	//-------------------------------------------------------------------------
@@ -198,8 +198,8 @@ public class NavigationViewService extends EventDispatcher
 											navigationView_activatedHandler)
 			navigationView.addEventListener(NavigationView.REQUEST_ACTIVATE,
 										navigationView_requestActivatedHandler)
-			navigationView.addEventListener(NavigationView.
-											SUB_NAVIGATION_CLICKED,
+			navigationView.addEventListener(NavigationViewEvent.
+											NAVIGATION_CLICK,
 											navigationView_subNavigationClicked)
 		}
 	}

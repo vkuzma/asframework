@@ -3,6 +3,7 @@ package ch.allink.micrositeframework.view
 import caurina.transitions.Tweener;
 
 import ch.allink.micrositeframework.cmsmodel.Navigation;
+import ch.allink.micrositeframework.cmsmodel.NavigationViewEvent;
 import ch.allink.micrositeframework.cmsmodel.NavigationViewService;
 
 import flash.events.Event;
@@ -27,7 +28,6 @@ public class NavigationView extends AbstractView
 	public static const ACTIVATED:String = "activated"
 	public static const DEACTIVATED:String = "deActivated"
 	public static const REQUEST_ACTIVATE:String = "requestActivate"
-	public static const SUB_NAVIGATION_CLICKED:String = "subNavigationClicked"
 	
 	//-------------------------------------------------------------------------
 	//
@@ -134,7 +134,7 @@ public class NavigationView extends AbstractView
 	
 	private function bubbleEvent(event:Event):void
 	{
-		dispatchEvent(new Event(SUB_NAVIGATION_CLICKED))
+		dispatchEvent(event)
 	}
 	
 //	public function 	(event:FocusEvent):void
@@ -162,8 +162,8 @@ public class NavigationView extends AbstractView
 	{
 		_navigationService = value
 		_navigationService.parentNavigationView = this
-		_navigationService.addEventListener(NavigationViewService.
-											NAVIGATION_CLICKED, bubbleEvent)
+		_navigationService.addEventListener(NavigationViewEvent.
+											NAVIGATION_CLICK, bubbleEvent)
 	}
 	
 	public function get navigationService():NavigationViewService
