@@ -21,9 +21,10 @@ public class ImageView extends AbstractView
 	private var _loadedBitmap:Bitmap
 	private var _currentBitmap:Bitmap
 	
-	public function ImageView()
+	public function ImageView(image:Image)
 	{
-		super();
+		model = image
+		super()
 	}
 	
 	public override function build():void

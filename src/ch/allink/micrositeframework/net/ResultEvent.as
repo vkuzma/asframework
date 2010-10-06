@@ -11,7 +11,7 @@ package ch.allink.micrositeframework.net
 		
 		private var _collection:Vector.<AbstractModel>
 		private var _abstractModel:AbstractModel
-		public var _modelRequest:ModelRequest
+		private var _modelRequest:ModelRequest
 		
 		public function ResultEvent(type:String,
 									bubbles:Boolean=false,
