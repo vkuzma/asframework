@@ -26,6 +26,7 @@ public class ModelFactory extends EventDispatcher
 		super(target)
 	}
 	
+	//TODO: type sollte keinen Standartwert haben
 	public function load(klass:Class, url:String, type:String = ModelFactory.TYPE_COLLECTION):ModelRequest
 	{
 		return new ModelRequest(klass, url, this, type)
