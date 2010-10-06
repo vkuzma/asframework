@@ -1,6 +1,9 @@
 package ch.allink.micrositeframework.cmsview
 {
 import ch.allink.micrositeframework.cmsmodel.Image;
+import ch.allink.micrositeframework.net.ModelFactory;
+import ch.allink.micrositeframework.net.ModelRequest;
+import ch.allink.micrositeframework.net.ResultEvent;
 import ch.allink.micrositeframework.view.AbstractView;
 
 import flash.display.Bitmap;
@@ -10,22 +13,45 @@ import flash.events.Event;
 import flash.geom.Matrix;
 import flash.net.URLRequest;
 
-import mx.events.Request;
-
-import org.osmf.events.LoaderEvent;
+import org.osmf.media.MediaFactory;
 
 public class ImageView extends AbstractView
 {
+	//-------------------------------------------------------------------------
+	//
+	//	Constants
+	//
+	//-------------------------------------------------------------------------
+	
+	private const xmlPath:String = "./?do=xml&mode=resource&fileID="
+		
+	//-------------------------------------------------------------------------
+	//
+	//	Variables
+	//
+	//-------------------------------------------------------------------------
+	
 	public var _imageOptions:ImageOptions
 	private var _loader:Loader
 	private var _loadedBitmap:Bitmap
 	private var _currentBitmap:Bitmap
 	
+	//-------------------------------------------------------------------------
+	//
+	//	Constructor
+	//
+	//-------------------------------------------------------------------------
 	public function ImageView(image:Image=null)
 	{
 		model = image
 		super()
 	}
+	
+	//-------------------------------------------------------------------------
+	//
+	//	Overriden methods
+	//
+	//-------------------------------------------------------------------------
 	
 	public override function build():void
 	{
@@ -37,14 +63,11 @@ public class ImageView extends AbstractView
 		
 	}
 	
-	private function _loader_onCompleteHandler(event:Event):void
-	{
-		var bmp:Bitmap = Bitmap(_loader.content)
-		_loadedBitmap = bmp
-		_currentBitmap = _loadedBitmap
-		addChild(_currentBitmap)
-		dispatchEvent(event)
-	}
+	//-------------------------------------------------------------------------
+	//
+	//	Public methods
+	//
+	//-------------------------------------------------------------------------
 			
 	public function resizeBitmapTo(w:Number, h:Number, 
 								   transparent:Boolean = false):void
@@ -77,6 +100,42 @@ public class ImageView extends AbstractView
 		}
 	}
 	
+	public function buildByPageID(pageID:int):void
+	{
+		var modelFactory:ModelFactory = new ModelFactory
+		var modelReqeust:ModelRequest = modelFactory.load(Image,
+			xmlPath+pageID,ModelFactory.TYPE_MODEL)
+		modelReqeust.addEventListener(ResultEvent.DATA_LOADED,
+										modelRequest_dataLoadedHandler)
+	}
+	
+	//-------------------------------------------------------------------------
+	//
+	//	Event handlers
+	//
+	//-------------------------------------------------------------------------
+	
+	private function _loader_onCompleteHandler(event:Event):void
+	{
+		var bmp:Bitmap = Bitmap(_loader.content)
+		_loadedBitmap = bmp
+		_currentBitmap = _loadedBitmap
+		addChild(_currentBitmap)
+		dispatchEvent(event)
+	}
+	
+	private function modelRequest_dataLoadedHandler(event:ResultEvent):void
+	{
+		var image:Image = event.model as Image
+		model = image
+		build()
+	}
+	
+	//-------------------------------------------------------------------------
+	//
+	//	Properties
+	//
+	//-------------------------------------------------------------------------
 	
 	public function get loadedBitmap():Bitmap
 	{
