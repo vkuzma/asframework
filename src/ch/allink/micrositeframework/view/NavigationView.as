@@ -132,7 +132,7 @@ public class NavigationView extends AbstractView
 		stage.removeEventListener(MouseEvent.MOUSE_MOVE, stage_MouseMoveHandler)
 	}
 	
-	private function bubbleEvent(event:Event):void
+	private function bubbleEvent(event:NavigationViewEvent):void
 	{
 		dispatchEvent(event)
 	}

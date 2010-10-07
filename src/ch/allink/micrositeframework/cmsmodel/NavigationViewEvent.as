@@ -18,5 +18,11 @@ public class NavigationViewEvent extends Event
 		this.navigationView = navigationView
 		
 	}
+	
+	public override function clone():Event
+	{
+		return new NavigationViewEvent(type, bubbles, cancelable, 
+			navigationView)
+	}
 }
 }

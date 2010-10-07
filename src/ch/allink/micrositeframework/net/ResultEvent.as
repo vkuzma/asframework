@@ -27,6 +27,12 @@ package ch.allink.micrositeframework.net
 			_modelRequest = modelRequest
 		}
 		
+		public override function clone():Event
+		{
+			return new ResultEvent(type, bubbles, cancelable, _modelRequest,
+					_collection, _abstractModel)
+		}
+		
 		public function get collection():Vector.<AbstractModel>
 		{
 			return _collection

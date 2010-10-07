@@ -142,7 +142,8 @@ public class NavigationViewService extends EventDispatcher
 	
 	private function navigationView_clickHandler(event:MouseEvent):void
 	{
-		var navigationView:NavigationView = event.currentTarget as NavigationView
+		var navigationView:NavigationView = event.currentTarget as 
+												NavigationView
 		activate(navigationView)
 		pageID = Navigation(navigationView.model).navigationid
 		var bubbleEvent:NavigationViewEvent = new NavigationViewEvent(
@@ -167,7 +168,8 @@ public class NavigationViewService extends EventDispatcher
 		activate(null)	
 	}
 	
-	private function navigationView_subNavigationClicked(event:Event):void
+	private function navigationView_subNavigationClicked(
+		event:NavigationViewEvent):void
 	{
 		var navigationView:NavigationView = event.target as NavigationView
 		var navigationViewService:NavigationViewService = navigationView.

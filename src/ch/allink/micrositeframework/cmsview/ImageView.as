@@ -32,7 +32,8 @@ public class ImageView extends AbstractView
 	//-------------------------------------------------------------------------
 	
 	public var _imageOptions:ImageOptions
-	private var _loader:Loader
+	public var isLoading:Boolean
+	public var loader:Loader
 	private var _loadedBitmap:Bitmap
 	private var _currentBitmap:Bitmap
 	
@@ -45,6 +46,7 @@ public class ImageView extends AbstractView
 	{
 		model = image
 		super()
+		isLoading = false
 	}
 	
 	//-------------------------------------------------------------------------
@@ -56,11 +58,11 @@ public class ImageView extends AbstractView
 	public override function build():void
 	{
 		var urlRequest:URLRequest = new URLRequest(fileURL)
-		_loader = new Loader()
-		_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, 
+		loader = new Loader()
+		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, 
 			_loader_onCompleteHandler)
-		_loader.load(urlRequest)
-		
+		loader.load(urlRequest)
+		isLoading = true
 	}
 	
 	//-------------------------------------------------------------------------
@@ -117,7 +119,8 @@ public class ImageView extends AbstractView
 	
 	private function _loader_onCompleteHandler(event:Event):void
 	{
-		var bmp:Bitmap = Bitmap(_loader.content)
+		isLoading = false
+		var bmp:Bitmap = Bitmap(loader.content)
 		_loadedBitmap = bmp
 		_currentBitmap = _loadedBitmap
 		addChild(_currentBitmap)
@@ -160,8 +163,6 @@ public class ImageView extends AbstractView
 		var image:Image = Image(model)
 		return imageOptions.basePath+image.uniqueid+"_"+image.width
 			+imageOptions.option1+".jpg"
-		
 	}
-	
 }
 }
