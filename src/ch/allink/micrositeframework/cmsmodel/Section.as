@@ -18,12 +18,13 @@ package ch.allink.micrositeframework.cmsmodel
 			super();
 		}
 		
-		public function set files(values:Array):void
+		public function set files(values:*):void
 		{
-			_files = fillCollection(Image, values);
+			if(values != '')
+				_files = fillCollection(Image, values);
 		}
 		
-		public function get files():Array
+		public function get files():*
 		{
 			return _files
 		}

@@ -6,7 +6,7 @@ public class SectionView extends AbstractView
 {
 	public function SectionView()
 	{
-		super();
+		super()
 	}
 }
 }
