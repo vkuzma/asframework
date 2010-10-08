@@ -130,9 +130,15 @@ public class NavigationViewService extends EventDispatcher
 		}
 	}
 	
-//	public function openAnimation()
+	public function openAnimation():void
+	{
 		
-//	public function closeAnimation()
+	}
+		
+	public function closeAnimation():void
+	{
+		
+	}
 	
 	//-------------------------------------------------------------------------
 	//
@@ -146,15 +152,22 @@ public class NavigationViewService extends EventDispatcher
 												NavigationView
 		activate(navigationView)
 		pageID = Navigation(navigationView.model).navigationid
+			
+		//Deaktiviert Unternavigationen
+		if(navigationView.navigationService != null)
+			navigationView.navigationService.activate(null)
+			
 		var bubbleEvent:NavigationViewEvent = new NavigationViewEvent(
 			NavigationViewEvent.NAVIGATION_CLICK, false, false, navigationView)
 		dispatchEvent(bubbleEvent)
+		
 	}
 	
 	private function navigationView_activatedHandler(event:Event):void
 	{
 		if(_parentNavigationView)
 			_parentNavigationView.requestActivate()
+				
 	}
 	
 	public function navigationView_requestActivatedHandler(event:Event):void
@@ -166,6 +179,12 @@ public class NavigationViewService extends EventDispatcher
 	private function parentNavigationV_deactivateHandler(event:Event):void
 	{
 		activate(null)	
+		closeAnimation()
+	}
+	
+	private function parentNavigationV_activateHandler(event:Event):void
+	{
+		openAnimation()
 	}
 	
 	private function navigationView_subNavigationClicked(
@@ -177,6 +196,7 @@ public class NavigationViewService extends EventDispatcher
 		pageID = navigationViewService.pageID
 		dispatchEvent(event)
 	}
+	
 	
 	//-------------------------------------------------------------------------
 	//
@@ -217,6 +237,8 @@ public class NavigationViewService extends EventDispatcher
 		_parentNavigationView = value
 		_parentNavigationView.addEventListener(NavigationView.DEACTIVATED,
 										    parentNavigationV_deactivateHandler)
+		_parentNavigationView.addEventListener(NavigationView.ACTIVATED,
+										    parentNavigationV_activateHandler)
 	}
 	
 	public function get parentNavigationView():NavigationView

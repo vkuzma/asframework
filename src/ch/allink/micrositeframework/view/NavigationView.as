@@ -10,6 +10,7 @@ import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.text.TextField;
 import flash.text.TextFieldAutoSize;
+import flash.text.TextFormat;
 
 /** 
  * Darstellung eines Navigationselement
@@ -37,10 +38,10 @@ public class NavigationView extends AbstractView
 
 	public var activeColor:uint
 	public var rollOverColor:uint
-	
 	public var textField:TextField
-	
 	public var tweeningTime:Number
+	public var _textFormat:TextFormat
+	
 		
 	//-------------------------------------------------------------------------
 	//
@@ -52,6 +53,7 @@ public class NavigationView extends AbstractView
 	{
 		model = navigation
 		//init default values	
+		_textFormat = new TextFormat()
 		_active = false
 		_defaultColor = 0x000000
 		rollOverColor = 0x000000
@@ -61,11 +63,8 @@ public class NavigationView extends AbstractView
 		
 		textField = new TextField()
 		this.addChild(textField)
-		textField.selectable = false
-		textField.text = navigation.title
-		textField.textColor = defaultColor
-		textField.autoSize = TextFieldAutoSize.LEFT
-			
+		navigationText = navigation.title
+		
 		this.addEventListener(MouseEvent.ROLL_OVER, rollOverHandler)
 		this.addEventListener(MouseEvent.ROLL_OUT, rollOutHandler)
 	}
@@ -222,21 +221,35 @@ public class NavigationView extends AbstractView
 	}
 	
 	//---------------------------------
-	// TextField text
+	// TextField
 	//---------------------------------
 	
 	public function set navigationText(value:String):void
 	{
 		textField.text = value
-		textField.embedFonts = true
+		textField.textColor = defaultColor
+		textField.setTextFormat(_textFormat)
+		textField.selectable = false
 		textField.autoSize = TextFieldAutoSize.LEFT
 		textField.multiline = false
 		textField.wordWrap = false
+		textField.embedFonts = true
 	}
 	
 	public function get navigationText():String
 	{
 		return textField.text
+	}
+	
+	public function set textFormat(value:TextFormat):void
+	{
+		_textFormat = value
+		navigationText = textField.text
+	}
+	
+	public function get textFormat():TextFormat
+	{
+		return _textFormat
 	}
 }
 }

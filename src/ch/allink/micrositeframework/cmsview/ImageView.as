@@ -67,46 +67,82 @@ public class ImageView extends AbstractView
 	
 	//-------------------------------------------------------------------------
 	//
+	//	Private methods
+	//
+	//-------------------------------------------------------------------------
+	
+	private function draw(scaleX:Number, scaleY:Number, 
+						  sourceHeight:Number, sourceWidth:Number,
+						  transparent:Boolean = false):void
+	{
+		removeChild(_currentBitmap)
+		if(_currentBitmap != _loadedBitmap)
+			_currentBitmap.bitmapData.dispose()
+		
+		
+		_currentBitmap = null
+		var bmpData:BitmapData = new BitmapData(sourceWidth, sourceHeight,
+			transparent, 0xFFFFFF);
+		var m:Matrix = new Matrix();
+		m.scale(scaleX, scaleY);
+		_loadedBitmap.smoothing = true;
+		bmpData.draw(_loadedBitmap, m, null, null, null, false);
+		_loadedBitmap.smoothing = false;
+		_currentBitmap = new Bitmap(bmpData);
+		addChild(_currentBitmap);
+		
+	}
+	
+	//-------------------------------------------------------------------------
+	//
 	//	Public methods
 	//
 	//-------------------------------------------------------------------------
 			
-	public function resizeBitmapTo(w:Number, h:Number, 
+	public function resizeBitmapTo(sourceWidth:Number, sourceHeigth:Number, 
 								   transparent:Boolean = false):void
 	{
 		if(!_loadedBitmap)
-		{
 			return
-		}
 		
-		if (_loadedBitmap.width == w && _loadedBitmap.height == h)
-		{
+		if (_loadedBitmap.width == sourceWidth && _loadedBitmap.height == sourceHeigth)
 			return
-		}
 		
 		if(contains(_currentBitmap))
 		{
-			removeChild(_currentBitmap)
-			if(_currentBitmap != _loadedBitmap)
-				_currentBitmap.bitmapData.dispose()
-			_currentBitmap = null
-			var bmpData:BitmapData = new BitmapData(w, h, 
-				transparent, 0xFFFFFF);
-			var m:Matrix = new Matrix();
-			m.scale(w / _loadedBitmap.width, h / _loadedBitmap.height);
-			_loadedBitmap.smoothing = true;
-			bmpData.draw(_loadedBitmap, m, null, null, null, true);
-			_loadedBitmap.smoothing = false;
-			_currentBitmap = new Bitmap(bmpData);
-			addChild(_currentBitmap);
+			draw(sourceWidth / _loadedBitmap.width, 
+				sourceHeigth / _loadedBitmap.height, sourceHeigth, sourceWidth)
 		}
 	}
 	
-	public function buildByPageID(pageID:int):void
+	public function resizeBitmapAspectRatioTo(sourceWidth:Number, 
+											  sourceHeight:Number, 
+								   			  transparent:Boolean = false):void
+	{
+		if(!_loadedBitmap)
+			return
+		
+		if (_loadedBitmap.width == sourceWidth && _loadedBitmap.height == sourceHeight)
+			return
+		
+		if(contains(_currentBitmap))
+		{
+			var targetScale:Number = sourceWidth / _loadedBitmap.width
+			var heightInFuture:Number = targetScale * _loadedBitmap.height
+			if(heightInFuture < sourceHeight)
+				targetScale =  sourceHeight / _loadedBitmap.height 
+			
+			draw(targetScale, targetScale, sourceHeight, sourceWidth)
+		}
+	}
+	
+	
+	
+	public function buildByFileID(fileID:int):void
 	{
 		var modelFactory:ModelFactory = new ModelFactory
 		var modelReqeust:ModelRequest = modelFactory.load(Image,
-			xmlPath+pageID,ModelFactory.TYPE_MODEL)
+			xmlPath+fileID,ModelFactory.TYPE_MODEL)
 		modelReqeust.addEventListener(ResultEvent.DATA_LOADED,
 										modelRequest_dataLoadedHandler)
 	}

@@ -32,6 +32,7 @@ public class Navigation extends AllinkCMSBaseModel
 	public function Navigation()
 	{
 		super()
+		_children = new Vector.<Navigation>
 	}
 	
 	//-------------------------------------------------------------------------
