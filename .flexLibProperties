@@ -8,6 +8,8 @@
     <classEntry path="ch.allink.micrositeframework.util.Translator"/>
     <classEntry path="ch.allink.micrositeframework.view.ImageView"/>
     <classEntry path="ch.allink.micrositeframework.cmsmodel.NavigationViewEvent"/>
+    <classEntry path="ch.allink.micrositeframework.cmsview.PageView"/>
+    <classEntry path="ch.allink.micrositeframework.cmsview.SectionView"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
