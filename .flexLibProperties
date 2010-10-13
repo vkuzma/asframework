@@ -10,6 +10,7 @@
     <classEntry path="ch.allink.micrositeframework.cmsmodel.NavigationViewEvent"/>
     <classEntry path="ch.allink.micrositeframework.cmsview.PageView"/>
     <classEntry path="ch.allink.micrositeframework.cmsview.SectionView"/>
+    <classEntry path="ch.allink.micrositeframework.cmsmodel.DisplayFormatter"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

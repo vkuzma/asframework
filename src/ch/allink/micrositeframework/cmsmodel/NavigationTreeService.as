@@ -36,15 +36,14 @@ public class NavigationTreeService
 	
 	public function build(collection:Vector.<Navigation>):void
 	{
-		var navigation:Navigation
 		languages = []
-		for each (navigation in collection)
+		for each (var navigation:Navigation in collection)
 		{
+			
 			var langID:Number = navigation.languageid
 			if (!languages[langID])
 				languages[langID] = new Vector.<Navigation>
 		}
-		
 		for each (navigation in collection)
 		{	
 			languages[navigation.languageid].push(navigation)

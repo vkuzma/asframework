@@ -33,7 +33,7 @@ public class Page extends AllinkCMSBaseModel
 	//
 	//-------------------------------------------------------------------------
 	
-	public var _sections:Array
+	private var _sections:Array
 	public function set sections(values:Array):void
 	{
 		_sections = fillCollection(Section, values)

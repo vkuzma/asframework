@@ -11,6 +11,7 @@ import flash.display.BitmapData;
 import flash.display.Loader;
 import flash.events.Event;
 import flash.geom.Matrix;
+import flash.media.Video;
 import flash.net.URLRequest;
 
 import org.osmf.media.MediaFactory;
@@ -55,7 +56,7 @@ public class ImageView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	public override function build():void
+	final public override function build():void
 	{
 		var urlRequest:URLRequest = new URLRequest(fileURL)
 		loader = new Loader()
@@ -83,10 +84,10 @@ public class ImageView extends AbstractView
 		_currentBitmap = null
 		var bmpData:BitmapData = new BitmapData(sourceWidth, sourceHeight,
 			transparent, 0xFFFFFF);
-		var m:Matrix = new Matrix();
-		m.scale(scaleX, scaleY);
+		var matrix:Matrix = new Matrix();
+		matrix.scale(scaleX, scaleY);
 		_loadedBitmap.smoothing = true;
-		bmpData.draw(_loadedBitmap, m, null, null, null, false);
+		bmpData.draw(_loadedBitmap, matrix, null, null, null, false);
 		_loadedBitmap.smoothing = false;
 		_currentBitmap = new Bitmap(bmpData);
 		addChild(_currentBitmap);
@@ -147,6 +148,13 @@ public class ImageView extends AbstractView
 										modelRequest_dataLoadedHandler)
 	}
 	
+	public function attachBitmap(bitmap:Bitmap):void
+	{
+		_loadedBitmap = bitmap
+		_currentBitmap = bitmap
+		addChild(_currentBitmap)
+	}
+	
 	//-------------------------------------------------------------------------
 	//
 	//	Event handlers
@@ -156,7 +164,7 @@ public class ImageView extends AbstractView
 	private function _loader_onCompleteHandler(event:Event):void
 	{
 		isLoading = false
-		var bmp:Bitmap = Bitmap(loader.content)
+		var bmp:Bitmap = event.target.content as Bitmap
 		_loadedBitmap = bmp
 		_currentBitmap = _loadedBitmap
 		addChild(_currentBitmap)

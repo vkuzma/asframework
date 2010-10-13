@@ -51,16 +51,17 @@ public class NavigationViewService extends EventDispatcher
 		
 		for each(var navigation:Navigation in navigations)
 		{
-			if(navigation.navigationid == id)	
+			if(navigation.indexPageID == id)	
 			{
 				targetNavigation = navigation
 				break
 			}
-			else if(navigation.children != null)
+			else if(navigation.children)
 			{
 				targetNavigation = navigationForIDInNavigations(id, 
 														   navigation.children)
-				break
+				if(targetNavigation)
+					break
 			}
 			else
 			{
@@ -77,18 +78,19 @@ public class NavigationViewService extends EventDispatcher
 		
 		for each(var navigationView:NavigationView in navigationViews)
 		{
-			var navigation:Navigation = navigationView.model as Navigation
-			if(navigation.children)
-			{
-				targetNavigation = navigationForIDInNavigations(id, 
-															navigation.children)
-				break
-			}	
-			else if(navigation.navigationid == id)
+			var navigation:Navigation = navigationView.navigation
+			if(navigation.indexPageID == id)
 			{
 				targetNavigation = navigation
 				break
 			}
+			 else if(navigation.children)
+			{
+				targetNavigation = navigationForIDInNavigations(id, 
+															navigation.children)
+				if(targetNavigation)
+					break
+			}	
 			else
 			{
 				targetNavigation = null	
@@ -105,19 +107,19 @@ public class NavigationViewService extends EventDispatcher
 	
 	public function navigationByPageID(id:int):Navigation
 	{
-//		Könnte auch eine statische Methode sein
 		var targetNavigation:Navigation
 		if(navigations)
 			targetNavigation = navigationForIDInNavigations(id, navigations)
-		else if(navigationViews)
+		else if(_navigationViews)
 			targetNavigation = navigationForIDInNavigationViews(id, 
-																navigationViews)
+															_navigationViews)
 		else
 			targetNavigation = null
 				
 			
 		return targetNavigation
 	}
+	
 	
 	public function activate(activatedNavigationView:NavigationView):void
 	{
@@ -151,7 +153,7 @@ public class NavigationViewService extends EventDispatcher
 		var navigationView:NavigationView = event.currentTarget as 
 												NavigationView
 		activate(navigationView)
-		pageID = Navigation(navigationView.model).navigationid
+		pageID = navigationView.navigation.navigationid
 			
 		//Deaktiviert Unternavigationen
 		if(navigationView.navigationService != null)

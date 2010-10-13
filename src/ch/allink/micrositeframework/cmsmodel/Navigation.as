@@ -18,6 +18,8 @@ public class Navigation extends AllinkCMSBaseModel
 	public var indexpageformats:String = ""
 	public var title:String = ""
 	public var format:String = ""
+	private var _pages:String
+	public var indexPageID:int
 
 	
 	public static var languages:Array
@@ -46,16 +48,17 @@ public class Navigation extends AllinkCMSBaseModel
 		_children.push(navigation)
 	}
 	
+	
 	//-------------------------------------------------------------------------
 	//
 	//	Properties
 	//
 	//-------------------------------------------------------------------------
 	
-	private var _pages:String
 	public function set pages(value:String):void
 	{
 		_pages = value
+		indexPageID = _pages.split(',')[0]
 	}
 	
 	public function get pages():String	
