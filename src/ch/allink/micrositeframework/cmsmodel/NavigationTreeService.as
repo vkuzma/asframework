@@ -28,6 +28,51 @@ public class NavigationTreeService
 	//
 	//-------------------------------------------------------------------------
 	
+	private function navigationByPageIDInNavigations(id:int, 
+							navigations:Vector.<Navigation> = null):Navigation
+	{
+		var targetNavigation:Navigation
+		for each(var navigation:Navigation in navigations)
+		{
+			if(navigation.indexPageID == id)	
+			{
+				targetNavigation = navigation
+				break
+			}
+			else if(navigation.children)
+			{
+				targetNavigation = navigationByPageIDInNavigations(id,
+					navigation.children)
+				if(targetNavigation)
+					break
+			}
+		}
+		return targetNavigation
+	}
+	
+	private function firstNavigationByFormat(format:String, 
+											 navigations:Vector.<Navigation>):Navigation
+	{
+		var targetNavigation:Navigation
+		
+		for each(var navigation:Navigation in navigations)
+		{
+			if(navigation.format == format)	
+			{
+				targetNavigation = navigation
+				break
+			}
+			else if(navigation.children)
+			{
+				targetNavigation = firstNavigationByFormat(format, 
+					navigation.children)
+				if(targetNavigation)
+					break
+			}
+		}
+		return targetNavigation
+	}
+	
 	//-------------------------------------------------------------------------
 	//
 	//	Public methods
@@ -72,53 +117,18 @@ public class NavigationTreeService
 		return navigationsNew
 	}
 	
-	private function navigationByPageID(id:int, 
-									navigations:Vector.<Navigation>) :Navigation
+	//Gibt einen Referenz auf die gesuchte Navigation
+	public function navigationByPageID(indexPageID:int)
+		:Navigation
 	{
 		var targetNavigation:Navigation
-		
-		for each(var navigation:Navigation in navigations)
+		var numlanguages:int = languages.length
+		for(var i:int; i < numlanguages; i++)
 		{
-			if(navigation.navigationid == id)	
-			{
-				targetNavigation = navigation
+			targetNavigation = navigationByPageIDInNavigations(indexPageID,
+				languages[i] as Vector.<Navigation>)
+			if(targetNavigation)
 				break
-			}
-			else if(navigation.children != null)
-			{
-				targetNavigation = navigationByPageID(id, navigation.children)
-				break
-			}
-			else
-			{
-				targetNavigation = null
-			}
-		}
-		return targetNavigation
-	}
-	
-	private function firstNavigationByFormat(format:String, 
-								navigations:Vector.<Navigation>):Navigation
-	{
-		var targetNavigation:Navigation
-		
-		for each(var navigation:Navigation in navigations)
-		{
-			if(navigation.format == format)	
-			{
-				targetNavigation = navigation
-				break
-			}
-			else if(navigation.children != null)
-			{
-				targetNavigation = firstNavigationByFormat(format, 
-														    navigation.children)
-				break
-			}
-			else
-			{
-				targetNavigation = null
-			}
 		}
 		return targetNavigation
 	}
