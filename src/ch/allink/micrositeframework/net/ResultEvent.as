@@ -11,7 +11,7 @@ package ch.allink.micrositeframework.net
 		
 		private var _collection:Vector.<AbstractModel>
 		private var _abstractModel:AbstractModel
-		public var _modelRequest:ModelRequest
+		private var _modelRequest:ModelRequest
 		
 		public function ResultEvent(type:String,
 									bubbles:Boolean=false,
@@ -25,6 +25,12 @@ package ch.allink.micrositeframework.net
 			_collection = collection
 			_abstractModel = abstractModel
 			_modelRequest = modelRequest
+		}
+		
+		public override function clone():Event
+		{
+			return new ResultEvent(type, bubbles, cancelable, _modelRequest,
+					_collection, _abstractModel)
 		}
 		
 		public function get collection():Vector.<AbstractModel>

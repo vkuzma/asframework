@@ -8,7 +8,6 @@ public class Navigation extends AllinkCMSBaseModel
 	//
 	//-------------------------------------------------------------------------
 	
-	public var id:int = 0
 	public var navigationid:int = 0
 	public var languageid:int = 0
 	public var parentid:int = 0
@@ -18,6 +17,8 @@ public class Navigation extends AllinkCMSBaseModel
 	public var indexpagetitle:String = ""
 	public var indexpageformats:String = ""
 	public var title:String = ""
+	private var _pages:String
+	public var indexPageID:int
 
 	
 	public static var languages:Array
@@ -32,6 +33,7 @@ public class Navigation extends AllinkCMSBaseModel
 	public function Navigation()
 	{
 		super()
+		_children = new Vector.<Navigation>
 	}
 	
 	//-------------------------------------------------------------------------
@@ -45,16 +47,17 @@ public class Navigation extends AllinkCMSBaseModel
 		_children.push(navigation)
 	}
 	
+	
 	//-------------------------------------------------------------------------
 	//
 	//	Properties
 	//
 	//-------------------------------------------------------------------------
 	
-	private var _pages:String
 	public function set pages(value:String):void
 	{
 		_pages = value
+		indexPageID = _pages.split(',')[0]
 	}
 	
 	public function get pages():String	

@@ -1,6 +1,11 @@
 package ch.allink.micrositeframework.cmsview
 {
+import caurina.transitions.Tweener;
+
 import ch.allink.micrositeframework.cmsmodel.Image;
+import ch.allink.micrositeframework.net.ModelFactory;
+import ch.allink.micrositeframework.net.ModelRequest;
+import ch.allink.micrositeframework.net.ResultEvent;
 import ch.allink.micrositeframework.view.AbstractView;
 
 import flash.display.Bitmap;
@@ -8,74 +13,200 @@ import flash.display.BitmapData;
 import flash.display.Loader;
 import flash.events.Event;
 import flash.geom.Matrix;
+import flash.media.Video;
 import flash.net.URLRequest;
 
-import mx.events.Request;
-
-import org.osmf.events.LoaderEvent;
+import org.osmf.media.MediaFactory;
 
 public class ImageView extends AbstractView
 {
+	//-------------------------------------------------------------------------
+	//
+	//	Constants
+	//
+	//-------------------------------------------------------------------------
+	
+	private const xmlPath:String = "./?do=xml&mode=resource&fileID="
+		
+	//-------------------------------------------------------------------------
+	//
+	//	Variables
+	//
+	//-------------------------------------------------------------------------
+	
 	public var _imageOptions:ImageOptions
-	private var _loader:Loader
+	public var isLoading:Boolean
+	public var loader:Loader
+	public var image:Image
+	private var _enableBlendIn:Boolean
 	private var _loadedBitmap:Bitmap
 	private var _currentBitmap:Bitmap
 	
-	public function ImageView()
+	//-------------------------------------------------------------------------
+	//
+	//	Constructor
+	//
+	//-------------------------------------------------------------------------
+	public function ImageView(image:Image=null)
 	{
-		super();
+		model = image
+		this.image = image
+		super()
+		isLoading = false
+
+		enableBlendIn = false
 	}
 	
-	public override function build():void
+	//-------------------------------------------------------------------------
+	//
+	//	Overriden methods
+	//
+	//-------------------------------------------------------------------------
+	
+	final public override function build():void
 	{
 		var urlRequest:URLRequest = new URLRequest(fileURL)
-		_loader = new Loader()
-		_loader.contentLoaderInfo.addEventListener(Event.COMPLETE, 
+		loader = new Loader()
+		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, 
 			_loader_onCompleteHandler)
-		_loader.load(urlRequest)
+		loader.load(urlRequest)
+		isLoading = true
+	}
+	
+	public override function dispose():void
+	{
 		
 	}
 	
-	private function _loader_onCompleteHandler(event:Event):void
+	//-------------------------------------------------------------------------
+	//
+	//	Private methods
+	//
+	//-------------------------------------------------------------------------
+	
+	private function draw(scaleX:Number, scaleY:Number, 
+						  sourceHeight:Number, sourceWidth:Number,
+						  transparent:Boolean = false):void
 	{
-		var bmp:Bitmap = Bitmap(_loader.content)
-		_loadedBitmap = bmp
-		_currentBitmap = _loadedBitmap
-		addChild(_currentBitmap)
-		dispatchEvent(event)
+		removeChild(_currentBitmap)
+		if(_currentBitmap != _loadedBitmap)
+			_currentBitmap.bitmapData.dispose()
+		
+		
+		_currentBitmap = null
+		var bmpData:BitmapData = new BitmapData(sourceWidth, sourceHeight,
+			transparent, 0xFFFFFF);
+		var matrix:Matrix = new Matrix();
+		matrix.scale(scaleX, scaleY);
+		_loadedBitmap.smoothing = true;
+		bmpData.draw(_loadedBitmap, matrix, null, null, null, false);
+		_loadedBitmap.smoothing = false;
+		_currentBitmap = new Bitmap(bmpData);
+		addChild(_currentBitmap);
+		
 	}
+	
+	//-------------------------------------------------------------------------
+	//
+	//	Public methods
+	//
+	//-------------------------------------------------------------------------
 			
-	public function resizeBitmapTo(w:Number, h:Number, 
+	public function resizeBitmapTo(sourceWidth:Number, sourceHeigth:Number, 
 								   transparent:Boolean = false):void
 	{
 		if(!_loadedBitmap)
-		{
 			return
-		}
 		
-		if (_loadedBitmap.width == w && _loadedBitmap.height == h)
-		{
+		if (_loadedBitmap.width == sourceWidth && _loadedBitmap.height == sourceHeigth)
 			return
-		}
 		
 		if(contains(_currentBitmap))
 		{
-			removeChild(_currentBitmap)
-			if(_currentBitmap != _loadedBitmap)
-				_currentBitmap.bitmapData.dispose()
-			_currentBitmap = null
-			var bmpData:BitmapData = new BitmapData(w, h, 
-				transparent, 0xFFFFFF);
-			var m:Matrix = new Matrix();
-			m.scale(w / _loadedBitmap.width, h / _loadedBitmap.height);
-			_loadedBitmap.smoothing = true;
-			bmpData.draw(_loadedBitmap, m, null, null, null, true);
-			_loadedBitmap.smoothing = false;
-			_currentBitmap = new Bitmap(bmpData);
-			addChild(_currentBitmap);
+			draw(sourceWidth / _loadedBitmap.width, 
+				sourceHeigth / _loadedBitmap.height, sourceHeigth, sourceWidth)
 		}
 	}
 	
+	public function resizeBitmapAspectRatioTo(sourceWidth:Number, 
+											  sourceHeight:Number, 
+								   			  transparent:Boolean = false):void
+	{
+		if(!_loadedBitmap)
+			return
+		
+		if (_loadedBitmap.width == sourceWidth && _loadedBitmap.height == sourceHeight)
+			return
+		
+		if(contains(_currentBitmap))
+		{
+			var targetScale:Number = sourceWidth / _loadedBitmap.width
+			var heightInFuture:Number = targetScale * _loadedBitmap.height
+			if(heightInFuture < sourceHeight)
+				targetScale =  sourceHeight / _loadedBitmap.height 
+			
+			draw(targetScale, targetScale, sourceHeight, sourceWidth)
+		}
+	}
+	
+	
+	
+	public function buildByFileID(fileID:int):void
+	{
+		var modelFactory:ModelFactory = new ModelFactory
+		var modelReqeust:ModelRequest = modelFactory.load(Image,
+			xmlPath+fileID,ModelFactory.TYPE_MODEL)
+		modelReqeust.addEventListener(ResultEvent.DATA_LOADED,
+										modelRequest_dataLoadedHandler)
+	}
+	
+	public function attachBitmap(bitmap:Bitmap):void
+	{
+		_loadedBitmap = bitmap
+		_currentBitmap = bitmap
+		addChild(_currentBitmap)
+	}
+	
+	public function blendIn():void
+	{
+		Tweener.addTween(this,
+			{
+				time: 2,
+				_autoAlpha: 1
+			})
+	}
+	
+	//-------------------------------------------------------------------------
+	//
+	//	Event handlers
+	//
+	//-------------------------------------------------------------------------
+	
+	private function _loader_onCompleteHandler(event:Event):void
+	{
+		isLoading = false
+		var bmp:Bitmap = event.target.content as Bitmap
+		_loadedBitmap = bmp
+		_currentBitmap = _loadedBitmap
+		addChild(_currentBitmap)
+		if(_enableBlendIn)
+			blendIn()
+		dispatchEvent(event)
+	}
+	
+	private function modelRequest_dataLoadedHandler(event:ResultEvent):void
+	{
+		var image:Image = event.model as Image
+		model = image
+		this.image = image
+		build()
+	}
+	
+	//-------------------------------------------------------------------------
+	//
+	//	Properties
+	//
+	//-------------------------------------------------------------------------
 	
 	public function get loadedBitmap():Bitmap
 	{
@@ -100,8 +231,26 @@ public class ImageView extends AbstractView
 		var image:Image = Image(model)
 		return imageOptions.basePath+image.uniqueid+"_"+image.width
 			+imageOptions.option1+".jpg"
-		
 	}
 	
+	public function set enableBlendIn(value:Boolean):void
+	{
+		_enableBlendIn = value
+		if(value)
+		{
+			this.alpha = 0
+			this.visible = false
+		}
+		else
+		{
+			this.alpha = 1
+			this.visible = true
+		}
+	}
+	
+	public function get enableBlendIn():Boolean
+	{
+		return _enableBlendIn
+	}
 }
 }
