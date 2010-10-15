@@ -1,5 +1,7 @@
 package ch.allink.micrositeframework.cmsview
 {
+import caurina.transitions.Tweener;
+
 import ch.allink.micrositeframework.cmsmodel.Image;
 import ch.allink.micrositeframework.net.ModelFactory;
 import ch.allink.micrositeframework.net.ModelRequest;
@@ -35,6 +37,8 @@ public class ImageView extends AbstractView
 	public var _imageOptions:ImageOptions
 	public var isLoading:Boolean
 	public var loader:Loader
+	public var image:Image
+	private var _enableBlendIn:Boolean
 	private var _loadedBitmap:Bitmap
 	private var _currentBitmap:Bitmap
 	
@@ -46,8 +50,11 @@ public class ImageView extends AbstractView
 	public function ImageView(image:Image=null)
 	{
 		model = image
+		this.image = image
 		super()
 		isLoading = false
+
+		enableBlendIn = false
 	}
 	
 	//-------------------------------------------------------------------------
@@ -64,6 +71,11 @@ public class ImageView extends AbstractView
 			_loader_onCompleteHandler)
 		loader.load(urlRequest)
 		isLoading = true
+	}
+	
+	public override function dispose():void
+	{
+		
 	}
 	
 	//-------------------------------------------------------------------------
@@ -155,6 +167,15 @@ public class ImageView extends AbstractView
 		addChild(_currentBitmap)
 	}
 	
+	public function blendIn():void
+	{
+		Tweener.addTween(this,
+			{
+				time: 2,
+				_autoAlpha: 1
+			})
+	}
+	
 	//-------------------------------------------------------------------------
 	//
 	//	Event handlers
@@ -168,6 +189,8 @@ public class ImageView extends AbstractView
 		_loadedBitmap = bmp
 		_currentBitmap = _loadedBitmap
 		addChild(_currentBitmap)
+		if(_enableBlendIn)
+			blendIn()
 		dispatchEvent(event)
 	}
 	
@@ -175,6 +198,7 @@ public class ImageView extends AbstractView
 	{
 		var image:Image = event.model as Image
 		model = image
+		this.image = image
 		build()
 	}
 	
@@ -207,6 +231,26 @@ public class ImageView extends AbstractView
 		var image:Image = Image(model)
 		return imageOptions.basePath+image.uniqueid+"_"+image.width
 			+imageOptions.option1+".jpg"
+	}
+	
+	public function set enableBlendIn(value:Boolean):void
+	{
+		_enableBlendIn = value
+		if(value)
+		{
+			this.alpha = 0
+			this.visible = false
+		}
+		else
+		{
+			this.alpha = 1
+			this.visible = true
+		}
+	}
+	
+	public function get enableBlendIn():Boolean
+	{
+		return _enableBlendIn
 	}
 }
 }

@@ -34,7 +34,7 @@ public class PageView extends AbstractView
 	
 	private var sectionViews:Vector.<SectionView>
 	private var sections:Array
-	private var page:Page
+	public var page:Page
 	private var _displayFormatter:DisplayFormatter
 	
 	//-------------------------------------------------------------------------
@@ -79,14 +79,17 @@ public class PageView extends AbstractView
 		for each(var section:Section in sections)
 		{
 			var sectionView:SectionView = new SectionView(section)
+			sectionView.enableBlendIn = true
+			sectionView.build()
 			this.addChild(sectionView)
 			sectionView.displayFormatter = displayFormatter
 			formatSectionView(sectionView, prevSectionView)
 			prevSectionView = sectionView
 			sectionViews.push(sectionView)
 			
-			if(section.type == TEXT_IMAGE_LEFT)
-				buildTextImageLeft(sectionView)
+			if(section.type == TEXT_IMAGE_LEFT || section.type == IMAGE)
+				buildImage(sectionView)
+				
 		}
 		return sectionViews
 	}
@@ -120,21 +123,24 @@ public class PageView extends AbstractView
 	{
 		for each(var sectionView:SectionView in sectionViews)
 		{
-			this.removeChild(sectionView)
+			if(this.contains(sectionView))
+				this.removeChild(sectionView)
 			sectionView.dispose()
 			sectionView = null
 		}
 	}
 	
-	private function buildTextImageLeft(sectionView:SectionView):void
+	private function buildImage(sectionView:SectionView):void
 	{
 		var section:Section = sectionView.section
 		var image:Image = section.files[0]
 		var imageView:ImageView = new ImageView(image)
+		imageView.enableBlendIn = true
 		imageView.buildByFileID(image.uniqueid)
 		sectionView.addChild(imageView)
 		formatImageTextLeft(image, sectionView.textField)
 	}
+	
 	
 	private function formatImageTextLeft(image:Image,
 										 textField:TextField):void
@@ -168,6 +174,7 @@ public class PageView extends AbstractView
 	{
 		page = event.model as Page
 		sectionViews = buildSectionViews(page)
+		dispatchEvent(event)
 	}
 	
 	//-------------------------------------------------------------------------

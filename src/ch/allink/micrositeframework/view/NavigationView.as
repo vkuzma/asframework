@@ -28,8 +28,6 @@ public class NavigationView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	public static const ACTIVATED:String = "activated"
-	public static const DEACTIVATED:String = "deActivated"
 	public static const REQUEST_ACTIVATE:String = "requestActivate"
 	
 	//-------------------------------------------------------------------------
@@ -47,6 +45,8 @@ public class NavigationView extends AbstractView
 	
 	public var textFieldConfig:Function
 	public var textFormatConfig:Function
+	public var customRollOutAction:Function
+	public var customRollOverAction:Function
 	
 	private var _textField:TextField
 	private var _textFormat:TextFormat
@@ -65,7 +65,6 @@ public class NavigationView extends AbstractView
 		this.navigation = navigation
 		this.model = navigation
 		build()
-		
 	}
 	
 	//-------------------------------------------------------------------------
@@ -134,7 +133,7 @@ public class NavigationView extends AbstractView
 		
 		//Individuelle Einstellungen setzen
 		if(textFieldConfig != null)
-			_textFormat = textFieldConfig(_textField)
+			_textField = textFieldConfig(_textField)
 		if(textFormatConfig != null)
 			_textFormat = textFormatConfig(_textFormat)
 		_textField.setTextFormat(_textFormat)
@@ -160,11 +159,16 @@ public class NavigationView extends AbstractView
 				time: tweeningTime,
 				_color: rollOverColor
 			})
+			
+		if(customRollOverAction != null)
+			customRollOverAction(event.currentTarget)
 	}
 	
 	public function rollOutHandler(event:MouseEvent):void
 	{
 		reset()
+		if(customRollOutAction != null)
+			customRollOutAction(event.currentTarget)
 	}
 	
 //	private function stage_KeyDownHandler(event:KeyboardEvent):void
@@ -173,7 +177,7 @@ public class NavigationView extends AbstractView
 //			clickHandler(null)
 //	}
 	
-	public function stage_MouseMoveHandler(event:MouseEvent):void
+	private function stage_MouseMoveHandler(event:MouseEvent):void
 	{
 		rollOverHandler(null)
 		stage.removeEventListener(MouseEvent.MOUSE_MOVE, stage_MouseMoveHandler)
@@ -235,20 +239,23 @@ public class NavigationView extends AbstractView
 				
 			})
 			
-		var modelEvent:Event
+		var navViewEvent:NavigationViewEvent
 		if(_active)
 		{
 			//Bedingte Animation zum öffnen der Unternavigation
 			//zB. navigationservice.openAnimation()
-			modelEvent = new Event(ACTIVATED)
+			navViewEvent = new NavigationViewEvent(
+				NavigationViewEvent.ACTIVATED, false, false, this)
+			
 		}
 		else
 		{
 			//Bedingte Animation zum schliessen der Unternavigation
 			//zB. navigationservice.closeAnimation()
-			modelEvent = new Event(DEACTIVATED)
+			navViewEvent = new NavigationViewEvent(
+				NavigationViewEvent.DEACTIVATED, false, false, this)
 		}
-		dispatchEvent(modelEvent)
+		dispatchEvent(navViewEvent)
 	}
 	
 	public function get active():Boolean

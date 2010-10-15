@@ -1,5 +1,7 @@
 package ch.allink.micrositeframework.cmsview
 {
+import caurina.transitions.Tweener;
+
 import ch.allink.micrositeframework.cmsmodel.DisplayFormatter;
 import ch.allink.micrositeframework.cmsmodel.Image;
 import ch.allink.micrositeframework.cmsmodel.Section;
@@ -9,6 +11,7 @@ import flash.events.Event;
 import flash.text.AntiAliasType;
 import flash.text.Font;
 import flash.text.GridFitType;
+import flash.text.StyleSheet;
 import flash.text.TextField;
 import flash.text.TextFieldAutoSize;
 import flash.text.TextFormat;
@@ -33,6 +36,9 @@ public class SectionView extends AbstractView
 
 	public var section:Section
 	private var _displayFormatter:DisplayFormatter
+	private var _enableBlendIn:Boolean
+	
+	
 	
 	//-------------------------------------------------------------------------
 	//
@@ -49,7 +55,7 @@ public class SectionView extends AbstractView
 		this.addChild(textField)
 		_textFormat = new TextFormat()
 		contentText = section.content
-		build()
+		enableBlendIn = false
 	}
 	
 	//-------------------------------------------------------------------------
@@ -60,6 +66,8 @@ public class SectionView extends AbstractView
 	
 	final public override function build():void
 	{
+		if(_enableBlendIn)
+			blendIn()
 		if(section.files != null)
 		{
 			images = section.files
@@ -125,6 +133,15 @@ public class SectionView extends AbstractView
 		}
 	}
 	
+	public function blendIn():void
+	{
+		Tweener.addTween(this,
+			{
+				time: 2,
+				_autoAlpha: 1
+			})
+	}
+	
 	//-------------------------------------------------------------------------
 	//
 	//	Properties
@@ -133,14 +150,16 @@ public class SectionView extends AbstractView
 	
 	public function set contentText(value:String):void
 	{
-		textField.text = value
+		textField.htmlText = value
 		if(_displayFormatter)
 			displayFormatter = _displayFormatter
+		if(_enableBlendIn)
+			blendIn()
 	}
 	
 	public function get contentText():String
 	{
-		return textField.text
+		return textField.htmlText
 	}
 	
 	public function set displayFormatter(value:DisplayFormatter):void
@@ -158,6 +177,26 @@ public class SectionView extends AbstractView
 	public function get textFormat():TextFormat
 	{
 		return _textFormat
+	}
+	
+	public function set enableBlendIn(value:Boolean):void
+	{
+		_enableBlendIn = value
+		if(value)
+		{
+			this.alpha = 0
+			this.visible = false
+		}
+		else
+		{
+			this.alpha = 1
+			this.visible = true
+		}
+	}
+	
+	public function get enableBlendIn():Boolean
+	{
+		return _enableBlendIn
 	}
 }
 }

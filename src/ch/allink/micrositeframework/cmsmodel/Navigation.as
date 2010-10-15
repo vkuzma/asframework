@@ -17,7 +17,6 @@ public class Navigation extends AllinkCMSBaseModel
 	public var indexpagetitle:String = ""
 	public var indexpageformats:String = ""
 	public var title:String = ""
-	public var format:String = ""
 	private var _pages:String
 	public var indexPageID:int
 

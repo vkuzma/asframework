@@ -184,6 +184,12 @@ public class NavigationViewService extends EventDispatcher
 		}
 	}
 	
+	public function reset():void
+	{
+		for each(var navigationView:NavigationView in _navigationViews)
+			navigationView.active = false
+	}
+	
 	public function openAnimation():void
 	{
 		
@@ -217,7 +223,8 @@ public class NavigationViewService extends EventDispatcher
 		
 	}
 	
-	private function navigationView_activatedHandler(event:Event):void
+	private function navigationView_activatedHandler(
+		event:NavigationViewEvent):void
 	{
 		if(_parentNavigationView)
 			_parentNavigationView.requestActivate()
@@ -228,18 +235,17 @@ public class NavigationViewService extends EventDispatcher
 	{
 		var navigationView:NavigationView = event.target as NavigationView
 		activate(navigationView)
-		var bubbleEvent:NavigationViewEvent = new NavigationViewEvent(
-			NavigationViewEvent.NAVIGATION_CLICK, false, false, navigationView)
-		dispatchEvent(bubbleEvent)
 	}
 	
-	private function parentNavigationV_deactivateHandler(event:Event):void
+	private function parentNavigationV_deactivateHandler(
+		event:NavigationViewEvent):void
 	{
 		activate(null)	
 		closeAnimation()
 	}
 	
-	private function parentNavigationV_activateHandler(event:Event):void
+	private function parentNavigationV_activateHandler(
+		event:NavigationViewEvent):void
 	{
 		openAnimation()
 	}
@@ -272,7 +278,7 @@ public class NavigationViewService extends EventDispatcher
 		{
 			navigationView.addEventListener(MouseEvent.CLICK, 
 											navigationView_clickHandler)
-			navigationView.addEventListener(NavigationView.ACTIVATED,
+			navigationView.addEventListener(NavigationViewEvent.ACTIVATED,
 											navigationView_activatedHandler)
 			navigationView.addEventListener(NavigationView.REQUEST_ACTIVATE,
 										navigationView_requestActivatedHandler)
@@ -291,9 +297,9 @@ public class NavigationViewService extends EventDispatcher
 	public function set parentNavigationView(value:NavigationView):void
 	{
 		_parentNavigationView = value
-		_parentNavigationView.addEventListener(NavigationView.DEACTIVATED,
+		_parentNavigationView.addEventListener(NavigationViewEvent.DEACTIVATED,
 										    parentNavigationV_deactivateHandler)
-		_parentNavigationView.addEventListener(NavigationView.ACTIVATED,
+		_parentNavigationView.addEventListener(NavigationViewEvent.ACTIVATED,
 										    parentNavigationV_activateHandler)
 	}
 	

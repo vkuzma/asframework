@@ -50,6 +50,28 @@ public class NavigationTreeService
 		return targetNavigation
 	}
 	
+	private function navigationByNavigationIDInNavigations(id:int, 
+							navigations:Vector.<Navigation> = null):Navigation
+	{
+		var targetNavigation:Navigation
+		for each(var navigation:Navigation in navigations)
+		{
+			if(navigation.navigationid == id)	
+			{
+				targetNavigation = navigation
+				break
+			}
+			else if(navigation.children)
+			{
+				targetNavigation = navigationByNavigationIDInNavigations(id,
+					navigation.children)
+				if(targetNavigation)
+					break
+			}
+		}
+		return targetNavigation
+	}
+	
 	private function firstNavigationByFormat(format:String, 
 											 navigations:Vector.<Navigation>):Navigation
 	{
@@ -57,7 +79,7 @@ public class NavigationTreeService
 		
 		for each(var navigation:Navigation in navigations)
 		{
-			if(navigation.format == format)	
+			if(navigation.indexpageformats == format)	
 			{
 				targetNavigation = navigation
 				break
@@ -127,6 +149,22 @@ public class NavigationTreeService
 		{
 			targetNavigation = navigationByPageIDInNavigations(indexPageID,
 				languages[i] as Vector.<Navigation>)
+			if(targetNavigation)
+				break
+		}
+		return targetNavigation
+	}
+	
+	//Gibt einen Referenz auf die gesuchte Navigation
+	public function navigationByNavigationID(navigationID:int)
+		:Navigation
+	{
+		var targetNavigation:Navigation
+		var numlanguages:int = languages.length
+		for(var i:int; i < numlanguages; i++)
+		{
+			targetNavigation = navigationByNavigationIDInNavigations(
+				navigationID, languages[i] as Vector.<Navigation>)
 			if(targetNavigation)
 				break
 		}
