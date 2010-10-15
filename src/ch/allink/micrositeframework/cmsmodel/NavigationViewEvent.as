@@ -7,6 +7,8 @@ import flash.events.Event;
 public class NavigationViewEvent extends Event
 {
 	public static const NAVIGATION_CLICK:String = "navigationClick"
+	public static const ACTIVATED:String = "activatedd"
+	public static const DEACTIVATED:String = "deActivatedd"
 	
 	public var navigationView:NavigationView
 	

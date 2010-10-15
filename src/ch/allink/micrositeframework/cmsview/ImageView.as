@@ -1,5 +1,7 @@
 package ch.allink.micrositeframework.cmsview
 {
+import caurina.transitions.Tweener;
+
 import ch.allink.micrositeframework.cmsmodel.Image;
 import ch.allink.micrositeframework.net.ModelFactory;
 import ch.allink.micrositeframework.net.ModelRequest;
@@ -11,6 +13,7 @@ import flash.display.BitmapData;
 import flash.display.Loader;
 import flash.events.Event;
 import flash.geom.Matrix;
+import flash.media.Video;
 import flash.net.URLRequest;
 
 import org.osmf.media.MediaFactory;
@@ -34,6 +37,8 @@ public class ImageView extends AbstractView
 	public var _imageOptions:ImageOptions
 	public var isLoading:Boolean
 	public var loader:Loader
+	public var image:Image
+	private var _enableBlendIn:Boolean
 	private var _loadedBitmap:Bitmap
 	private var _currentBitmap:Bitmap
 	
@@ -45,8 +50,11 @@ public class ImageView extends AbstractView
 	public function ImageView(image:Image=null)
 	{
 		model = image
+		this.image = image
 		super()
 		isLoading = false
+
+		enableBlendIn = false
 	}
 	
 	//-------------------------------------------------------------------------
@@ -55,7 +63,7 @@ public class ImageView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	public override function build():void
+	final public override function build():void
 	{
 		var urlRequest:URLRequest = new URLRequest(fileURL)
 		loader = new Loader()
@@ -63,6 +71,11 @@ public class ImageView extends AbstractView
 			_loader_onCompleteHandler)
 		loader.load(urlRequest)
 		isLoading = true
+	}
+	
+	public override function dispose():void
+	{
+		
 	}
 	
 	//-------------------------------------------------------------------------
@@ -83,10 +96,10 @@ public class ImageView extends AbstractView
 		_currentBitmap = null
 		var bmpData:BitmapData = new BitmapData(sourceWidth, sourceHeight,
 			transparent, 0xFFFFFF);
-		var m:Matrix = new Matrix();
-		m.scale(scaleX, scaleY);
+		var matrix:Matrix = new Matrix();
+		matrix.scale(scaleX, scaleY);
 		_loadedBitmap.smoothing = true;
-		bmpData.draw(_loadedBitmap, m, null, null, null, false);
+		bmpData.draw(_loadedBitmap, matrix, null, null, null, false);
 		_loadedBitmap.smoothing = false;
 		_currentBitmap = new Bitmap(bmpData);
 		addChild(_currentBitmap);
@@ -147,6 +160,22 @@ public class ImageView extends AbstractView
 										modelRequest_dataLoadedHandler)
 	}
 	
+	public function attachBitmap(bitmap:Bitmap):void
+	{
+		_loadedBitmap = bitmap
+		_currentBitmap = bitmap
+		addChild(_currentBitmap)
+	}
+	
+	public function blendIn():void
+	{
+		Tweener.addTween(this,
+			{
+				time: 2,
+				_autoAlpha: 1
+			})
+	}
+	
 	//-------------------------------------------------------------------------
 	//
 	//	Event handlers
@@ -156,10 +185,12 @@ public class ImageView extends AbstractView
 	private function _loader_onCompleteHandler(event:Event):void
 	{
 		isLoading = false
-		var bmp:Bitmap = Bitmap(loader.content)
+		var bmp:Bitmap = event.target.content as Bitmap
 		_loadedBitmap = bmp
 		_currentBitmap = _loadedBitmap
 		addChild(_currentBitmap)
+		if(_enableBlendIn)
+			blendIn()
 		dispatchEvent(event)
 	}
 	
@@ -167,6 +198,7 @@ public class ImageView extends AbstractView
 	{
 		var image:Image = event.model as Image
 		model = image
+		this.image = image
 		build()
 	}
 	
@@ -199,6 +231,26 @@ public class ImageView extends AbstractView
 		var image:Image = Image(model)
 		return imageOptions.basePath+image.uniqueid+"_"+image.width
 			+imageOptions.option1+".jpg"
+	}
+	
+	public function set enableBlendIn(value:Boolean):void
+	{
+		_enableBlendIn = value
+		if(value)
+		{
+			this.alpha = 0
+			this.visible = false
+		}
+		else
+		{
+			this.alpha = 1
+			this.visible = true
+		}
+	}
+	
+	public function get enableBlendIn():Boolean
+	{
+		return _enableBlendIn
 	}
 }
 }

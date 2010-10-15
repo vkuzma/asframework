@@ -8,6 +8,8 @@ import ch.allink.micrositeframework.cmsmodel.NavigationViewService;
 
 import flash.events.Event;
 import flash.events.MouseEvent;
+import flash.text.AntiAliasType;
+import flash.text.GridFitType;
 import flash.text.TextField;
 import flash.text.TextFieldAutoSize;
 import flash.text.TextFormat;
@@ -26,8 +28,6 @@ public class NavigationView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	public static const ACTIVATED:String = "activated"
-	public static const DEACTIVATED:String = "deActivated"
 	public static const REQUEST_ACTIVATE:String = "requestActivate"
 	
 	//-------------------------------------------------------------------------
@@ -36,13 +36,24 @@ public class NavigationView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 
+	private var _navigationService:NavigationViewService
+	private var _defaultColor:uint
+		
 	public var activeColor:uint
 	public var rollOverColor:uint
-	public var textField:TextField
 	public var tweeningTime:Number
-	public var _textFormat:TextFormat
 	
-		
+	public var textFieldConfig:Function
+	public var textFormatConfig:Function
+	public var customRollOutAction:Function
+	public var customRollOverAction:Function
+	
+	private var _textField:TextField
+	private var _textFormat:TextFormat
+	private var _active:Boolean
+	
+	public var navigation:Navigation
+	 
 	//-------------------------------------------------------------------------
 	//
 	//	Constructor
@@ -51,22 +62,36 @@ public class NavigationView extends AbstractView
 		
 	public function NavigationView(navigation:Navigation)
 	{
-		model = navigation
-		//init default values	
+		this.navigation = navigation
+		this.model = navigation
+		build()
+	}
+	
+	//-------------------------------------------------------------------------
+	//
+	//	Override methods
+	//
+	//-------------------------------------------------------------------------
+	
+	public override function build():void
+	{
 		_textFormat = new TextFormat()
 		_active = false
 		_defaultColor = 0x000000
 		rollOverColor = 0x000000
 		activeColor = 0xFFFFFF
 		tweeningTime = 1
-
-		
-		textField = new TextField()
-		this.addChild(textField)
+			
+		_textField = new TextField()
+		this.addChild(_textField)
 		navigationText = navigation.title
-		
+			
 		this.addEventListener(MouseEvent.ROLL_OVER, rollOverHandler)
 		this.addEventListener(MouseEvent.ROLL_OUT, rollOutHandler)
+	}
+	
+	public override function dispose():void
+	{
 	}
 	
 	//-------------------------------------------------------------------------
@@ -83,7 +108,7 @@ public class NavigationView extends AbstractView
 		else
 			newColor= defaultColor
 				
-		Tweener.addTween(textField, 
+		Tweener.addTween(_textField, 
 			{
 				time: tweeningTime,
 				_color: newColor
@@ -95,6 +120,28 @@ public class NavigationView extends AbstractView
 		dispatchEvent(new Event(REQUEST_ACTIVATE))
 	}
 
+	public function setUpText():void
+	{
+		_textField.textColor = defaultColor
+		_textField.selectable = false
+		_textField.autoSize = TextFieldAutoSize.LEFT
+		_textField.multiline = false
+		_textField.wordWrap = false
+		_textField.antiAliasType = AntiAliasType.ADVANCED
+		_textField.gridFitType = GridFitType.PIXEL
+		
+		
+		//Individuelle Einstellungen setzen
+		if(textFieldConfig != null)
+			_textField = textFieldConfig(_textField)
+		if(textFormatConfig != null)
+			_textFormat = textFormatConfig(_textFormat)
+		_textField.setTextFormat(_textFormat)
+		//Nur bei gesetzem Font soll das Textfeld embedded werden
+		if(_textFormat.font != null)
+			_textField.embedFonts = true
+	}
+	
 	//-------------------------------------------------------------------------
 	//
 	//	Event handlers
@@ -107,16 +154,21 @@ public class NavigationView extends AbstractView
 	
 	public function rollOverHandler(event:MouseEvent):void
 	{
-		Tweener.addTween(textField,
+		Tweener.addTween(_textField,
 			{
 				time: tweeningTime,
 				_color: rollOverColor
 			})
+			
+		if(customRollOverAction != null)
+			customRollOverAction(event.currentTarget)
 	}
 	
 	public function rollOutHandler(event:MouseEvent):void
 	{
 		reset()
+		if(customRollOutAction != null)
+			customRollOutAction(event.currentTarget)
 	}
 	
 //	private function stage_KeyDownHandler(event:KeyboardEvent):void
@@ -125,7 +177,7 @@ public class NavigationView extends AbstractView
 //			clickHandler(null)
 //	}
 	
-	public function stage_MouseMoveHandler(event:MouseEvent):void
+	private function stage_MouseMoveHandler(event:MouseEvent):void
 	{
 		rollOverHandler(null)
 		stage.removeEventListener(MouseEvent.MOUSE_MOVE, stage_MouseMoveHandler)
@@ -135,6 +187,7 @@ public class NavigationView extends AbstractView
 	{
 		dispatchEvent(event)
 	}
+	
 	
 //	public function 	(event:FocusEvent):void
 //	{
@@ -156,7 +209,7 @@ public class NavigationView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	private var _navigationService:NavigationViewService
+
 	public function set navigationService(value:NavigationViewService):void
 	{
 		_navigationService = value
@@ -170,7 +223,6 @@ public class NavigationView extends AbstractView
 		return _navigationService
 	}
 	
-	private var _active:Boolean
 	public function set active(value:Boolean):void
 	{
 		_active = value
@@ -180,27 +232,30 @@ public class NavigationView extends AbstractView
 			newColor = activeColor
 		else
 			newColor = defaultColor
-		Tweener.addTween(textField, 
+		Tweener.addTween(_textField, 
 			{
 				time: tweeningTime,
 				_color: newColor
 				
 			})
 			
-		var modelEvent:Event
+		var navViewEvent:NavigationViewEvent
 		if(_active)
 		{
 			//Bedingte Animation zum öffnen der Unternavigation
 			//zB. navigationservice.openAnimation()
-			modelEvent = new Event(ACTIVATED)
+			navViewEvent = new NavigationViewEvent(
+				NavigationViewEvent.ACTIVATED, false, false, this)
+			
 		}
 		else
 		{
 			//Bedingte Animation zum schliessen der Unternavigation
 			//zB. navigationservice.closeAnimation()
-			modelEvent = new Event(DEACTIVATED)
+			navViewEvent = new NavigationViewEvent(
+				NavigationViewEvent.DEACTIVATED, false, false, this)
 		}
-		dispatchEvent(modelEvent)
+		dispatchEvent(navViewEvent)
 	}
 	
 	public function get active():Boolean
@@ -208,11 +263,10 @@ public class NavigationView extends AbstractView
 		return _active
 	}
 	
-	private var _defaultColor:uint
 	public function set defaultColor(value:uint):void
 	{
 		_defaultColor = value
-		textField.textColor = _defaultColor
+		_textField.textColor = _defaultColor
 	}
 	
 	public function get defaultColor():uint
@@ -226,30 +280,29 @@ public class NavigationView extends AbstractView
 	
 	public function set navigationText(value:String):void
 	{
-		textField.text = value
-		textField.textColor = defaultColor
-		textField.setTextFormat(_textFormat)
-		textField.selectable = false
-		textField.autoSize = TextFieldAutoSize.LEFT
-		textField.multiline = false
-		textField.wordWrap = false
-		textField.embedFonts = true
+		_textField.text = value
+		setUpText()
 	}
 	
 	public function get navigationText():String
 	{
-		return textField.text
+		return _textField.text
 	}
 	
 	public function set textFormat(value:TextFormat):void
 	{
 		_textFormat = value
-		navigationText = textField.text
+		navigationText = _textField.text
 	}
 	
 	public function get textFormat():TextFormat
 	{
 		return _textFormat
+	}
+	
+	public function get textField():TextField
+	{
+		return _textField
 	}
 }
 }

@@ -22,7 +22,7 @@ public class NavigationViewService extends EventDispatcher
 	//	Variables
 	//
 	//-------------------------------------------------------------------------
-	
+	private var _navigationViews:Vector.<NavigationView>
 	public var navigations:Vector.<Navigation>
 	public var pageID:int
 	
@@ -45,56 +45,74 @@ public class NavigationViewService extends EventDispatcher
 	//-------------------------------------------------------------------------
 	
 	private function navigationForIDInNavigations(id:int,
-							 		navigations:Vector.<Navigation>):Navigation
+							 		navigations:Vector.<Navigation>,
+									condition:Function):Navigation
 	{
 		var targetNavigation:Navigation
 		
 		for each(var navigation:Navigation in navigations)
 		{
-			if(navigation.navigationid == id)	
+			if(condition(navigation, id))	
 			{
 				targetNavigation = navigation
 				break
 			}
-			else if(navigation.children != null)
+			else if(navigation.children)
 			{
 				targetNavigation = navigationForIDInNavigations(id, 
-														   navigation.children)
-				break
-			}
-			else
-			{
-				targetNavigation = null
+												navigation.children, condition)
+				if(targetNavigation)
+					break
 			}
 		}
 		return targetNavigation
 	}
 	
 	private function navigationForIDInNavigationViews(id:int,
-							navigationViews:Vector.<NavigationView>):Navigation
+							navigationViews:Vector.<NavigationView>,
+							condition:Function):Navigation
 	{
 		var targetNavigation:Navigation
 		
 		for each(var navigationView:NavigationView in navigationViews)
 		{
-			var navigation:Navigation = navigationView.model as Navigation
-			if(navigation.children)
-			{
-				targetNavigation = navigationForIDInNavigations(id, 
-															navigation.children)
-				break
-			}	
-			else if(navigation.navigationid == id)
+			var navigation:Navigation = navigationView.navigation
+			if(condition(navigation, id))
 			{
 				targetNavigation = navigation
 				break
 			}
-			else
+			 else if(navigation.children)
 			{
-				targetNavigation = null	
-			}
+				targetNavigation = navigationForIDInNavigations(id, 
+												navigation.children, condition)
+				if(targetNavigation)
+					break
+			}	
 		}
 		return targetNavigation
+	}
+	
+	private function checkNavigationID(navigation:Navigation, ID:int):Boolean
+	{
+		var value:Boolean
+		if(navigation.navigationid == ID)
+			value = true
+		else
+			value = false
+				
+		return value
+	}
+	
+	private function checkIndexPageID(navigation:Navigation, ID:int):Boolean
+	{
+		var value:Boolean
+		if(navigation.indexPageID == ID)
+			value = true
+		else
+			value = false
+				
+		return value
 	}
 	
 	//-------------------------------------------------------------------------
@@ -105,19 +123,55 @@ public class NavigationViewService extends EventDispatcher
 	
 	public function navigationByPageID(id:int):Navigation
 	{
-//		Könnte auch eine statische Methode sein
 		var targetNavigation:Navigation
 		if(navigations)
-			targetNavigation = navigationForIDInNavigations(id, navigations)
-		else if(navigationViews)
+			targetNavigation = navigationForIDInNavigations(id, navigations,
+				checkIndexPageID)
+		else if(_navigationViews)
 			targetNavigation = navigationForIDInNavigationViews(id, 
-																navigationViews)
-		else
-			targetNavigation = null
-				
-			
+										    _navigationViews, checkIndexPageID)
 		return targetNavigation
 	}
+	
+	public function navigationByNavigationID(id:int):Navigation
+	{
+		var targetNavigation:Navigation
+		if(navigations)
+			targetNavigation = navigationForIDInNavigations(id, navigations,
+				checkNavigationID)
+		else if(_navigationViews)
+			targetNavigation = navigationForIDInNavigationViews(id, 
+				_navigationViews,
+				checkNavigationID)
+		return targetNavigation
+	}
+	
+	public function navigationViewByNavigationID(id:int, 
+		navigationViews:Vector.<NavigationView> = null):NavigationView
+	{
+		var targetNavigationView:NavigationView
+		if(!navigationViews)
+			navigationViews = this.navigationViews
+		
+		for each(var navigationView:NavigationView in navigationViews)
+		{
+			var navigation:Navigation = navigationView.navigation
+			if(navigation.navigationid == id)	
+			{
+				targetNavigationView = navigationView
+				break
+			}
+			else if(navigationView.navigationService)
+			{
+				targetNavigationView = navigationViewByNavigationID(id, 
+					navigationView.navigationService.navigationViews)
+				if(targetNavigationView)
+					break
+			}
+		}
+		return targetNavigationView
+	}
+	
 	
 	public function activate(activatedNavigationView:NavigationView):void
 	{
@@ -128,6 +182,12 @@ public class NavigationViewService extends EventDispatcher
 			else
 				navigationView.active = false
 		}
+	}
+	
+	public function reset():void
+	{
+		for each(var navigationView:NavigationView in _navigationViews)
+			navigationView.active = false
 	}
 	
 	public function openAnimation():void
@@ -151,7 +211,7 @@ public class NavigationViewService extends EventDispatcher
 		var navigationView:NavigationView = event.currentTarget as 
 												NavigationView
 		activate(navigationView)
-		pageID = Navigation(navigationView.model).navigationid
+		pageID = navigationView.navigation.navigationid
 			
 		//Deaktiviert Unternavigationen
 		if(navigationView.navigationService != null)
@@ -163,7 +223,8 @@ public class NavigationViewService extends EventDispatcher
 		
 	}
 	
-	private function navigationView_activatedHandler(event:Event):void
+	private function navigationView_activatedHandler(
+		event:NavigationViewEvent):void
 	{
 		if(_parentNavigationView)
 			_parentNavigationView.requestActivate()
@@ -176,13 +237,15 @@ public class NavigationViewService extends EventDispatcher
 		activate(navigationView)
 	}
 	
-	private function parentNavigationV_deactivateHandler(event:Event):void
+	private function parentNavigationV_deactivateHandler(
+		event:NavigationViewEvent):void
 	{
 		activate(null)	
 		closeAnimation()
 	}
 	
-	private function parentNavigationV_activateHandler(event:Event):void
+	private function parentNavigationV_activateHandler(
+		event:NavigationViewEvent):void
 	{
 		openAnimation()
 	}
@@ -204,7 +267,6 @@ public class NavigationViewService extends EventDispatcher
 	//
 	//-------------------------------------------------------------------------
 	
-	private var _navigationViews:Vector.<NavigationView>
 	public function set navigationViews(value:Vector.<NavigationView>):void
 	{
 		_navigationViews = value
@@ -216,7 +278,7 @@ public class NavigationViewService extends EventDispatcher
 		{
 			navigationView.addEventListener(MouseEvent.CLICK, 
 											navigationView_clickHandler)
-			navigationView.addEventListener(NavigationView.ACTIVATED,
+			navigationView.addEventListener(NavigationViewEvent.ACTIVATED,
 											navigationView_activatedHandler)
 			navigationView.addEventListener(NavigationView.REQUEST_ACTIVATE,
 										navigationView_requestActivatedHandler)
@@ -235,9 +297,9 @@ public class NavigationViewService extends EventDispatcher
 	public function set parentNavigationView(value:NavigationView):void
 	{
 		_parentNavigationView = value
-		_parentNavigationView.addEventListener(NavigationView.DEACTIVATED,
+		_parentNavigationView.addEventListener(NavigationViewEvent.DEACTIVATED,
 										    parentNavigationV_deactivateHandler)
-		_parentNavigationView.addEventListener(NavigationView.ACTIVATED,
+		_parentNavigationView.addEventListener(NavigationViewEvent.ACTIVATED,
 										    parentNavigationV_activateHandler)
 	}
 	
