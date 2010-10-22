@@ -18,6 +18,9 @@ import flash.net.URLRequest;
 
 import org.osmf.media.MediaFactory;
 
+
+[Event (name='complete', type='flash.events.Event')]
+
 public class ImageView extends AbstractView
 {
 	//-------------------------------------------------------------------------
@@ -149,6 +152,13 @@ public class ImageView extends AbstractView
 		}
 	}
 	
+	
+	public  function displayWithHandCursor(value:Boolean=true):void {
+		buttonMode = value;
+		useHandCursor = value;
+		mouseChildren = !value;
+		focusRect = !value;
+	}	
 	
 	
 	public function buildByFileID(fileID:int):void

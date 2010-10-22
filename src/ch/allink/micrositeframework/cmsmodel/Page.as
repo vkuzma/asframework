@@ -43,5 +43,19 @@ public class Page extends AllinkCMSBaseModel
 	{
 		return _sections
 	}
+	
+	public function get files():Vector.<Image>
+	{
+		var files:Vector.<Image> = new Vector.<Image>
+		for each(var section:Section in _sections)
+		{
+			for each(var file:Image in section.files)
+			{
+				files.push(file)
+			}
+		}
+		
+		return files
+	}
 }
 }
