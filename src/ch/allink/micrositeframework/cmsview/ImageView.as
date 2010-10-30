@@ -44,6 +44,7 @@ public class ImageView extends AbstractView
 	public var image:Image
 	private var _loadedBitmap:Bitmap
 	private var _currentBitmap:Bitmap
+	private var _loaded:Boolean
 	
 	//-------------------------------------------------------------------------
 	//
@@ -56,6 +57,7 @@ public class ImageView extends AbstractView
 		this.image = image
 		super()
 		isLoading = false
+		_loaded = false
 	}
 	
 	//-------------------------------------------------------------------------
@@ -190,6 +192,7 @@ public class ImageView extends AbstractView
 		_loadedBitmap = bmp
 		_currentBitmap = _loadedBitmap
 		addChild(_currentBitmap)
+		_loaded = true
 		dispatchEvent(event)
 	}
 	
@@ -239,6 +242,11 @@ public class ImageView extends AbstractView
 		var image:Image = Image(model)
 		return imageOptions.basePath+image.uniqueid+"_"+_imageOptions.width
 			+imageOptions.option1+".jpg"
+	}
+	
+	public function get loaded():Boolean
+	{
+		return _loaded
 	}
 }
 }
