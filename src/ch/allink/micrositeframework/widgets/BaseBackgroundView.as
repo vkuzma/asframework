@@ -69,11 +69,11 @@ public class BaseBackgroundView extends AbstractView
     
     private function loadImageView():void
     {
-        var imageView:ImageView = _imageViews[imageViewIndex]
-        if(imageViewIndex <= _imageViews.length)
-            {
+        if(imageViewIndex < _imageViews.length)
+        {
+	        var imageView:ImageView = _imageViews[imageViewIndex]
             //Falls das Bild schon geladen wurde, dan lade das naechste
-            if(imageView)
+            if(imageView.loaded)
             {
                 imageViewIndex++
                 loadImageView()
@@ -138,6 +138,8 @@ public class BaseBackgroundView extends AbstractView
            
         dispatchEvent(event)
         
+		trace(imageViewIndex)
+		
         if(imageViewIndex == _imageViews.length)
         {
             dispatchEvent(new Event(COMPLETE_ALL))
