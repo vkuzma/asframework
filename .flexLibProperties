@@ -12,7 +12,9 @@
     <classEntry path="ch.allink.micrositeframework.cmsview.SectionView"/>
     <classEntry path="ch.allink.micrositeframework.cmsmodel.DisplayFormatter"/>
     <classEntry path="ch.allink.micrositeframework.util.CMSXmlPath"/>
+    <classEntry path="ch.allink.micrositeframework.widgets.BaseBackgroundView"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
 </flexLibProperties>
+
