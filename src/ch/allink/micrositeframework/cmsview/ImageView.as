@@ -12,6 +12,7 @@ import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Loader;
 import flash.events.Event;
+import flash.events.ProgressEvent;
 import flash.geom.Matrix;
 import flash.media.Video;
 import flash.net.URLRequest;
@@ -41,7 +42,6 @@ public class ImageView extends AbstractView
 	public var isLoading:Boolean
 	public var loader:Loader
 	public var image:Image
-	private var _enableBlendIn:Boolean
 	private var _loadedBitmap:Bitmap
 	private var _currentBitmap:Bitmap
 	
@@ -56,8 +56,6 @@ public class ImageView extends AbstractView
 		this.image = image
 		super()
 		isLoading = false
-
-		enableBlendIn = false
 	}
 	
 	//-------------------------------------------------------------------------
@@ -70,8 +68,10 @@ public class ImageView extends AbstractView
 	{
 		var urlRequest:URLRequest = new URLRequest(fileURL)
 		loader = new Loader()
+		loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS,
+			loader_progressHandler)
 		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, 
-			_loader_onCompleteHandler)
+			loader_onCompleteHandler)
 		loader.load(urlRequest)
 		isLoading = true
 	}
@@ -126,7 +126,7 @@ public class ImageView extends AbstractView
 		
 		if(contains(_currentBitmap))
 		{
-			draw(sourceWidth / _loadedBitmap.width, 
+			draw(sourceWidth / _loadedBitmap.width,
 				sourceHeigth / _loadedBitmap.height, sourceHeigth, sourceWidth)
 		}
 	}
@@ -177,30 +177,24 @@ public class ImageView extends AbstractView
 		addChild(_currentBitmap)
 	}
 	
-	public function blendIn():void
-	{
-		Tweener.addTween(this,
-			{
-				time: 2,
-				_autoAlpha: 1
-			})
-	}
-	
 	//-------------------------------------------------------------------------
 	//
 	//	Event handlers
 	//
 	//-------------------------------------------------------------------------
 	
-	private function _loader_onCompleteHandler(event:Event):void
+	private function loader_onCompleteHandler(event:Event):void
 	{
 		isLoading = false
 		var bmp:Bitmap = event.target.content as Bitmap
 		_loadedBitmap = bmp
 		_currentBitmap = _loadedBitmap
 		addChild(_currentBitmap)
-		if(_enableBlendIn)
-			blendIn()
+		dispatchEvent(event)
+	}
+	
+	private function loader_progressHandler(event:ProgressEvent):void
+	{
 		dispatchEvent(event)
 	}
 	
@@ -231,7 +225,11 @@ public class ImageView extends AbstractView
 	public function get imageOptions():ImageOptions
 	{
 		if(!_imageOptions)
+		{
 			_imageOptions = new ImageOptions
+			_imageOptions.width = image.width
+				
+		}
 		
 		return _imageOptions
 	}
@@ -239,28 +237,8 @@ public class ImageView extends AbstractView
 	public function get fileURL():String
 	{
 		var image:Image = Image(model)
-		return imageOptions.basePath+image.uniqueid+"_"+image.width
+		return imageOptions.basePath+image.uniqueid+"_"+_imageOptions.width
 			+imageOptions.option1+".jpg"
-	}
-	
-	public function set enableBlendIn(value:Boolean):void
-	{
-		_enableBlendIn = value
-		if(value)
-		{
-			this.alpha = 0
-			this.visible = false
-		}
-		else
-		{
-			this.alpha = 1
-			this.visible = true
-		}
-	}
-	
-	public function get enableBlendIn():Boolean
-	{
-		return _enableBlendIn
 	}
 }
 }

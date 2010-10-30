@@ -27,7 +27,7 @@ public class Navigation extends AllinkCMSBaseModel
 	//-------------------------------------------------------------------------
 	//
 	//	Constructor
-	//
+	// 
 	//-------------------------------------------------------------------------
 	
 	public function Navigation()
