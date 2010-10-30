@@ -15,7 +15,7 @@ import flash.text.TextFieldAutoSize;
 import flash.text.TextFormat;
 
 /** 
- * Darstellung eines Navigationselement
+ * Darstellungsobjekt eines Navigationselements
  * 
  * @author Vladimir Kuzma
  */
