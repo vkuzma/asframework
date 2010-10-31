@@ -7,10 +7,8 @@ import ch.allink.micrositeframework.view.AbstractView;
 import flash.events.Event;
 import flash.events.ProgressEvent;
 
-import mx.messaging.Producer;
-import mx.states.OverrideBase;
-
 /**
+ * Grundfunktionen zum verwalten von imageView-Objecte
  * @author Vladimir Kuzma
  * @date 30.10.2010
  */
@@ -31,7 +29,7 @@ public class BaseBackgroundView extends AbstractView
     //
     //-------------------------------------------------------------------------
     
-    private var _imageViews:Vector.<ImageView>
+    protected var _imageViews:Vector.<ImageView>
     private var imageViewIndex:int
     private var enableLoading:Boolean
     
@@ -40,6 +38,7 @@ public class BaseBackgroundView extends AbstractView
     //  Constructor
     //
     //-------------------------------------------------------------------------
+    
     public function BaseBackgroundView()
     {
         super()
@@ -67,6 +66,10 @@ public class BaseBackgroundView extends AbstractView
     //
     //-------------------------------------------------------------------------
     
+    /**
+    * Ladet alle imageView-Objekte in der imageViews, die noch nicht geladen 
+    * wurden. Das Laden erflogt hintereinander.
+    */
     private function loadImageView():void
     {
         if(imageViewIndex < _imageViews.length)
@@ -137,9 +140,8 @@ public class BaseBackgroundView extends AbstractView
         loadImageView()
            
         dispatchEvent(event)
-        
-		trace(imageViewIndex)
-		
+
+        //Falls alle imageView-Objekte fertig geladen wurden.        
         if(imageViewIndex == _imageViews.length)
         {
             dispatchEvent(new Event(COMPLETE_ALL))
@@ -153,7 +155,7 @@ public class BaseBackgroundView extends AbstractView
     //
     //-------------------------------------------------------------------------
     
-    public function imageViews():Vector.<ImageView>
+    public function get imageViews():Vector.<ImageView>
     {
         return _imageViews
     }

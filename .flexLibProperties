@@ -13,8 +13,11 @@
     <classEntry path="ch.allink.micrositeframework.cmsmodel.DisplayFormatter"/>
     <classEntry path="ch.allink.micrositeframework.util.CMSXmlPath"/>
     <classEntry path="ch.allink.micrositeframework.widgets.BaseBackgroundView"/>
+    <classEntry path="ch.allink.micrositeframework.widgets.SimpleBackgroundView"/>
+    <classEntry path="ch.allink.micrositeframework.operation.BaseOperation"/>
+    <classEntry path="ch.allink.micrositeframework.operation.IOperation"/>
+    <classEntry path="ch.allink.micrositeframework.operation.SlideShowOperation"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
 </flexLibProperties>
-
