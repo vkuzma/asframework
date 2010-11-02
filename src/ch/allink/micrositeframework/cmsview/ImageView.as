@@ -80,7 +80,7 @@ public class ImageView extends AbstractView
 	
 	public override function dispose():void
 	{
-		
+		loader.unload()	
 	}
 	
 	//-------------------------------------------------------------------------
@@ -177,6 +177,11 @@ public class ImageView extends AbstractView
 		_loadedBitmap = bitmap
 		_currentBitmap = bitmap
 		addChild(_currentBitmap)
+	}
+	
+	public function closeLoading():void
+	{
+		loader.close()
 	}
 	
 	//-------------------------------------------------------------------------

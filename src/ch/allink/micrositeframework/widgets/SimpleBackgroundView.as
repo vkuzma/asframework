@@ -1,5 +1,6 @@
 package ch.allink.micrositeframework.widgets
 {
+    import ch.allink.micrositeframework.cmsmodel.Image;
     import ch.allink.micrositeframework.cmsview.ImageView;
     import ch.allink.micrositeframework.operation.BaseOperation;
     import ch.allink.micrositeframework.operation.IOperation;
@@ -31,7 +32,7 @@ public class SimpleBackgroundView extends BaseBackgroundView
     public function SimpleBackgroundView()
     {
         super()
-        this.addEventListener(Event.COMPLETE, completeHandler)
+        this.addEventListener(BackgroundViewEvent.COMPLETE, completeHandler)
     }
     
     //-------------------------------------------------------------------------
@@ -43,9 +44,25 @@ public class SimpleBackgroundView extends BaseBackgroundView
     private function initOperation(operation:IOperation):void
     {
         operation.targetSprite = this
-        operation.imageViews = imageViews
+        operation.imageViews = this.imageViews
     }
-    
+	
+    //-------------------------------------------------------------------------
+    //
+    //  Overriden methods
+    //
+    //-------------------------------------------------------------------------
+	
+    /**
+    * Loaded die mit addImage(image) hinzugefügten Bildermodelle nur mit Freigeabe
+	* der enableClick Variable.
+    */
+	override public function preloadImageViews():void
+	{
+		if(_operation.enableClick)
+			super.preloadImageViews()	
+	}
+	
     //-------------------------------------------------------------------------
     //
     //  Public methods
@@ -73,7 +90,8 @@ public class SimpleBackgroundView extends BaseBackgroundView
      */
     public function resize(sourceHeight:Number, sourceWidth:Number):void
     {
-        _operation.resize(sourceHeight, sourceWidth)
+		if(_operation)
+        	_operation.resize(sourceHeight, sourceWidth)
     }
     
     //-------------------------------------------------------------------------
@@ -82,9 +100,9 @@ public class SimpleBackgroundView extends BaseBackgroundView
     //
     //-------------------------------------------------------------------------
     
-    private function completeHandler(event:Event):void
+    private function completeHandler(event:BackgroundViewEvent):void
     {
-        var imageView:ImageView = event.target as ImageView
+        var imageView:ImageView = event.imageView
         _operation.initImageView(imageView)
     }
     

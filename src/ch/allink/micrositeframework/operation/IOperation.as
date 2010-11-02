@@ -22,5 +22,7 @@ public interface IOperation
     function get targetSprite():Sprite
     function set imageViews(value:Vector.<ImageView>):void
     function get imageViews():Vector.<ImageView>
+	function set enableClick(value:Boolean):void
+	function get enableClick():Boolean
 }
 }

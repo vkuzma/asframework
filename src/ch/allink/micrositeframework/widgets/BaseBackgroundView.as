@@ -5,7 +5,10 @@ import ch.allink.micrositeframework.cmsview.ImageView;
 import ch.allink.micrositeframework.view.AbstractView;
 
 import flash.events.Event;
+import flash.events.EventDispatcher;
 import flash.events.ProgressEvent;
+
+import flashx.textLayout.compose.IVerticalJustificationLine;
 
 /**
  * Grundfunktionen zum verwalten von imageView-Objecte
@@ -22,7 +25,7 @@ public class BaseBackgroundView extends AbstractView
     //-------------------------------------------------------------------------
     
     public static const COMPLETE_ALL:String = "completeAll"
-    
+		
     //-------------------------------------------------------------------------
     //
     //  Global Variables
@@ -31,7 +34,8 @@ public class BaseBackgroundView extends AbstractView
     
     protected var _imageViews:Vector.<ImageView>
     private var imageViewIndex:int
-    private var enableLoading:Boolean
+    public var enableLoading:Boolean
+	public var maxImageViews:int
     
     //-------------------------------------------------------------------------
     //
@@ -42,6 +46,9 @@ public class BaseBackgroundView extends AbstractView
     public function BaseBackgroundView()
     {
         super()
+		_imageViews = new Vector.<ImageView>
+		enableLoading = true
+		maxImageViews = 0
     }
     //-------------------------------------------------------------------------
     //
@@ -51,8 +58,6 @@ public class BaseBackgroundView extends AbstractView
     
     public override function build():void
     {
-        _imageViews = new Vector.<ImageView>
-        enableLoading = true
     }
     
     public override function dispose():void
@@ -100,8 +105,11 @@ public class BaseBackgroundView extends AbstractView
     
     public function addImage(image:Image):void
     {
-        var imageView:ImageView = new ImageView(image)
-        _imageViews.push(imageView)
+		if(maxImageViews == 0 || maxImageViews > _imageViews.length)
+		{
+	        var imageView:ImageView = new ImageView(image)
+	        _imageViews.push(imageView)
+		}
     }
 
     public function preloadImageViews():void
@@ -138,8 +146,10 @@ public class BaseBackgroundView extends AbstractView
     {
         imageViewIndex++
         loadImageView()
-           
-        dispatchEvent(event)
+		var bubbleEvent:BackgroundViewEvent = new BackgroundViewEvent(
+			BackgroundViewEvent.COMPLETE, false, false,
+			event.target as ImageView)
+		dispatchEvent(bubbleEvent)
 
         //Falls alle imageView-Objekte fertig geladen wurden.        
         if(imageViewIndex == _imageViews.length)
@@ -159,5 +169,15 @@ public class BaseBackgroundView extends AbstractView
     {
         return _imageViews
     }
+	
+	public function get currentImageView():ImageView
+	{
+		var targetImageView:ImageView
+		
+		if(imageViews.length > 0)
+			targetImageView = imageViews[0]
+				
+		return targetImageView
+	}
 }
 }

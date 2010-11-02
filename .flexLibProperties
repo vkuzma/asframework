@@ -17,6 +17,7 @@
     <classEntry path="ch.allink.micrositeframework.operation.BaseOperation"/>
     <classEntry path="ch.allink.micrositeframework.operation.IOperation"/>
     <classEntry path="ch.allink.micrositeframework.operation.SlideShowOperation"/>
+    <classEntry path="ch.allink.micrositeframework.widgets.BackgroundViewEvent"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
