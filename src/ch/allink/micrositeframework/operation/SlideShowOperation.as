@@ -95,6 +95,7 @@ public final class SlideShowOperation extends EventDispatcher
 				imageView.addEventListener(MouseEvent.ROLL_OUT, 
 					imageView_1_rollOutHandler)
 				imageView_1_rollOutHandler(null)
+				imageView.buttonMode = true
 			}
 		}
     }
@@ -228,6 +229,7 @@ public final class SlideShowOperation extends EventDispatcher
 			imageView_1_rollOverHandler)
 		imageView.removeEventListener(MouseEvent.ROLL_OUT, 
 			imageView_1_rollOutHandler)
+		imageView.buttonMode = false
 	}
 	
 	public function loadAndDisplaydirectly(externFunction:Function, image:Image):void
