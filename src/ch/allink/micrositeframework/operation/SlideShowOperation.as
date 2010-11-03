@@ -321,15 +321,5 @@ public final class SlideShowOperation extends EventDispatcher
 	{
 		return _enableClick
 	}
-	
-//	public function set bgShadow(value:Sprite):void
-//	{
-//		_bgShadow = value
-//	}
-//	
-//	public function get bgShadow():Sprite
-//	{
-//		return _bgShadow
-//	}
 }
 }
