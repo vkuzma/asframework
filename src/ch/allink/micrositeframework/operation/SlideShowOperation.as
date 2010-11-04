@@ -19,6 +19,12 @@ package ch.allink.micrositeframework.operation
 public final class SlideShowOperation extends EventDispatcher 
 	implements IOperation
 {
+	
+    //-------------------------------------------------------------------------
+    //
+    //  Constants
+    //
+    //-------------------------------------------------------------------------
 
 	public static const SLIDED_OUT:String = "slidedOut"
 	
@@ -32,9 +38,9 @@ public final class SlideShowOperation extends EventDispatcher
     private var _imageViews:Vector.<ImageView>
 	private var _enableClick:Boolean
     private var imageViewMask:Shape
+	private var maskWidthOffset:Number
 	public var bgShadow:Sprite
     public var blendInTime:Number
-	private var maskWidthOffset:Number
 	
 	private const indentOpenXPos:Number = -50
 	private const indentRollOverXPos:Number = -100
@@ -54,7 +60,6 @@ public final class SlideShowOperation extends EventDispatcher
 		_enableClick = true
 		bgShadow = new Sprite()
     }
-    
     
     //-------------------------------------------------------------------------
     //
@@ -232,7 +237,8 @@ public final class SlideShowOperation extends EventDispatcher
 		imageView.buttonMode = false
 	}
 	
-	public function loadAndDisplaydirectly(externFunction:Function, image:Image):void
+	public function loadAndDisplaydirectly(externFunction:Function, 
+										   image:Image):void
 	{
 		Tweener.addTween(imageViewMask,
 			{
