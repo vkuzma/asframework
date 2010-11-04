@@ -1,11 +1,7 @@
 package ch.allink.micrositeframework.widgets
 {
-    import ch.allink.micrositeframework.cmsmodel.Image;
     import ch.allink.micrositeframework.cmsview.ImageView;
-    import ch.allink.micrositeframework.operation.BaseOperation;
     import ch.allink.micrositeframework.operation.IOperation;
-    
-    import flash.events.Event;
 
 /**
  * Verwalten von Hintergrundbildern.
@@ -13,7 +9,7 @@ package ch.allink.micrositeframework.widgets
  * @date 30.10.2010
  */
 
-public class SimpleBackgroundView extends BaseBackgroundView
+public class SimpleBackgroundView extends ImageViewService
 {
     //-------------------------------------------------------------------------
     //
@@ -32,7 +28,7 @@ public class SimpleBackgroundView extends BaseBackgroundView
     public function SimpleBackgroundView()
     {
         super()
-        this.addEventListener(BackgroundViewEvent.COMPLETE, completeHandler)
+        this.addEventListener(ImageViewServiceEvent.COMPLETE, completeHandler)
     }
     
     //-------------------------------------------------------------------------
@@ -100,7 +96,7 @@ public class SimpleBackgroundView extends BaseBackgroundView
     //
     //-------------------------------------------------------------------------
     
-    private function completeHandler(event:BackgroundViewEvent):void
+    private function completeHandler(event:ImageViewServiceEvent):void
     {
         var imageView:ImageView = event.imageView
         _operation.initImageView(imageView)
