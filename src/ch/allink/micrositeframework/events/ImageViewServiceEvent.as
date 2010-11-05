@@ -1,8 +1,13 @@
-package ch.allink.micrositeframework.widgets
+package ch.allink.micrositeframework.events
 {
 import ch.allink.micrositeframework.cmsview.ImageView;
 
 import flash.events.Event;
+
+/**
+ * @date 4.11.2010
+ * @author Vladimir Kuzma
+ */
 
 public class ImageViewServiceEvent extends Event
 {

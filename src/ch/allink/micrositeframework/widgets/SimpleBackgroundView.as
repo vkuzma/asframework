@@ -1,6 +1,7 @@
 package ch.allink.micrositeframework.widgets
 {
     import ch.allink.micrositeframework.cmsview.ImageView;
+    import ch.allink.micrositeframework.events.ImageViewServiceEvent;
     import ch.allink.micrositeframework.operation.IOperation;
 
 /**
@@ -18,6 +19,8 @@ public class SimpleBackgroundView extends ImageViewService
     //-------------------------------------------------------------------------
     
     private var _operation:IOperation
+	
+	private var operationError:Error
     
     //-------------------------------------------------------------------------
     //
@@ -50,7 +53,7 @@ public class SimpleBackgroundView extends ImageViewService
     //-------------------------------------------------------------------------
 	
     /**
-    * Loaded die mit addImage(image) hinzugefügten Bildermodelle nur mit Freigeabe
+    * Laded die mit addImage(image) hinzugefügten Bildermodelle nur mit Freigeabe
 	* der enableClick Variable.
     */
 	override public function preloadImageViews():void
@@ -86,8 +89,7 @@ public class SimpleBackgroundView extends ImageViewService
      */
     public function resize(sourceHeight:Number, sourceWidth:Number):void
     {
-		if(_operation)
-        	_operation.resize(sourceHeight, sourceWidth)
+    	_operation.resize(sourceHeight, sourceWidth)
     }
     
     //-------------------------------------------------------------------------

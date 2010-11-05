@@ -14,10 +14,10 @@
     <classEntry path="ch.allink.micrositeframework.util.CMSXmlPath"/>
     <classEntry path="ch.allink.micrositeframework.widgets.ImageViewService"/>
     <classEntry path="ch.allink.micrositeframework.widgets.SimpleBackgroundView"/>
-    <classEntry path="ch.allink.micrositeframework.operation.BaseOperation"/>
     <classEntry path="ch.allink.micrositeframework.operation.IOperation"/>
     <classEntry path="ch.allink.micrositeframework.operation.SlideShowOperation"/>
-    <classEntry path="ch.allink.micrositeframework.widgets.ImageViewServiceEvent"/>
+    <classEntry path="ch.allink.micrositeframework.events.ImageViewServiceEvent"/>
+    <classEntry path="ch.allink.micrositeframework.widgets.ScrollPaneClipHolder"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

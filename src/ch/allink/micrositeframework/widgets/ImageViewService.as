@@ -9,6 +9,7 @@ import flash.events.EventDispatcher;
 import flash.events.ProgressEvent;
 
 import flashx.textLayout.compose.IVerticalJustificationLine;
+import ch.allink.micrositeframework.events.ImageViewServiceEvent;
 
 /**
  * Grundfunktionen zum Verwalten von ImageView-Instanzen
@@ -16,8 +17,12 @@ import flashx.textLayout.compose.IVerticalJustificationLine;
  * @date 30.10.2010
  */
 
-[Event (name='completeAll', 
-	type="ch.allink.micrositeframework.widgets.BaseBackgroundView")]
+[Event (name='imageViewServicecomplete', 
+	type="ch.allink.micrositeframework.events.ImageViewServiceEvent")]
+[Event (name='imageViewServicecompleteAll', 
+	type="ch.allink.micrositeframework.events.ImageViewServiceEvent")]
+[Event (name='imageViewServiceProgress', 
+	type="ch.allink.micrositeframework.events.ImageViewServiceEvent")]
 
 public class ImageViewService extends AbstractView
 {

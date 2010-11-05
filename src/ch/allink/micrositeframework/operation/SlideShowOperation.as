@@ -19,7 +19,6 @@ package ch.allink.micrositeframework.operation
 public final class SlideShowOperation extends EventDispatcher 
 	implements IOperation
 {
-	
     //-------------------------------------------------------------------------
     //
     //  Constants
@@ -180,6 +179,20 @@ public final class SlideShowOperation extends EventDispatcher
 		bgShadow.height = sourceHeight
 	}
 	
+	
+	public function loadAndDisplaydirectly(externFunction:Function, 
+										   image:Image):void
+	{
+		Tweener.addTween(imageViewMask,
+			{
+				time: 0.3,
+				x: 0,
+				onUpdate: updateBgShadow,
+				onComplete: externFunction,
+				onCompleteParams: [image]
+			})
+	}
+	
     //-------------------------------------------------------------------------
     //
     //  Private methods
@@ -214,7 +227,7 @@ public final class SlideShowOperation extends EventDispatcher
 		bgShadow.x = imageViewMask.x + imageViewMask.width - bgShadow.width
 	}
 	
-	private function slideToNextImage():void
+	public function slideToNextImage():void
 	{
 		removeEventListenersTo(imageViews[1])
 		Tweener.addTween(imageViewMask,
@@ -235,19 +248,6 @@ public final class SlideShowOperation extends EventDispatcher
 		imageView.removeEventListener(MouseEvent.ROLL_OUT, 
 			imageView_1_rollOutHandler)
 		imageView.buttonMode = false
-	}
-	
-	public function loadAndDisplaydirectly(externFunction:Function, 
-										   image:Image):void
-	{
-		Tweener.addTween(imageViewMask,
-			{
-				time: 1,
-				x: 0,
-				onUpdate: updateBgShadow,
-				onComplete: externFunction,
-				onCompleteParams: [image]
-			})
 	}
 	
     //-------------------------------------------------------------------------
