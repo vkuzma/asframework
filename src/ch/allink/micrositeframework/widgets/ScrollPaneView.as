@@ -1,24 +1,12 @@
 package ch.allink.micrositeframework.widgets
 {
-import caurina.transitions.Tweener;
-
 import ch.allink.micrositeframework.view.AbstractView;
 
-import com.pixelbreaker.ui.osx.MacMouseWheel;
-
-import flash.display.MovieClip;
 import flash.display.Shape;
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.events.MouseEvent;
-import flash.events.TimerEvent;
-import flash.filters.BitmapFilterQuality;
-import flash.geom.Point;
 import flash.geom.Rectangle;
-import flash.utils.Timer;
-
-import mx.rpc.mxml.Concurrency;
-import mx.skins.halo.ScrollArrowSkin;
 
 /**
  * Darstellung eines Scrollbalken aus dem *_assets.fla
@@ -212,7 +200,7 @@ public class ScrollPaneView extends AbstractView
 		_scrollContainer.mask = scrollClipHolder.scrollPaneMask
 	}
 	
-	public function get scrollCantainer():Sprite
+	public function get scrollCntainer():Sprite
 	{
 		return _scrollContainer	
 	}

@@ -18,6 +18,7 @@
     <classEntry path="ch.allink.micrositeframework.operation.SlideShowOperation"/>
     <classEntry path="ch.allink.micrositeframework.events.ImageViewServiceEvent"/>
     <classEntry path="ch.allink.micrositeframework.widgets.ScrollPaneClipHolder"/>
+    <classEntry path="ch.allink.micrositeframework.cmsview.ImageViewResizeAlign"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

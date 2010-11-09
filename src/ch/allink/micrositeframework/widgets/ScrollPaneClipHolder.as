@@ -5,8 +5,6 @@ import flash.display.Shape;
 import flash.display.Sprite;
 import flash.geom.Rectangle;
 
-import spark.primitives.Rect;
-
 public class ScrollPaneClipHolder extends Sprite
 {
 	//-------------------------------------------------------------------------
@@ -34,7 +32,7 @@ public class ScrollPaneClipHolder extends Sprite
 	public var scrollBottom:Sprite
 	public var scrollBar:Sprite
 	public var scrollTop:Sprite
-	public var scrollDragger:Sprite
+	public var scrollDragger:Sprite     
 	public var scrollBarBackground:Sprite
 	public var scrollPaneMask:Shape
 	

@@ -1,11 +1,10 @@
 package ch.allink.micrositeframework.cmsview
 {
-import caurina.transitions.Tweener;
-
 import ch.allink.micrositeframework.cmsmodel.Image;
 import ch.allink.micrositeframework.net.ModelFactory;
 import ch.allink.micrositeframework.net.ModelRequest;
 import ch.allink.micrositeframework.net.ResultEvent;
+import ch.allink.micrositeframework.util.CMSXmlPath;
 import ch.allink.micrositeframework.view.AbstractView;
 
 import flash.display.Bitmap;
@@ -14,24 +13,13 @@ import flash.display.Loader;
 import flash.events.Event;
 import flash.events.ProgressEvent;
 import flash.geom.Matrix;
-import flash.media.Video;
 import flash.net.URLRequest;
-
-import org.osmf.media.MediaFactory;
 
 
 [Event (name='complete', type='flash.events.Event')]
 
 public class ImageView extends AbstractView
 {
-	//-------------------------------------------------------------------------
-	//
-	//	Constants
-	//
-	//-------------------------------------------------------------------------
-	
-	private const xmlPath:String = "./?do=xml&mode=resource&fileID="
-		
 	//-------------------------------------------------------------------------
 	//
 	//	Variables
@@ -108,7 +96,29 @@ public class ImageView extends AbstractView
 		_loadedBitmap.smoothing = false;
 		_currentBitmap = new Bitmap(bmpData);
 		addChild(_currentBitmap);
+	}
+	
+	private function centreDraw(scaleX:Number, scaleY:Number, 
+						  sourceHeight:Number, sourceWidth:Number,
+						  xOffset:Number, yOffset:Number):void
+	{
+		removeChild(_currentBitmap)
+		if(_currentBitmap != _loadedBitmap)
+			_currentBitmap.bitmapData.dispose()
 		
+		
+		_currentBitmap = null
+		var bmpData:BitmapData = new BitmapData(sourceWidth, sourceHeight,
+			false, 0xFFFFFF);
+		var matrix:Matrix = new Matrix();
+		matrix.scale(scaleX, scaleY);
+		matrix.tx = xOffset
+		matrix.ty = yOffset
+		_loadedBitmap.smoothing = true;
+		bmpData.draw(_loadedBitmap, matrix, null, null, null, false);
+		_loadedBitmap.smoothing = false;
+		_currentBitmap = new Bitmap(bmpData);
+		addChild(_currentBitmap);
 	}
 	
 	//-------------------------------------------------------------------------
@@ -123,7 +133,8 @@ public class ImageView extends AbstractView
 		if(!_loadedBitmap)
 			return
 		
-		if (_loadedBitmap.width == sourceWidth && _loadedBitmap.height == sourceHeigth)
+		if (_loadedBitmap.width == sourceWidth 
+			&& _loadedBitmap.height == sourceHeigth)
 			return
 		
 		if(contains(_currentBitmap))
@@ -134,26 +145,41 @@ public class ImageView extends AbstractView
 	}
 	
 	public function resizeBitmapAspectRatioTo(sourceWidth:Number, 
-											  sourceHeight:Number, 
-								   			  transparent:Boolean = false):void
+											  sourceHeight:Number,
+						 		align:String = ImageViewResizeAlign.LEFT):void
 	{
 		if(!_loadedBitmap)
 			return
 		
-		if (_loadedBitmap.width == sourceWidth && _loadedBitmap.height == sourceHeight)
+		if (_loadedBitmap.width == sourceWidth 
+			&& _loadedBitmap.height == sourceHeight)
 			return
 		
 		if(contains(_currentBitmap))
 		{
+			var xOffset:Number = 0
+			var yOffset:Number = 0
 			var targetScale:Number = sourceWidth / _loadedBitmap.width
 			var heightInFuture:Number = targetScale * _loadedBitmap.height
 			if(heightInFuture < sourceHeight)
-				targetScale =  sourceHeight / _loadedBitmap.height 
+			{
+				targetScale =  sourceHeight / _loadedBitmap.height
+				//xOffset sorgt dafür, dass das Bild in die Mitte von 
+				//sourceWidth zentriert wird.
+				if(align == ImageViewResizeAlign.CENTRE)
+					xOffset = (sourceWidth - _loadedBitmap.width * targetScale) 
+						/ 2
+			}
+			if(align == ImageViewResizeAlign.CENTRE)
+				yOffset = (sourceHeight - _loadedBitmap.height * targetScale) 
+					/ 2
+					
 			
-			draw(targetScale, targetScale, sourceHeight, sourceWidth)
+					
+			centreDraw(targetScale, targetScale, sourceHeight, sourceWidth, 
+					   xOffset, yOffset)
 		}
 	}
-	
 	
 	public  function displayWithHandCursor(value:Boolean=true):void {
 		buttonMode = value;
@@ -167,7 +193,7 @@ public class ImageView extends AbstractView
 	{
 		var modelFactory:ModelFactory = new ModelFactory
 		var modelReqeust:ModelRequest = modelFactory.load(Image,
-			xmlPath+fileID,ModelFactory.TYPE_MODEL)
+			CMSXmlPath.IMAGE_PATH + fileID,ModelFactory.TYPE_MODEL)
 		modelReqeust.addEventListener(ResultEvent.DATA_LOADED,
 										modelRequest_dataLoadedHandler)
 	}

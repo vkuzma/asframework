@@ -4,6 +4,7 @@ package ch.allink.micrositeframework.operation
     
     import ch.allink.micrositeframework.cmsmodel.Image;
     import ch.allink.micrositeframework.cmsview.ImageView;
+    import ch.allink.micrositeframework.cmsview.ImageViewResizeAlign;
     
     import flash.display.Shape;
     import flash.display.Sprite;
@@ -122,13 +123,13 @@ public final class SlideShowOperation extends EventDispatcher
 			{
 				if(imageViews[0])
 			        imageViews[0].resizeBitmapAspectRatioTo(
-						sourceWidth, sourceHeight)
+						sourceWidth, sourceHeight, ImageViewResizeAlign.CENTRE)
 			}
 			if(imageViews.length > 1)
 			{
 				if(imageViews[1])
 			        imageViews[1].resizeBitmapAspectRatioTo(
-						sourceWidth, sourceHeight)
+						sourceWidth, sourceHeight, ImageViewResizeAlign.CENTRE)
 			}
 			if(imageViewMask)
 			{
@@ -285,7 +286,7 @@ public final class SlideShowOperation extends EventDispatcher
 			})
 	}
 	
-	public function imageView_1_mouseClickHandler(event:MouseEvent):void
+	private function imageView_1_mouseClickHandler(event:MouseEvent):void
 	{	
 		dispatchEvent(event)
 		slideToNextImage()

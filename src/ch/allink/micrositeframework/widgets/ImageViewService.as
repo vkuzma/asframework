@@ -1,18 +1,14 @@
 package ch.allink.micrositeframework.widgets
 {
-import ch.allink.micrositeframework.cmsmodel.Image;
 import ch.allink.micrositeframework.cmsview.ImageView;
+import ch.allink.micrositeframework.events.ImageViewServiceEvent;
 import ch.allink.micrositeframework.view.AbstractView;
 
 import flash.events.Event;
-import flash.events.EventDispatcher;
 import flash.events.ProgressEvent;
 
-import flashx.textLayout.compose.IVerticalJustificationLine;
-import ch.allink.micrositeframework.events.ImageViewServiceEvent;
-
 /**
- * Grundfunktionen zum Verwalten von ImageView-Instanzen
+ * Grundfunktionen zum Verwalten von ImageView-Instanzen.
  * @author Vladimir Kuzma
  * @date 30.10.2010
  */
@@ -32,9 +28,10 @@ public class ImageViewService extends AbstractView
     //
     //-------------------------------------------------------------------------
     
-    protected var _imageViews:Vector.<ImageView>
+	private var _imageViews:Vector.<ImageView>
     private var imageViewIndex:int
-    public var enableLoading:Boolean
+	private var _enableLoading:Boolean
+	//TODO kommt raus!
 	public var maxImageViews:int
     
     //-------------------------------------------------------------------------
@@ -47,10 +44,11 @@ public class ImageViewService extends AbstractView
     {
         super()
 		_imageViews = new Vector.<ImageView>
-		enableLoading = true
+		_enableLoading = true
 		maxImageViews = 0
     }
-    //-------------------------------------------------------------------------
+
+	//-------------------------------------------------------------------------
     //
     //  Overriden methods
     //
@@ -79,7 +77,7 @@ public class ImageViewService extends AbstractView
 		}
         _imageViews = null
     }
-    
+
     //-------------------------------------------------------------------------
     //
     //  Private methods
@@ -104,7 +102,7 @@ public class ImageViewService extends AbstractView
             else
             {
                 imageView.addEventListener(ProgressEvent.PROGRESS, 
-                    imageView_progressEvent)
+                    imageView_progressHandler)
                 imageView.addEventListener(Event.COMPLETE,
                     imageView_completeHandler)
                 imageView.build()
@@ -135,9 +133,9 @@ public class ImageViewService extends AbstractView
 	 **/
     public function preloadImageViews():void
     {
-        if(enableLoading)
+        if(_enableLoading)
         {
-            enableLoading = false
+            _enableLoading = false
             imageViewIndex = 0
             loadImageView()
         }
@@ -149,7 +147,7 @@ public class ImageViewService extends AbstractView
     //
     //-------------------------------------------------------------------------
     
-    private function imageView_progressEvent(event:ProgressEvent):void
+    private function imageView_progressHandler(event:ProgressEvent):void
     {
 		var imageViewServiceEvent:ImageViewServiceEvent = 
 			new ImageViewServiceEvent(ImageViewServiceEvent.PROGRESS,
@@ -171,7 +169,7 @@ public class ImageViewService extends AbstractView
         //Falls alle imageView-Objekte fertig geladen wurden.        
         if(imageViewIndex == _imageViews.length)
         {
-            enableLoading = true   
+            _enableLoading = true   
 				
 			var imageViewServiceEventCompleteAll:ImageViewServiceEvent = 
 				new ImageViewServiceEvent(ImageViewServiceEvent.COMPLETE_ALL,
@@ -186,9 +184,21 @@ public class ImageViewService extends AbstractView
     //
     //-------------------------------------------------------------------------
     
+	/**
+	 * Ein Vector mit allen ImageView-Instanzen.
+	 **/
     public function get imageViews():Vector.<ImageView>
     {
         return _imageViews
     }
+	
+	/**
+	 * Bei True ist ein Ladevorgang mit preload() erlaubt.
+	 * Bei False wird eine Ladevorgang mit preload() ignoriert.
+	 **/
+	public function get enableLoading():Boolean
+	{
+		return _enableLoading
+	}
 }
 }

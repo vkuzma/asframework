@@ -1,6 +1,13 @@
 package ch.allink.micrositeframework.cmsmodel
 {
 
+/**
+ * Die Page Klasse dient als Model für eine PageView Instanz.
+ * @author Michael Walder
+ * @date 7.11.2010
+ * @see ch.allink.micrositeframework.cmsview.PageView
+ **/
+
 public class Page extends AllinkCMSBaseModel
 {
 	//-------------------------------------------------------------------------
@@ -8,6 +15,8 @@ public class Page extends AllinkCMSBaseModel
 	//	Variables
 	//
 	//-------------------------------------------------------------------------
+	
+	private var _sections:Array
 	
 	public var title:String
 	public var format:String
@@ -22,6 +31,9 @@ public class Page extends AllinkCMSBaseModel
 	//
 	//-------------------------------------------------------------------------
 	
+	/**
+	 * Erstellt eine neue Instanz der Klasse Page.
+	 **/
 	public function Page()
 	{
 		super()
@@ -33,7 +45,6 @@ public class Page extends AllinkCMSBaseModel
 	//
 	//-------------------------------------------------------------------------
 	
-	private var _sections:Array
 	public function set sections(values:Array):void
 	{
 		_sections = fillCollection(Section, values)
@@ -54,7 +65,6 @@ public class Page extends AllinkCMSBaseModel
 				files.push(file)
 			}
 		}
-		
 		return files
 	}
 }

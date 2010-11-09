@@ -4,6 +4,7 @@ import ch.allink.micrositeframework.model.AbstractModel;
 
 import flash.text.Font;
 import flash.text.GridFitType;
+import flash.text.StyleSheet;
 
 public class DisplayFormatter extends AbstractModel
 {
@@ -57,7 +58,7 @@ public class DisplayFormatter extends AbstractModel
 	
 	
 	public var textFieldConfig:Function
-	public var textFormatConfig:Function
+	public var styleSheet:StyleSheet
 	
 	//-------------------------------------------------------------------------
 	//
@@ -68,6 +69,9 @@ public class DisplayFormatter extends AbstractModel
 	public function DisplayFormatter()
 	{
 		super()
+		
+		styleSheet = new StyleSheet()
+		styleSheet.setStyle("body", null)
 	}
 	
 	//-------------------------------------------------------------------------
