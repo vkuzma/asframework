@@ -166,7 +166,7 @@ public class ImageView extends AbstractView
 				targetScale =  sourceHeight / _loadedBitmap.height
 				//xOffset sorgt dafür, dass das Bild in die Mitte von 
 				//sourceWidth zentriert wird.
-				if(align == ImageViewResizeAlign.CENTRE)
+				if(align == ImageViewResizeAlign.CENTRE) 
 					xOffset = (sourceWidth - _loadedBitmap.width * targetScale) 
 						/ 2
 			}
