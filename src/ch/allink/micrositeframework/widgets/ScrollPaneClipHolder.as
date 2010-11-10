@@ -137,10 +137,11 @@ public class ScrollPaneClipHolder extends Sprite
 	
 	public function get isNecessary():Boolean
 	{
-		if(effectiveScrollArea.height)
+		if(effectiveScrollArea.height > 0)
 			_isNecessery = true
 		else
 			_isNecessery = false
+				
 		return _isNecessery
 	}
 }
