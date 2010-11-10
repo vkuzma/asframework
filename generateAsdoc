@@ -1,3 +1,1 @@
-asdoc -doc-sources ./src/ch/allink/micrositeframework/ \
--library-path ./lib/ \
--target-player 10 \
+asdoc -doc-sources ./src/ch/allink/micrositeframework/ -library-path ./lib/ -target-player 10 
