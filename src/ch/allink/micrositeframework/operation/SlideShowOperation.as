@@ -27,6 +27,7 @@ public final class SlideShowOperation extends EventDispatcher
     //-------------------------------------------------------------------------
 
 	public static const SLIDED_OUT:String = "slidedOut"
+	public static const SLIDE_UPDATE:String = "slideUpdate"
 	
     //-------------------------------------------------------------------------
     //
@@ -37,8 +38,8 @@ public final class SlideShowOperation extends EventDispatcher
     private var _targetSprite:Sprite
     private var _imageViews:Vector.<ImageView>
 	private var _enableClick:Boolean
-    private var imageViewMask:Shape
 	private var maskWidthOffset:Number
+    public var imageViewMask:Shape
 	public var bgShadow:Sprite
     public var blendInTime:Number
 	
@@ -221,10 +222,15 @@ public final class SlideShowOperation extends EventDispatcher
         imageViews[0].mask = imageViewMask
 		bgShadow.x = imageViews[0].x + imageViews[0].width
     }
+	
+	private function imageViewMask_onUpdateHandler():void
+	{
+		dispatchEvent(new Event(SLIDE_UPDATE))
+		updateBgShadow()
+	}
     
 	private function updateBgShadow():void
 	{
-		
 		bgShadow.x = imageViewMask.x + imageViewMask.width - bgShadow.width
 	}
 	
@@ -235,7 +241,7 @@ public final class SlideShowOperation extends EventDispatcher
 			{
 				time: maskSlideOutTime,
 				x: -imageViews[0].width,
-				onUpdate: updateBgShadow,
+				onUpdate: imageViewMask_onUpdateHandler,
 				onComplete: imageView_tweenerComplete
 			})
 	}
