@@ -19,8 +19,6 @@ public class SimpleBackgroundView extends ImageViewService
     //-------------------------------------------------------------------------
     
     private var _operation:IOperation
-	
-	private var operationError:Error
     
     //-------------------------------------------------------------------------
     //

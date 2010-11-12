@@ -15,10 +15,11 @@
     <classEntry path="ch.allink.micrositeframework.widgets.ImageViewService"/>
     <classEntry path="ch.allink.micrositeframework.widgets.SimpleBackgroundView"/>
     <classEntry path="ch.allink.micrositeframework.operation.IOperation"/>
-    <classEntry path="ch.allink.micrositeframework.operation.SlideShowOperation"/>
     <classEntry path="ch.allink.micrositeframework.events.ImageViewServiceEvent"/>
     <classEntry path="ch.allink.micrositeframework.widgets.ScrollPaneClipHolder"/>
     <classEntry path="ch.allink.micrositeframework.cmsview.ImageViewResizeAlign"/>
+    <classEntry path="ch.allink.micrositeframework.sandbox.IImageViewOperation"/>
+    <classEntry path="ch.allink.micrositeframework.sandbox.FilterOperation"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

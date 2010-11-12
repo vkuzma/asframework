@@ -85,6 +85,9 @@ public class ScrollPaneClipHolder extends Sprite
 	//
 	//-------------------------------------------------------------------------
 	
+	/**
+	 * Bei True werden die Scroll Buttons eingeblendet, ansonsten ausgeblendet. 
+	 **/
 	public function set useScrollButtons(value:Boolean):void
 	{
 		_useScrollButtons = value
@@ -105,16 +108,30 @@ public class ScrollPaneClipHolder extends Sprite
 		return _useScrollButtons
 	}
 	
+	/**
+	 * Gesammte Scrollbereich des Inahlts.
+	 **/
 	public function get scrollArea():Rectangle
 	{
-		var _scrollArea:Rectangle = new Rectangle(0, 
-			scrollTop.x + scrollTop.height, 0,
+		var _scrollArea:Rectangle
+		if(useScrollButtons)
+		{
+			_scrollArea = new Rectangle(0, 
+			scrollTop.x, 0, 
 			scrollBottom.y - scrollTop.height)
+			_scrollArea.y += scrollTop.height 
+		}
+		else
+		{
+			_scrollArea = new Rectangle(0, 
+			scrollTop.x, 0, scrollBottom.y + scrollBottom.height)
+		}
+			
 		return _scrollArea
 	}
 	
 	/**
-	 * Effektiver Schiebeweg des scrollDragger
+	 * Effektiver Schiebeweg des scrollDragger.
 	 **/
 	public function get effectiveScrollArea():Rectangle
 	{
@@ -122,19 +139,34 @@ public class ScrollPaneClipHolder extends Sprite
 		_effectiveScrollArea.height -= scrollDragger.height
 		return _effectiveScrollArea
 	}
-	
-	public function get distanceInPercent():Number
+	 
+	/**
+	 * Aktuelle Position des scrollDragger in Prozent. 
+	 **/
+	public function set currentScrollPosition(value:Number):void
 	{
-		var relativePositionY:Number = scrollDragger.y - effectiveScrollArea.y
-		var _distanceInPercen:Number = relativePositionY 
-			/ effectiveScrollArea.height * 100
-		
-		if(!_distanceInPercen)
-			_distanceInPercen = 0
-				
-		return _distanceInPercen
+		var relativePositionY:Number = effectiveScrollArea.height * value / 100
+		scrollDragger.y = effectiveScrollArea.y + relativePositionY
 	}
 	
+	public function get currentScrollPosition():Number
+	{
+		var relativePositionY:Number = scrollDragger.y - effectiveScrollArea.y
+		var _currentScrollPosition:Number = relativePositionY 
+			/ effectiveScrollArea.height * 100
+		
+		if(_currentScrollPosition < 0)
+			_currentScrollPosition = 0
+				
+		if(_currentScrollPosition > 100)
+			_currentScrollPosition = 100
+				
+		return _currentScrollPosition
+	}
+	
+	/**
+	 * Ist True, falls der scrollDragger einen positiven Schiebeweg aufweist. 
+	 **/
 	public function get isNecessary():Boolean
 	{
 		if(effectiveScrollArea.height > 0)
