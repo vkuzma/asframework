@@ -29,11 +29,17 @@ public class ScrollPaneClipHolder extends Sprite
 	private var _useScrollButtons:Boolean
 	private var _isNecessery:Boolean
 	
-	public var scrollBottom:Sprite
+	/**Scrollbar with all elements.**/
 	public var scrollBar:Sprite
+	/**An element of the scrollBar**/
+	public var scrollBottom:Sprite
+	/**@copy ScrollPaneClipHolder#scrollBottom**/
 	public var scrollTop:Sprite
+	/**@copy ScrollPaneClipHolder#scrollBottom**/
 	public var scrollDragger:Sprite     
+	/**@copy ScrollPaneClipHolder#scrollBottom**/
 	public var scrollBarBackground:Sprite
+	/**@copy ScrollPaneClipHolder#scrollBottom**/
 	public var scrollPaneMask:Shape
 	
 	//-------------------------------------------------------------------------
@@ -42,6 +48,10 @@ public class ScrollPaneClipHolder extends Sprite
 	//
 	//-------------------------------------------------------------------------
 	
+	/**
+	 * Creates a ScrollPaneClipHolder instance.
+	 * @param scrollPaneClip A scrollBare from the asset.fla.
+	 **/
 	public function ScrollPaneClipHolder(scrollPaneClip:Sprite)
 	{
 		super()
@@ -86,7 +96,7 @@ public class ScrollPaneClipHolder extends Sprite
 	//-------------------------------------------------------------------------
 	
 	/**
-	 * Bei True werden die Scroll Buttons eingeblendet, ansonsten ausgeblendet. 
+	 * Hides or make the scrollbuttons visible, by setting false or true.
 	 **/
 	public function set useScrollButtons(value:Boolean):void
 	{
@@ -109,7 +119,7 @@ public class ScrollPaneClipHolder extends Sprite
 	}
 	
 	/**
-	 * Gesammte Scrollbereich des Inahlts.
+	 * Whole scrolldinstance of the content.
 	 **/
 	public function get scrollArea():Rectangle
 	{
@@ -131,7 +141,7 @@ public class ScrollPaneClipHolder extends Sprite
 	}
 	
 	/**
-	 * Effektiver Schiebeweg des scrollDragger.
+	 * Effektive slidedistance of the scrolldragger.
 	 **/
 	public function get effectiveScrollArea():Rectangle
 	{
@@ -141,7 +151,7 @@ public class ScrollPaneClipHolder extends Sprite
 	}
 	 
 	/**
-	 * Aktuelle Position des scrollDragger in Prozent. 
+	 * Current scrollposition of the scrolldragge in percent.
 	 **/
 	public function set currentScrollPosition(value:Number):void
 	{
@@ -165,7 +175,8 @@ public class ScrollPaneClipHolder extends Sprite
 	}
 	
 	/**
-	 * Ist True, falls der scrollDragger einen positiven Schiebeweg aufweist. 
+	 * State of the necessitative use of the scrollbar. 
+	 * Is true when the content can be scrolled, otherwise false.
 	 **/
 	public function get isNecessary():Boolean
 	{

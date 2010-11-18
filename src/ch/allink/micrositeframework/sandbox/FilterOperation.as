@@ -125,7 +125,11 @@ public class FilterOperation implements IImageViewOperation
 	 **/
 	public function dispose():void
 	{
-		_targetSprite.removeChild(imageView)
+		if(imageView)
+		{
+			if(_targetSprite.contains(imageView))
+				_targetSprite.removeChild(imageView)
+		}
 	}
 	
 	//-------------------------------------------------------------------------

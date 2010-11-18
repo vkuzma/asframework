@@ -23,13 +23,6 @@ public class ScrollPaneView extends AbstractView
 {
 	//-------------------------------------------------------------------------
 	//
-	//  Constants
-	//
-	//-------------------------------------------------------------------------
-	
-	
-	//-------------------------------------------------------------------------
-	//
 	//  Global Variables
 	//
 	//-------------------------------------------------------------------------
@@ -52,6 +45,9 @@ public class ScrollPaneView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
+	/**
+	 * Creates a ScrollPaneView instance.
+	 **/
 	public function ScrollPaneView()
 	{
 		this.addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler)
@@ -70,6 +66,9 @@ public class ScrollPaneView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 
+	/**
+	 * Build the scrollbar and sets all mouseactions.
+	 **/ 
 	public override function build():void
 	{
 		this.addChild(scrollClipHolder)
@@ -79,8 +78,6 @@ public class ScrollPaneView extends AbstractView
 			scrollBottom_mouseDownHandler)
 		scrollClipHolder.scrollTop.addEventListener(MouseEvent.MOUSE_DOWN, 
 			scrollTop_mouseDownHanlder)
-		scrollClipHolder.scrollBarBackground.addEventListener(
-			MouseEvent.MOUSE_DOWN, scrollBarBackground_mouseDownHandler)
 		scrollClipHolder.scrollDragger.addEventListener(MouseEvent.MOUSE_DOWN, 
 			scrollDragger_mouseDownHandler)
 			
@@ -98,7 +95,7 @@ public class ScrollPaneView extends AbstractView
 	
 	private function scrollAStep():void
 	{
-		assingScrollPosition = -1
+		scrollPosition = -1
 		moveContainer()
 	}
 	
@@ -112,7 +109,7 @@ public class ScrollPaneView extends AbstractView
 	
 	private function scroll(scrollStep:Number):void
 	{
-		assingScrollPosition = scrollStep
+		scrollPosition = scrollStep
 		moveContainer()
 		if(scrolling)
 			Tweener.addTween(scrollTimer,
@@ -141,6 +138,10 @@ public class ScrollPaneView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
+	/**
+	 * Positions all visual elements of the scrollbar. Sets the contentcontainer
+	 * position in relation to the scrollbarproperties.
+	 **/
 	public function setUpScrollBar():void
 	{
 		scrollClipHolder.scrollPaneMask.height = contentArea.height
@@ -184,11 +185,6 @@ public class ScrollPaneView extends AbstractView
 		firstScroll(stepHeightInPercent)	
 	}
 	
-	private function scrollBarBackground_mouseDownHandler(event:MouseEvent):void
-	{
-//		scroll(-5)
-	}
-	
 	private function scrollDragger_mouseDownHandler(event:MouseEvent):void
 	{
 		scrollClipHolder.scrollDragger.startDrag(false, 
@@ -213,7 +209,7 @@ public class ScrollPaneView extends AbstractView
 	private function scrollContainer_mouseWheelHandler(event:MouseEvent):void
 	{
 		var delta:int = event.delta
-		assingScrollPosition = delta
+		scrollPosition = delta
 		moveContainer()
 	}
 	
@@ -224,18 +220,24 @@ public class ScrollPaneView extends AbstractView
 	//-------------------------------------------------------------------------
 	
 	/**
-	 * ScrollClip aus dem assets.fla.
+	 * ScrollClip from assets.fla.
 	 **/
 	public function set scrollClip(value:Sprite):void
 	{
 		scrollClipHolder = new ScrollPaneClipHolder(value)
 	}
 	
+	/**
+	 * Visual elements of the ScrollPaneView.
+	 **/
 	public function get scrollClip():Sprite
 	{
 		return scrollClipHolder
 	}
 	
+	/**
+	 * Hides or make the scrollbuttons visible, by setting false or true.
+	 **/
 	public function set useScrollButtons(value:Boolean):void
 	{
 		scrollClipHolder.useScrollButtons = value
@@ -247,13 +249,16 @@ public class ScrollPaneView extends AbstractView
 		return scrollClipHolder.useScrollButtons
 	}
 	
+	/**
+	 * The maks of the to scrolled content.
+	 **/
 	public function get contentMask():Shape
 	{
 		return scrollClipHolder.scrollPaneMask
 	}
 	
 	/**
-	 * Verhältniss der Höhe vom Content und der Höhe der Maske.
+	 * Ratio between the heigth of the content and the height of the mask.
 	 **/
 	private function get ratioContentMask():Number
 	{
@@ -266,7 +271,7 @@ public class ScrollPaneView extends AbstractView
 	}
 	
 	/**
-	 * Container des zu Scrollenden Inhalts.
+	 * Container of the to scrolled content.
 	 **/
 	public function set scrollContainer(value:Sprite):void
 	{
@@ -280,13 +285,16 @@ public class ScrollPaneView extends AbstractView
 	}
 	
 	/**
-	 * @copy ScrollPaneClipHolder#isNecessary
+	 * 
 	 **/
 	public function get isNecessary():Boolean
 	{
 		return scrollClipHolder.isNecessary
 	}
 	
+	/**
+	 * Space between the content and scrollbar.
+	 **/
 	public function set contentScrollBarSpacing(value:Number):void
 	{
 		_contentScrollBarSpacing = value
@@ -298,7 +306,10 @@ public class ScrollPaneView extends AbstractView
 		return _contentScrollBarSpacing
 	}
 	
-	private function set assingScrollPosition(value:Number):void
+	/**
+	 * Current scrollposition of the scrolldragge in percent.
+	 **/
+	public function set scrollPosition(value:Number):void
 	{
 		if(scrollClipHolder.currentScrollPosition - value > 100)
 			scrollClipHolder.currentScrollPosition = 100
@@ -306,10 +317,14 @@ public class ScrollPaneView extends AbstractView
 			scrollClipHolder.currentScrollPosition = 0
 		else
 			scrollClipHolder.currentScrollPosition -= value
-				
-		scrollClipHolder.currentScrollPosition
 	}
 	
+	public function get scrollPosition():Number
+	{
+		return scrollClipHolder.currentScrollPosition
+	}
+	
+	//TODO: formel korrigieren
 	private function get stepHeightInPercent():Number
 	{
 		var _stepHeightInPercent:Number = 
