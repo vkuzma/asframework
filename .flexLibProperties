@@ -1,25 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties includeAllClasses="true" version="3">
   <includeClasses>
-    <classEntry path="ch.allink.micrositeframework.model.ModelCollectionEvent"/>
-    <classEntry path="ch.allink.micrositeframework.view.AbstractView"/>
-    <classEntry path="ch.allink.micrositeframework.view.BaseWebsiteView"/>
-    <classEntry path="ch.allink.micrositeframework.cmsmodel.Navigation"/>
-    <classEntry path="ch.allink.micrositeframework.util.Translator"/>
+    <classEntry path="ch.allink.microsite.cmsConnector.ModelCollectionEvent"/>
+    <classEntry path="ch.allink.microsite.core.AbstractView"/>
+    <classEntry path="ch.allink.microsite.core.AbstractWebsiteView"/>
+    <classEntry path="ch.allink.microsite.navigationElement.Navigation"/>
+    <classEntry path="ch.allink.microsite.util.Translator"/>
     <classEntry path="ch.allink.micrositeframework.view.ImageView"/>
-    <classEntry path="ch.allink.micrositeframework.cmsmodel.NavigationViewEvent"/>
-    <classEntry path="ch.allink.micrositeframework.cmsview.PageView"/>
-    <classEntry path="ch.allink.micrositeframework.cmsview.SectionView"/>
-    <classEntry path="ch.allink.micrositeframework.cmsmodel.DisplayFormatter"/>
-    <classEntry path="ch.allink.micrositeframework.util.CMSXmlPath"/>
-    <classEntry path="ch.allink.micrositeframework.widgets.ImageViewService"/>
-    <classEntry path="ch.allink.micrositeframework.widgets.SimpleBackgroundView"/>
-    <classEntry path="ch.allink.micrositeframework.operation.IOperation"/>
-    <classEntry path="ch.allink.micrositeframework.events.ImageViewServiceEvent"/>
-    <classEntry path="ch.allink.micrositeframework.widgets.ScrollPaneClipHolder"/>
-    <classEntry path="ch.allink.micrositeframework.cmsview.ImageViewResizeAlign"/>
-    <classEntry path="ch.allink.micrositeframework.sandbox.IImageViewOperation"/>
-    <classEntry path="ch.allink.micrositeframework.sandbox.FilterOperation"/>
+    <classEntry path="ch.allink.microsite.events.NavigationViewEvent"/>
+    <classEntry path="ch.allink.microsite.pageElement.PageView"/>
+    <classEntry path="ch.allink.microsite.sectionElement.SectionView"/>
+    <classEntry path="ch.allink.microsite.widgets.DisplayFormatter"/>
+    <classEntry path="ch.allink.microsite.cmsConnector.CMSXmlPath"/>
+    <classEntry path="ch.allink.microsite.imageElement.ImageViewService"/>
+    <classEntry path="ch.allink.microsite.backgroundImageElement.SimpleBackgroundView"/>
+    <classEntry path="ch.allink.microsite.backgroundImageElement.IBackgroundViewOperation"/>
+    <classEntry path="ch.allink.microsite.events.ImageViewServiceEvent"/>
+    <classEntry path="ch.allink.microsite.scrollPaneElement.ScrollPaneClipHolder"/>
+    <classEntry path="ch.allink.microsite.imageElement.ImageViewResizeAlign"/>
+    <classEntry path="ch.allink.microsite.imageElement.IImageViewOperation"/>
+    <classEntry path="ch.allink.microsite.imageElement.FilterOperation"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
