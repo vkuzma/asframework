@@ -14,6 +14,7 @@ import flash.text.GridFitType;
 import flash.text.StyleSheet;
 import flash.text.TextField;
 import flash.text.TextFieldAutoSize;
+import flash.text.TextFieldType;
 import flash.text.TextFormat;
 
 import mx.formatters.DateFormatter;
@@ -27,16 +28,14 @@ public class SectionView extends AbstractView
 	//-------------------------------------------------------------------------
 	
 	public var textField:TextField
-	private var _textFormat:TextFormat
-	private var _textFormatFunction:Function
 	private var title:TextField
+	private var rawText:String
 	
 	private var imageViews:Vector.<ImageView>
 	private var images:Array
 
 	public var section:Section
 	private var _displayFormatter:DisplayFormatter
-	private var _enableBlendIn:Boolean
 	
 	
 	
@@ -53,9 +52,7 @@ public class SectionView extends AbstractView
 		this.section = section
 		textField = new TextField()
 		this.addChild(textField)
-		_textFormat = new TextFormat()
 		contentText = section.content
-		enableBlendIn = false
 	}
 	
 	//-------------------------------------------------------------------------
@@ -66,8 +63,6 @@ public class SectionView extends AbstractView
 	
 	final public override function build():void
 	{
-		if(_enableBlendIn)
-			blendIn()
 		if(section.files != null)
 		{
 			images = section.files
@@ -106,40 +101,21 @@ public class SectionView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	public function setUpText():void
+	private function setUpText():void
 	{
-		textField.selectable = false
+		if(_displayFormatter.textFieldConfig != null)
+			textField = _displayFormatter.textFieldConfig(textField)
+				
+		textField.wordWrap = true
 		textField.autoSize = TextFieldAutoSize.LEFT
 		textField.antiAliasType = AntiAliasType.ADVANCED
 		textField.gridFitType = GridFitType.PIXEL
-		textField.multiline = true
-		textField.wordWrap = true
-		if(_displayFormatter)
-		{
-			if(_displayFormatter.textFieldConfig != null)
-				textField = _displayFormatter.textFieldConfig(textField)
-			if(_displayFormatter.textFormatConfig != null)
-				_textFormat = _displayFormatter.textFormatConfig(_textFormat)
-		}
-		
-		if(_textFormat.font)
-		{
-			textField.setTextFormat(_textFormat) 
+		textField.selectable = false
+			
+		textField.styleSheet = displayFormatter.styleSheet
+		contentText = rawText
+		if(textField.styleSheet.getStyle("body").fontFamily)
 			textField.embedFonts = true
-		}
-		else
-		{
-			textField.setTextFormat(_textFormat)
-		}
-	}
-	
-	public function blendIn():void
-	{
-		Tweener.addTween(this,
-			{
-				time: 2,
-				_autoAlpha: 1
-			})
 	}
 	
 	//-------------------------------------------------------------------------
@@ -150,11 +126,9 @@ public class SectionView extends AbstractView
 	
 	public function set contentText(value:String):void
 	{
-		textField.htmlText = value
-		if(_displayFormatter)
-			displayFormatter = _displayFormatter
-		if(_enableBlendIn)
-			blendIn()
+		rawText = value
+		textField.multiline = true		//wegen <br /> Tag
+		textField.htmlText = "<body>"+rawText+"</body>"
 	}
 	
 	public function get contentText():String
@@ -166,37 +140,11 @@ public class SectionView extends AbstractView
 	{
 		_displayFormatter = value
 		setUpText()
-		
 	}
 	
 	public function get displayFormatter():DisplayFormatter
 	{
 		return _displayFormatter
-	}
-	
-	public function get textFormat():TextFormat
-	{
-		return _textFormat
-	}
-	
-	public function set enableBlendIn(value:Boolean):void
-	{
-		_enableBlendIn = value
-		if(value)
-		{
-			this.alpha = 0
-			this.visible = false
-		}
-		else
-		{
-			this.alpha = 1
-			this.visible = true
-		}
-	}
-	
-	public function get enableBlendIn():Boolean
-	{
-		return _enableBlendIn
 	}
 }
 }

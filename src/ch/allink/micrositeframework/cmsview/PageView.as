@@ -34,8 +34,10 @@ public class PageView extends AbstractView
 	
 	private var sectionViews:Vector.<SectionView>
 	private var sections:Array
-	public var page:Page
 	private var _displayFormatter:DisplayFormatter
+	
+	public var page:Page
+	public var customSectionViewOperation:Function
 	
 	//-------------------------------------------------------------------------
 	//
@@ -71,39 +73,16 @@ public class PageView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	private function buildSectionViews(page:Page):Vector.<SectionView>
-	{
-		sections = page.sections
-		var prevSectionView:SectionView
-		sectionViews = new Vector.<SectionView>
-		for each(var section:Section in sections)
-		{
-			var sectionView:SectionView = new SectionView(section)
-			sectionView.enableBlendIn = true
-			sectionView.build()
-			this.addChild(sectionView)
-			sectionView.displayFormatter = displayFormatter
-			formatSectionView(sectionView, prevSectionView)
-			prevSectionView = sectionView
-			sectionViews.push(sectionView)
-			
-			if(section.type == TEXT_IMAGE_LEFT || section.type == IMAGE)
-				buildImage(sectionView)
-				
-		}
-		return sectionViews
-	}
-	
 	private function formatSectionView(sectionView:SectionView,
 									   prevSectionView:SectionView):void
 	{
 		if(displayFormatter)
 		{
-			if(prevSectionView != null)
+			if(prevSectionView)
 			{
 				var prevSection:Section = prevSectionView.section
 				var extraSpacing:Number = 0
-				if(prevSection.type == TEXT_IMAGE_LEFT)
+				if(prevSection.files)
 				{
 					var image:Image = prevSection.files[0]
 					extraSpacing = image.height
@@ -135,7 +114,6 @@ public class PageView extends AbstractView
 		var section:Section = sectionView.section
 		var image:Image = section.files[0]
 		var imageView:ImageView = new ImageView(image)
-		imageView.enableBlendIn = true
 		imageView.buildByFileID(image.uniqueid)
 		sectionView.addChild(imageView)
 		formatImageTextLeft(image, sectionView.textField)
@@ -162,6 +140,32 @@ public class PageView extends AbstractView
 			ModelFactory.TYPE_MODEL)
 		modelRequest.addEventListener(ResultEvent.DATA_LOADED,
 			modelRequest_dataLoadedHandler)
+	}
+	
+	public function buildSectionViews(page:Page):Vector.<SectionView>
+	{
+		clearSectionViews()
+		sections = page.sections
+		var prevSectionView:SectionView
+		sectionViews = new Vector.<SectionView>
+		for each(var section:Section in sections)
+		{
+			var sectionView:SectionView = new SectionView(section)
+			sectionView.build()
+			this.addChild(sectionView)
+			sectionView.displayFormatter = displayFormatter
+			sectionViews.push(sectionView)
+			
+			if(section.type == TEXT_IMAGE_LEFT || section.type == IMAGE)
+				buildImage(sectionView)
+			
+			if(customSectionViewOperation != null)
+				sectionView = customSectionViewOperation(sectionView)
+			
+			formatSectionView(sectionView, prevSectionView)
+			prevSectionView = sectionView
+		}
+		return sectionViews
 	}
 	
 	//-------------------------------------------------------------------------

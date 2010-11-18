@@ -1,0 +1,1 @@
+asdoc -doc-sources ./src/ch/allink/micrositeframework/ -library-path ./lib/ -doc-sources ./src/com/ -target-player 10 

@@ -2,14 +2,9 @@ package ch.allink.micrositeframework.util
 {
 	import com.adobe.utils.StringUtil;
 	
-	import flash.display.Loader;
 	import flash.events.Event;
 	import flash.net.URLLoader;
 	import flash.net.URLRequest;
-	import flash.system.System;
-	import flash.utils.Dictionary;
-	
-	import spark.components.mediaClasses.VolumeBar;
 
 	public class Translator
 	{

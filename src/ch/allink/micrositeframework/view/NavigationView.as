@@ -15,7 +15,7 @@ import flash.text.TextFieldAutoSize;
 import flash.text.TextFormat;
 
 /** 
- * Darstellung eines Navigationselement
+ * Darstellungsobjekt eines Navigationselements
  * 
  * @author Vladimir Kuzma
  */
@@ -85,6 +85,10 @@ public class NavigationView extends AbstractView
 		_textField = new TextField()
 		this.addChild(_textField)
 		navigationText = navigation.title
+			
+		this.mouseChildren = false
+		this.buttonMode = true
+		this.useHandCursor = true
 			
 		this.addEventListener(MouseEvent.ROLL_OVER, rollOverHandler)
 		this.addEventListener(MouseEvent.ROLL_OUT, rollOutHandler)

@@ -18,6 +18,7 @@ public class Navigation extends AllinkCMSBaseModel
 	public var indexpageformats:String = ""
 	public var title:String = ""
 	private var _pages:String
+	private var _children:Vector.<Navigation>
 	public var indexPageID:int
 
 	
@@ -27,7 +28,7 @@ public class Navigation extends AllinkCMSBaseModel
 	//-------------------------------------------------------------------------
 	//
 	//	Constructor
-	//
+	// 
 	//-------------------------------------------------------------------------
 	
 	public function Navigation()
@@ -65,7 +66,6 @@ public class Navigation extends AllinkCMSBaseModel
 		return _pages
 	}
 	
-	private var _children:Vector.<Navigation>
 	public function set children(value:Vector.<Navigation>):void
 	{
 		_children = value

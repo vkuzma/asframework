@@ -9,15 +9,17 @@ import flash.events.SecurityErrorEvent;
 import flash.net.URLLoader;
 import flash.net.URLRequest;
 
-import mx.messaging.messages.AbstractMessage;
-
-import spark.components.mediaClasses.VolumeBar;
-
 
 [Event (name='dataLoaded', type='ch.allink.micrositeframework.net.ResultEvent')]
 
+
 public class ModelRequest extends EventDispatcher 
 {
+	//-------------------------------------------------------------------------
+	//
+	//	Global variables
+	//
+	//-------------------------------------------------------------------------
 	
 	private var _request:URLRequest
 	private var _loader:URLLoader
@@ -25,7 +27,15 @@ public class ModelRequest extends EventDispatcher
 	private var _modelFactory:ModelFactory
 	private var _requestType:String
 	
-	public function ModelRequest(klass:Class, url:String, modelFactory:ModelFactory, requestType:String)
+	//-------------------------------------------------------------------------
+	//
+	//	Constructor
+	//
+	//-------------------------------------------------------------------------
+	
+	public function ModelRequest(klass:Class, url:String, 
+								 modelFactory:ModelFactory, 
+								 requestType:String)
 	{
 		
 		_request = new URLRequest(url)
@@ -43,11 +53,11 @@ public class ModelRequest extends EventDispatcher
 		_loader.addEventListener(SecurityErrorEvent.SECURITY_ERROR,
 			loader_errorHandler, false, 0, true)
 	}
-	
-	public function get klass():Class
-	{
-		return _klass
-	}
+	//-------------------------------------------------------------------------
+	//
+	//	Private methods
+	//
+	//-------------------------------------------------------------------------
 	
 	private function loader_completeHandler(event:Event):void
 	{
@@ -61,7 +71,8 @@ public class ModelRequest extends EventDispatcher
 		else
 			abstractModel = _modelFactory.create(_klass, data) 
 				
-		event = new ResultEvent(ResultEvent.DATA_LOADED, false, false, this, collection, abstractModel)
+		event = new ResultEvent(ResultEvent.DATA_LOADED, false, false, this, 
+								collection, abstractModel)
 		dispatchEvent(event)
 		dispose()
 	}
@@ -70,6 +81,12 @@ public class ModelRequest extends EventDispatcher
 	{
 		
 	}
+	
+	//-------------------------------------------------------------------------
+	//
+	//	Public methods
+	//
+	//-------------------------------------------------------------------------
 	
 	public function dispose():void
 	{
@@ -97,5 +114,15 @@ public class ModelRequest extends EventDispatcher
 		}
 	}
 	
+	//-------------------------------------------------------------------------
+	//
+	//	Properties
+	//
+	//-------------------------------------------------------------------------
+	
+	public function get klass():Class
+	{
+		return _klass
+	}
 }
 }
