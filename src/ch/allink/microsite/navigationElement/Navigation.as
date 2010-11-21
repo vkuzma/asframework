@@ -19,6 +19,8 @@ public class Navigation extends AbstractModel
 	public var indexpagetitle:String = ""
 	public var indexpageformats:String = ""
 	public var title:String = ""
+	public var url:String = ""
+	public var slug:String = ""
 	private var _pages:String
 	private var _children:Vector.<Navigation>
 	public var indexPageID:int

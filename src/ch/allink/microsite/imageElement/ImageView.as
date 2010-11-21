@@ -24,10 +24,10 @@ public class ImageView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	public var _imageOptions:ImageOptions
 	public var isLoading:Boolean
 	public var loader:Loader
 	public var image:Image
+	private var _imageOptions:ImageOptions
 	private var _loadedBitmap:Bitmap
 	private var _currentBitmap:Bitmap
 	private var _loaded:Boolean

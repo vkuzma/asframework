@@ -20,6 +20,12 @@
     <classEntry path="ch.allink.microsite.imageElement.ImageViewResizeAlign"/>
     <classEntry path="ch.allink.microsite.imageElement.IImageViewOperation"/>
     <classEntry path="ch.allink.microsite.imageElement.FilterOperation"/>
+    <classEntry path="ch.allink.microsite.pageElement.IPageOperation"/>
+    <classEntry path="ch.allink.microsite.sectionElement.ISectionOperation"/>
+    <classEntry path="ch.allink.microsite.pageElement.MulitpleSectionTypeOperation"/>
+    <classEntry path="ch.allink.microsite.sectionElement.TextImageOperation"/>
+    <classEntry path="ch.allink.microsite.sectionElement.TextOperation"/>
+    <classEntry path="ch.allink.microsite.pageElement.SectionOperationFormat"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

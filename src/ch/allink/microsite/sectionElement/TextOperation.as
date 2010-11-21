@@ -1,24 +1,15 @@
-package ch.allink.microsite.core
+package ch.allink.microsite.sectionElement
 {
-import caurina.transitions.properties.*;
+import ch.allink.microsite.core.AbstractView;
+import ch.allink.microsite.pageElement.SectionOperationFormat;
 
-import flash.display.Sprite;
-
-{
-	ColorShortcuts.init()
-	DisplayShortcuts.init()
-	FilterShortcuts.init()
-}
-
-public class AbstractView extends Sprite implements IAbstractView
+public class TextOperation implements ISectionOperation
 {
 	//-------------------------------------------------------------------------
 	//
-	//	Protected variables
+	//	Variables
 	//
 	//-------------------------------------------------------------------------
-	
-	protected var _model:AbstractModel
 	
 	//-------------------------------------------------------------------------
 	//
@@ -26,24 +17,15 @@ public class AbstractView extends Sprite implements IAbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	public function AbstractView()
+	public function TextOperation()
 	{
-		super()
 	}
 	
 	//-------------------------------------------------------------------------
 	//
-	//	Public methods
+	//	Private methods
 	//
 	//-------------------------------------------------------------------------
-	
-	public function build():void
-	{
-	}
-	
-	public function dispose():void
-	{
-	}
 	
 	//-------------------------------------------------------------------------
 	//
@@ -51,14 +33,23 @@ public class AbstractView extends Sprite implements IAbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	public function get model():AbstractModel
+	public function set targetView(value:AbstractView):void
 	{
-		return _model
 	}
 	
-	public function set model(value:AbstractModel):void
+	public function get targetView():AbstractView
 	{
-		_model = value
+		return null
+	}
+	
+	public function get FORMAT():String
+	{
+		return SectionOperationFormat.TEXT_ONLY
+	}
+	
+	public function get height():Number
+	{
+		return 0;
 	}
 }
 }

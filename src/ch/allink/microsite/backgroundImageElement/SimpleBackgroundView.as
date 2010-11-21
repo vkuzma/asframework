@@ -40,7 +40,7 @@ public class SimpleBackgroundView extends ImageViewService
     
     private function initOperation(operation:IBackgroundViewOperation):void
     {
-        operation.targetSprite = this
+        operation.targetView = this
         operation.imageViews = this.imageViews
     }
 	

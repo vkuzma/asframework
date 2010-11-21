@@ -1,43 +1,22 @@
 package ch.allink.microsite.pageElement
 {
+import ch.allink.microsite.cmsConnector.CMSXmlPath;
 import ch.allink.microsite.cmsConnector.ModelFactory;
 import ch.allink.microsite.cmsConnector.ModelRequest;
 import ch.allink.microsite.core.AbstractView;
 import ch.allink.microsite.events.ResultEvent;
-import ch.allink.microsite.imageElement.Image;
-import ch.allink.microsite.imageElement.ImageView;
-import ch.allink.microsite.sectionElement.Section;
 import ch.allink.microsite.sectionElement.SectionView;
-import ch.allink.microsite.widgets.DisplayFormatter;
-
-import flash.text.TextField;
 
 public class PageView extends AbstractView
 {
-	//-------------------------------------------------------------------------
-	//
-	//  Constants
-	//
-	//-------------------------------------------------------------------------
-	
-	private const xmlPath:String = "./?do=xml&mode=page&pageID="
-	private const TEXT_ONLY:String = "textonly"
-	private const TEXT_IMAGE_LEFT:String = "textimageleft"
-	private const IMAGE:String = "image"
-	private const GALLERY:String = "gallery"
-		
 	//-------------------------------------------------------------------------
 	//
 	//  Variables
 	//
 	//-------------------------------------------------------------------------
 	
-	private var sectionViews:Vector.<SectionView>
-	private var sections:Array
-	private var _displayFormatter:DisplayFormatter
-	
+	private var _operation:IPageOperation
 	public var page:Page
-	public var customSectionViewOperation:Function
 	
 	//-------------------------------------------------------------------------
 	//
@@ -59,12 +38,11 @@ public class PageView extends AbstractView
 	
 	public override function build():void
 	{
-		
 	}
 	
 	public override function dispose():void
 	{
-		clearSectionViews()
+		operation.dispose()
 	}
 	
 	//-------------------------------------------------------------------------
@@ -73,57 +51,17 @@ public class PageView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	private function formatSectionView(sectionView:SectionView,
-									   prevSectionView:SectionView):void
-	{
-		if(displayFormatter)
-		{
-			if(prevSectionView)
-			{
-				var prevSection:Section = prevSectionView.section
-				var extraSpacing:Number = 0
-				if(prevSection.files)
-				{
-					var image:Image = prevSection.files[0]
-					extraSpacing = image.height
-				}
-				sectionView.y = prevSectionView.y + prevSectionView.height +
-								displayFormatter.sectionVerticalSpacing +
-								extraSpacing
-			}
-			else
-			{
-				sectionView.y = 0
-			}
-		}
-	}
-	
-	private function clearSectionViews():void
+	private function clearSectionViews(sectionViews:Vector.<SectionView>):void
 	{
 		for each(var sectionView:SectionView in sectionViews)
 		{
-			if(this.contains(sectionView))
-				this.removeChild(sectionView)
-			sectionView.dispose()
-			sectionView = null
+			if(sectionView)
+			{
+				if(contains(sectionView))
+					removeChild(sectionView)
+				sectionView.dispose()
+			}
 		}
-	}
-	
-	private function buildImage(sectionView:SectionView):void
-	{
-		var section:Section = sectionView.section
-		var image:Image = section.files[0]
-		var imageView:ImageView = new ImageView(image)
-		imageView.buildByFileID(image.uniqueid)
-		sectionView.addChild(imageView)
-		formatImageTextLeft(image, sectionView.textField)
-	}
-	
-	
-	private function formatImageTextLeft(image:Image,
-										 textField:TextField):void
-	{
-		textField.x = image.width + displayFormatter.sectionHorizontalSpacing
 	}
 	
 	//-------------------------------------------------------------------------
@@ -132,40 +70,28 @@ public class PageView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
+	/**
+	 * Loads a Page instance by the pageid and will be buildded by the loaded Page instance.
+	 **/
 	public function buildByPageID(pageID:int):void
 	{
-		clearSectionViews()
 		var modelFactory:ModelFactory = new ModelFactory()
-		var modelRequest:ModelRequest = modelFactory.load(Page, xmlPath+pageID,
+		var modelRequest:ModelRequest = modelFactory.load(Page, 
+			CMSXmlPath.PAGE_PATH+pageID,
 			ModelFactory.TYPE_MODEL)
 		modelRequest.addEventListener(ResultEvent.DATA_LOADED,
 			modelRequest_dataLoadedHandler)
 	}
 	
-	public function buildSectionViews(page:Page):Vector.<SectionView>
+	/**
+	 * Will be builded by the Page instance.
+	 **/	
+	public function buildByPage(page:Page):void
 	{
-		clearSectionViews()
-		sections = page.sections
-		var prevSectionView:SectionView
-		sectionViews = new Vector.<SectionView>
-		for each(var section:Section in sections)
-		{
-			var sectionView:SectionView = new SectionView(section)
-			sectionView.build()
-			this.addChild(sectionView)
-			sectionView.displayFormatter = displayFormatter
-			sectionViews.push(sectionView)
-			
-			if(section.type == TEXT_IMAGE_LEFT || section.type == IMAGE)
-				buildImage(sectionView)
-			
-			if(customSectionViewOperation != null)
-				sectionView = customSectionViewOperation(sectionView)
-			
-			formatSectionView(sectionView, prevSectionView)
-			prevSectionView = sectionView
-		}
-		return sectionViews
+		if(sectionViews)
+			clearSectionViews(sectionViews)
+		var sections:Array = page.sections
+		sections.forEach(operation.buildSectionViews)	
 	}
 	
 	//-------------------------------------------------------------------------
@@ -177,7 +103,7 @@ public class PageView extends AbstractView
 	private function modelRequest_dataLoadedHandler(event:ResultEvent):void
 	{
 		page = event.model as Page
-		sectionViews = buildSectionViews(page)
+		buildByPage(page)
 		dispatchEvent(event)
 	}
 	
@@ -187,14 +113,20 @@ public class PageView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	public function set displayFormatter(value:DisplayFormatter):void
+	public function set operation(value:IPageOperation):void
 	{
-		_displayFormatter = value
+		_operation = value
+		_operation.targetView = this
 	}
 	
-	public function get displayFormatter():DisplayFormatter
+	public function get operation():IPageOperation
 	{
-		return _displayFormatter
+		return _operation
+	}
+	
+	private function get sectionViews():Vector.<SectionView>
+	{
+		return operation.sectionViews
 	}
 }
 }

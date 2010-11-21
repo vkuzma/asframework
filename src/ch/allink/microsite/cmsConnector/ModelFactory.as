@@ -30,6 +30,17 @@ public class ModelFactory extends EventDispatcher
 	
 	//-------------------------------------------------------------------------
 	//
+	//	Private methods
+	//
+	//-------------------------------------------------------------------------
+	
+	private function getXMLWithChildren(xml:XMLList):XMLList
+	{
+		return null
+	}
+	
+	//-------------------------------------------------------------------------
+	//
 	//	Public methods
 	//
 	//-------------------------------------------------------------------------
@@ -42,10 +53,6 @@ public class ModelFactory extends EventDispatcher
 	public function create(klass:Class, xml:XML):AbstractModel
 	{
 		var model:AbstractModel = new klass
-		var attributes:XMLList = xml.attributes()
-		for each (var attribute:XML in attributes)
-			model[attribute.name().toString()] = attribute.toString()
-				
 		var nodes:XMLList = xml.children()
 		for each(var node:XML in nodes)
 		{
@@ -79,7 +86,7 @@ public class ModelFactory extends EventDispatcher
 									 xml:XML):Vector.<AbstractModel>
 	{
 		var result:Vector.<AbstractModel> = new Vector.<AbstractModel>
-		for each(var node:XML in xml.children())
+		for each(var node:XML in xml.children().children())
 			result.push(create(klass, node))
 		
 		return result

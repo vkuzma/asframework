@@ -4,11 +4,13 @@ import ch.allink.microsite.core.CMSAbstractModel;
 import ch.allink.microsite.imageElement.Image;
 import ch.allink.microsite.sectionElement.Section;
 
+import flash.net.registerClassAlias;
+
 /**
- * Die Page Klasse dient als Model für eine PageView Instanz.
+ * The Page class is a model for the PageView class.
  * @author Michael Walder
  * @date 7.11.2010
- * @see ch.allink.micrositeframework.cmsview.PageView
+ * @see ch.allink.microsite.pageElement.PageView
  **/
 
 public class Page extends CMSAbstractModel
@@ -21,7 +23,9 @@ public class Page extends CMSAbstractModel
 	
 	private var _sections:Array
 	
+	/**Title of the Page**/
 	public var title:String
+	/**Formats for special situations**/
 	public var format:String
 	public var extraFields:String
 	public var fileid:int
@@ -48,6 +52,9 @@ public class Page extends CMSAbstractModel
 	//
 	//-------------------------------------------------------------------------
 	
+	/**
+	 * A collection of Section instances.
+	 **/
 	public function set sections(values:Array):void
 	{
 		_sections = fillCollection(Section, values)
@@ -58,6 +65,9 @@ public class Page extends CMSAbstractModel
 		return _sections
 	}
 	
+	/**
+	 * A collection of Image instances.
+	 **/
 	public function get files():Vector.<Image>
 	{
 		var files:Vector.<Image> = new Vector.<Image>

@@ -3,22 +3,27 @@ package ch.allink.microsite.sectionElement
 import ch.allink.microsite.core.AbstractView;
 import ch.allink.microsite.imageElement.Image;
 import ch.allink.microsite.imageElement.ImageView;
+import ch.allink.microsite.pageElement.SectionOperationFormat;
 
 import flash.text.TextField;
 
-public class SectionView extends AbstractView
+public class TextImageOperation implements ISectionOperation
 {
+	
+	//-------------------------------------------------------------------------
+	//
+	//	Constants
+	//
+	//-------------------------------------------------------------------------
+	
 	//-------------------------------------------------------------------------
 	//
 	//	Variables
 	//
 	//-------------------------------------------------------------------------
 	
-	private var _operation:ISectionOperation
-	private var imageViews:Vector.<ImageView>
-	private var images:Array
-
-	public var section:Section
+	private var content:TextField
+	private var imageView:ImageView
 	
 	//-------------------------------------------------------------------------
 	//
@@ -26,32 +31,9 @@ public class SectionView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	public function SectionView(section:Section = null)
+	public function TextImageOperation()
 	{
-		super()
-		this.section = section
 	}
-	
-	//-------------------------------------------------------------------------
-	//
-	//	Overriden methods
-	//
-	//-------------------------------------------------------------------------
-	
-	final public override function build():void
-	{
-		if(section.files != null)
-		{
-			images = section.files
-			imageViews = buildImageViews(images)
-		}
-	}
-	
-	public override function dispose():void
-	{
-		imageViews = null
-		images = null
- 	}
 	
 	//-------------------------------------------------------------------------
 	//
@@ -59,16 +41,19 @@ public class SectionView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	private function buildImageViews(images:Array):Vector.<ImageView>
+	public function build(section:Section):void
 	{
-		var imageViews:Vector.<ImageView> = new Vector.<ImageView>
-		for each(var image:Image in images)
-		{
-			var imageView:ImageView = new  ImageView(image)
-			imageViews.push(imageView)
-		}
-		return imageViews
+		var image:Image = section.files[0] as Image
+		content = new TextField()
+			
+		imageView = new ImageView(image)
 	}
+	
+	//-------------------------------------------------------------------------
+	//
+	//	Private methods
+	//
+	//-------------------------------------------------------------------------
 	
 	//-------------------------------------------------------------------------
 	//
@@ -76,22 +61,25 @@ public class SectionView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	//-------------------------------------------------------------------------
-	//
-	//	Properties
-	//
-	//-------------------------------------------------------------------------
-	
-	
-	public function set operation(value:ISectionOperation):void
+	public function set targetView(value:AbstractView):void
 	{
-		_operation = value
-		_operation.targetView = this
 	}
 	
-	public function get operation():ISectionOperation
+	public function get targetView():AbstractView
 	{
-		return _operation
+		return null
+	}
+	
+	public function get FORMAT():String
+	{
+		return SectionOperationFormat.TEXT_IMAGE_LEFT
+	}
+	
+	
+	
+	public function get height():Number
+	{
+		return 0
 	}
 }
 }
