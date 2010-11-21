@@ -2,8 +2,8 @@ package ch.allink.microsite.navigationElement
 {
 import ch.allink.microsite.events.NavigationViewEvent;
 
+import flash.display.Sprite;
 import flash.events.Event;
-import flash.events.EventDispatcher;
 import flash.events.IEventDispatcher;
 import flash.events.MouseEvent;
 
@@ -12,7 +12,7 @@ import flash.events.MouseEvent;
  * 
  * @author Vladimir Kuzma
  **/
-public class NavigationViewService extends EventDispatcher
+public class NavigationTreeView extends Sprite
 {
 	
 	//-------------------------------------------------------------------------
@@ -22,6 +22,7 @@ public class NavigationViewService extends EventDispatcher
 	//-------------------------------------------------------------------------
 	
 	private var _navigationViews:Vector.<NavigationView>
+	private var _parentNavigationView:NavigationView
 	public var navigations:Vector.<Navigation>
 	public var pageID:int
 	
@@ -31,9 +32,8 @@ public class NavigationViewService extends EventDispatcher
 	//
 	//-------------------------------------------------------------------------
 	
-	public function NavigationViewService(target:IEventDispatcher = null)
+	public function NavigationTreeView()
 	{
-		super(target)
 	}
 	
 	//-------------------------------------------------------------------------
@@ -252,7 +252,7 @@ public class NavigationViewService extends EventDispatcher
 		event:NavigationViewEvent):void
 	{
 		var navigationView:NavigationView = event.target as NavigationView
-		var navigationViewService:NavigationViewService = navigationView.
+		var navigationViewService:NavigationTreeView = navigationView.
 														  navigationService
 		pageID = navigationViewService.pageID
 		dispatchEvent(event)
@@ -291,7 +291,6 @@ public class NavigationViewService extends EventDispatcher
 		return _navigationViews
 	}
 
-	private var _parentNavigationView:NavigationView
 	public function set parentNavigationView(value:NavigationView):void
 	{
 		_parentNavigationView = value
