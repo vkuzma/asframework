@@ -5,7 +5,6 @@ import ch.allink.microsite.cmsConnector.ModelFactory;
 import ch.allink.microsite.cmsConnector.ModelRequest;
 import ch.allink.microsite.events.ResultEvent;
 
-import flash.display.Shape;
 import flash.events.EventDispatcher;
 
 public final class NavigationFactory extends EventDispatcher
@@ -17,7 +16,7 @@ public final class NavigationFactory extends EventDispatcher
 	//-------------------------------------------------------------------------
 	
 	private var _navigationTreeView:NavigationTreeView
-	private var _navigationFormatter:INavigationFormatter
+	private var _navigationOperation:INavigationOperation
 	
 	//-------------------------------------------------------------------------
 	//
@@ -26,9 +25,9 @@ public final class NavigationFactory extends EventDispatcher
 	//-------------------------------------------------------------------------
 	
 	public function NavigationFactory(
-		navigationFormatter:INavigationFormatter = null)
+		navigationFormatter:INavigationOperation = null)
 	{
-		_navigationFormatter = navigationFormatter
+		_navigationOperation = navigationFormatter
 	}
 	
 	
@@ -81,8 +80,13 @@ public final class NavigationFactory extends EventDispatcher
 			event.collection)
 		_navigationTreeView = new NavigationTreeView()
 		buildNavigationViews(navigations)
-		if(navigationFormatter)
-			navigationFormatter.formatNavigationTreeView(navigationTreeView)
+		
+		if(navigationOperation)
+		{
+			navigationOperation.targetView = navigationTreeView					
+			navigationOperation.initialize()
+		}
+		
 		dispatchEvent(event)
 	}
 	
@@ -91,9 +95,14 @@ public final class NavigationFactory extends EventDispatcher
 		return _navigationTreeView
 	}
 	
-	public function get navigationFormatter():INavigationFormatter
+	public function set navigationOperation(value:INavigationOperation):void
 	{
-		return _navigationFormatter
+		_navigationOperation = value
+	}
+	
+	public function get navigationOperation():INavigationOperation
+	{
+		return _navigationOperation
 	}
 }
 }
