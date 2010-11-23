@@ -28,7 +28,7 @@
     <classEntry path="ch.allink.microsite.pageElement.SectionOperationFormat"/>
     <classEntry path="ch.allink.microsite.navigationElement.NavigationFactory"/>
     <classEntry path="ch.allink.microsite.navigationElement.INavigationOperation"/>
-    <classEntry path="ch.allink.microsite.navigationElement.INavigationFormatter"/>
+    <classEntry path="ch.allink.microsite.navigationElement.accordionNavigationOperation"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>
