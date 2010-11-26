@@ -118,7 +118,7 @@ public class NavigationTreeView extends Sprite
 	//	Public methods
 	//
 	//-------------------------------------------------------------------------
-	
+		
 	public function navigationByPageID(id:int):Navigation
 	{
 		var targetNavigation:Navigation
@@ -258,6 +258,40 @@ public class NavigationTreeView extends Sprite
 		dispatchEvent(event)
 	}
 	
+	private function makeTree(navigationViews:Vector.<NavigationView>):void
+	{
+		for each(var navigationView:NavigationView in navigationViews)
+		{
+			var navigation:Navigation = navigationView.navigation
+			var navigationURL:Array = navigation.url.
+				substring(1, navigation.url.length - 1).split('/')
+			if(navigationURL.length > 1)
+			{
+				var childNavigation:Navigation = 
+					getNavigationByName(navigationURL.pop())
+				var parentNavigation:Navigation = 
+					getNavigationByName(navigationURL.pop())
+				if(!parentNavigation.children)
+					parentNavigation.children = new Vector.<Navigation>
+				parentNavigation.children.push(childNavigation)
+			}
+		}
+	}
+	
+	private function getNavigationByName(name:String):Navigation
+	{
+		var returnValue:Navigation
+		for each(var navigationView:NavigationView in navigationViews)
+		{
+			var navigation:Navigation = navigationView.navigation
+			if(navigation.slug == name)
+			{
+				returnValue = navigation
+				break
+			}
+		}
+		return returnValue
+	}
 	
 	//-------------------------------------------------------------------------
 	//
@@ -268,6 +302,7 @@ public class NavigationTreeView extends Sprite
 	public function set navigationViews(value:Vector.<NavigationView>):void
 	{
 		_navigationViews = value
+		makeTree(_navigationViews)
 //		Es ist nicht nötig die navigations und navigationViews zugleich 
 //		zu speichern
 		navigations = null

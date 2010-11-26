@@ -77,5 +77,14 @@ public class Navigation extends AbstractModel
 	{
 		return _children
 	}
+	
+	public function get parentSlug():String
+	{
+		var returnValue:String = slug
+		var navigationURL:Array = url.substring(1, url.length - 1).split('/')
+		if(navigationURL.length > 1)
+			returnValue = navigationURL[navigationURL.length - 2]
+		return returnValue
+	}
 }
 }

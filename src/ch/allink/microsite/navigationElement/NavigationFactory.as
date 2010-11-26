@@ -49,6 +49,12 @@ public final class NavigationFactory extends EventDispatcher
 			navigationView.build()
 		}
 		navigationTreeView.navigationViews = navigationViews
+			
+		if(navigationOperation)
+		{
+			navigationOperation.targetView = navigationTreeView					
+			navigationOperation.initialize()
+		}
 	}
 	
 
@@ -80,12 +86,6 @@ public final class NavigationFactory extends EventDispatcher
 			event.collection)
 		_navigationTreeView = new NavigationTreeView()
 		buildNavigationViews(navigations)
-		
-		if(navigationOperation)
-		{
-			navigationOperation.targetView = navigationTreeView					
-			navigationOperation.initialize()
-		}
 		
 		dispatchEvent(event)
 	}

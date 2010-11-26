@@ -9,6 +9,7 @@ public class accordionNavigationOperation implements INavigationOperation
 	//-------------------------------------------------------------------------
 	
 	private var _navigationTreeView:NavigationTreeView
+	public var verticalSpacing:Number = 20.0
 	
 	//-------------------------------------------------------------------------
 	//
@@ -33,7 +34,19 @@ public class accordionNavigationOperation implements INavigationOperation
 	
 	public function initialize():void
 	{
-		
+		var prevNavigationView:NavigationView
+		for each(var navigationView:NavigationView in 
+				 targetView.navigationViews)
+		{
+			if(prevNavigationView)
+				navigationView.y = prevNavigationView.y + 
+								   prevNavigationView.height +
+								   verticalSpacing
+			else
+				navigationView.y = 0
+					
+			prevNavigationView = navigationView
+		}
 	}
 	
 	//-------------------------------------------------------------------------
@@ -49,7 +62,7 @@ public class accordionNavigationOperation implements INavigationOperation
 	
 	public function set targetView(value:NavigationTreeView):void
 	{
-		_navigationTreeView		
+		_navigationTreeView	= value	
 	}
 	
 	public function get targetView():NavigationTreeView
