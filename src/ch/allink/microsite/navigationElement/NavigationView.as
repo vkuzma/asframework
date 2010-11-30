@@ -34,7 +34,7 @@ public class NavigationView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 
-	private var _navigationService:NavigationTreeView
+	private var _navigationTreeView:NavigationTreeView
 	private var _defaultColor:uint
 		
 	public var activeColor:uint
@@ -191,17 +191,17 @@ public class NavigationView extends AbstractView
 	//-------------------------------------------------------------------------
 	
 
-	public function set navigationService(value:NavigationTreeView):void
+	public function set navigationTreeView(value:NavigationTreeView):void
 	{
-		_navigationService = value
-		_navigationService.parentNavigationView = this
-		_navigationService.addEventListener(NavigationViewEvent.
+		_navigationTreeView = value
+		_navigationTreeView.parentNavigationView = this
+		_navigationTreeView.addEventListener(NavigationViewEvent.
 											NAVIGATION_CLICK, bubbleEvent)
 	}
 	
-	public function get navigationService():NavigationTreeView
+	public function get navigationTreeView():NavigationTreeView
 	{
-		return _navigationService
+		return _navigationTreeView
 	}
 	
 	public function set active(value:Boolean):void

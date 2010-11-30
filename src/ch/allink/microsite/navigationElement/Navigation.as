@@ -36,7 +36,6 @@ public class Navigation extends AbstractModel
 	public function Navigation()
 	{
 		super()
-		_children = new Vector.<Navigation>
 	}
 	
 	//-------------------------------------------------------------------------
@@ -80,7 +79,7 @@ public class Navigation extends AbstractModel
 	
 	public function get parentSlug():String
 	{
-		var returnValue:String = slug
+		var returnValue:String
 		var navigationURL:Array = url.substring(1, url.length - 1).split('/')
 		if(navigationURL.length > 1)
 			returnValue = navigationURL[navigationURL.length - 2]

@@ -24,7 +24,6 @@ public class NavigationTreeView extends Sprite
 	private var _navigationViews:Vector.<NavigationView>
 	private var _parentNavigationView:NavigationView
 	public var navigations:Vector.<Navigation>
-	public var pageID:int
 	
 	//-------------------------------------------------------------------------
 	//
@@ -42,134 +41,11 @@ public class NavigationTreeView extends Sprite
 	//
 	//-------------------------------------------------------------------------
 	
-	private function navigationForIDInNavigations(id:int,
-							 		navigations:Vector.<Navigation>,
-									condition:Function):Navigation
-	{
-		var targetNavigation:Navigation
-		
-		for each(var navigation:Navigation in navigations)
-		{
-			if(condition(navigation, id))	
-			{
-				targetNavigation = navigation
-				break
-			}
-			else if(navigation.children)
-			{
-				targetNavigation = navigationForIDInNavigations(id, 
-												navigation.children, condition)
-				if(targetNavigation)
-					break
-			}
-		}
-		return targetNavigation
-	}
-	
-	private function navigationForIDInNavigationViews(id:int,
-							navigationViews:Vector.<NavigationView>,
-							condition:Function):Navigation
-	{
-		var targetNavigation:Navigation
-		
-		for each(var navigationView:NavigationView in navigationViews)
-		{
-			var navigation:Navigation = navigationView.navigation
-			if(condition(navigation, id))
-			{
-				targetNavigation = navigation
-				break
-			}
-			 else if(navigation.children)
-			{
-				targetNavigation = navigationForIDInNavigations(id, 
-												navigation.children, condition)
-				if(targetNavigation)
-					break
-			}	
-		}
-		return targetNavigation
-	}
-	
-	private function checkNavigationID(navigation:Navigation, ID:int):Boolean
-	{
-		var value:Boolean
-		if(navigation.navigationid == ID)
-			value = true
-		else
-			value = false
-				
-		return value
-	}
-	
-	private function checkIndexPageID(navigation:Navigation, ID:int):Boolean
-	{
-		var value:Boolean
-		if(navigation.indexPageID == ID)
-			value = true
-		else
-			value = false
-				
-		return value
-	}
-	
 	//-------------------------------------------------------------------------
 	//
 	//	Public methods
 	//
 	//-------------------------------------------------------------------------
-		
-	public function navigationByPageID(id:int):Navigation
-	{
-		var targetNavigation:Navigation
-		if(navigations)
-			targetNavigation = navigationForIDInNavigations(id, navigations,
-				checkIndexPageID)
-		else if(_navigationViews)
-			targetNavigation = navigationForIDInNavigationViews(id, 
-										    _navigationViews, checkIndexPageID)
-		return targetNavigation
-	}
-	
-	public function navigationByNavigationID(id:int):Navigation
-	{
-		var targetNavigation:Navigation
-		if(navigations)
-			targetNavigation = navigationForIDInNavigations(id, navigations,
-				checkNavigationID)
-		else if(_navigationViews)
-			targetNavigation = navigationForIDInNavigationViews(id, 
-				_navigationViews,
-				checkNavigationID)
-		return targetNavigation
-	}
-	
-	public function navigationViewByNavigationID(id:int, 
-		navigationViews:Vector.<NavigationView> = null):NavigationView
-	{
-		var targetNavigationView:NavigationView
-		if(!navigationViews)
-			navigationViews = this.navigationViews
-		
-		for each(var navigationView:NavigationView in navigationViews)
-		{
-			var navigation:Navigation = navigationView.navigation
-			if(navigation.navigationid == id)	
-			{
-				targetNavigationView = navigationView
-				break
-			}
-			else if(navigationView.navigationService)
-			{
-				targetNavigationView = navigationViewByNavigationID(id, 
-					navigationView.navigationService.navigationViews)
-				if(targetNavigationView)
-					break
-			}
-		}
-		return targetNavigationView
-	}
-	
 	
 	public function activate(activatedNavigationView:NavigationView):void
 	{
@@ -198,6 +74,7 @@ public class NavigationTreeView extends Sprite
 		
 	}
 	
+	
 	//-------------------------------------------------------------------------
 	//
 	//	Event handlers
@@ -209,11 +86,10 @@ public class NavigationTreeView extends Sprite
 		var navigationView:NavigationView = event.currentTarget as 
 												NavigationView
 		activate(navigationView)
-		pageID = navigationView.navigation.navigationid
 			
 		//Deaktiviert Unternavigationen
-		if(navigationView.navigationService != null)
-			navigationView.navigationService.activate(null)
+		if(navigationView.navigationTreeView != null)
+			navigationView.navigationTreeView.activate(null)
 			
 		var bubbleEvent:NavigationViewEvent = new NavigationViewEvent(
 			NavigationViewEvent.NAVIGATION_CLICK, false, false, navigationView)
@@ -224,8 +100,8 @@ public class NavigationTreeView extends Sprite
 	private function navigationView_activatedHandler(
 		event:NavigationViewEvent):void
 	{
-		if(_parentNavigationView)
-			_parentNavigationView.requestActivate()
+		if(parentNavigationView)
+			parentNavigationView.requestActivate()
 				
 	}
 	
@@ -253,44 +129,8 @@ public class NavigationTreeView extends Sprite
 	{
 		var navigationView:NavigationView = event.target as NavigationView
 		var navigationViewService:NavigationTreeView = navigationView.
-														  navigationService
-		pageID = navigationViewService.pageID
+														  navigationTreeView
 		dispatchEvent(event)
-	}
-	
-	private function makeTree(navigationViews:Vector.<NavigationView>):void
-	{
-		for each(var navigationView:NavigationView in navigationViews)
-		{
-			var navigation:Navigation = navigationView.navigation
-			var navigationURL:Array = navigation.url.
-				substring(1, navigation.url.length - 1).split('/')
-			if(navigationURL.length > 1)
-			{
-				var childNavigation:Navigation = 
-					getNavigationByName(navigationURL.pop())
-				var parentNavigation:Navigation = 
-					getNavigationByName(navigationURL.pop())
-				if(!parentNavigation.children)
-					parentNavigation.children = new Vector.<Navigation>
-				parentNavigation.children.push(childNavigation)
-			}
-		}
-	}
-	
-	private function getNavigationByName(name:String):Navigation
-	{
-		var returnValue:Navigation
-		for each(var navigationView:NavigationView in navigationViews)
-		{
-			var navigation:Navigation = navigationView.navigation
-			if(navigation.slug == name)
-			{
-				returnValue = navigation
-				break
-			}
-		}
-		return returnValue
 	}
 	
 	//-------------------------------------------------------------------------
@@ -302,13 +142,13 @@ public class NavigationTreeView extends Sprite
 	public function set navigationViews(value:Vector.<NavigationView>):void
 	{
 		_navigationViews = value
-		makeTree(_navigationViews)
 //		Es ist nicht nötig die navigations und navigationViews zugleich 
 //		zu speichern
 		navigations = null
 			
 		for each(var navigationView:NavigationView in _navigationViews)
 		{
+			addChild(navigationView)
 			navigationView.addEventListener(MouseEvent.CLICK, 
 											navigationView_clickHandler)
 			navigationView.addEventListener(NavigationViewEvent.ACTIVATED,

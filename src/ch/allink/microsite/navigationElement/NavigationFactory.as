@@ -17,6 +17,7 @@ public final class NavigationFactory extends EventDispatcher
 	
 	private var _navigationTreeView:NavigationTreeView
 	private var _navigationOperation:INavigationOperation
+	private var navigationViews:Vector.<NavigationView>
 	
 	//-------------------------------------------------------------------------
 	//
@@ -37,27 +38,70 @@ public final class NavigationFactory extends EventDispatcher
 	//
 	//-------------------------------------------------------------------------
 	
-	private function buildNavigationViews(navigations:Vector.<Navigation>):void
+	/**
+	 * Creates a tree of navigations.
+	 */
+	private function makeNavigationTree(navigations:Vector.<Navigation>):
+		Vector.<Navigation>
 	{
-		var navigationViews:Vector.<NavigationView> = 
+		var topLevelNavigation:Vector.<Navigation> = new Vector.<Navigation>
+		for each(var navigation:Navigation in navigations)
+		{
+			var navigationURL:Array = navigation.url.
+				substring(1, navigation.url.length - 1).split('/')
+			if(navigationURL.length > 1)
+			{
+				var childNavigation:Navigation = 
+					getNavigationByName(navigationURL.pop(), navigations)
+				var parentNavigation:Navigation = 
+					getNavigationByName(navigationURL.pop(), navigations)
+				if(!parentNavigation.children)
+					parentNavigation.children = new Vector.<Navigation>
+				parentNavigation.children.push(childNavigation)
+			}
+			
+			if(!navigation.parentSlug)
+				topLevelNavigation.push(navigation)
+		}
+		return topLevelNavigation
+	}
+	
+	private function makeNavigationViewTree(navigations:Vector.<Navigation>,
+		navigationTreeView:NavigationTreeView):Vector.<NavigationView>
+	{
+		var navigationChildren:Vector.<NavigationView> = 
 			new Vector.<NavigationView>
 		for each(var navigation:Navigation in navigations)
 		{
 			var navigationView:NavigationView = new NavigationView(navigation)
-			navigationTreeView.addChild(navigationView)
-			navigationViews.push(navigationView)
-			navigationView.build()
+			navigationChildren.push(navigationView)
+			if(navigation.children)
+			{
+				navigationView.navigationTreeView = new NavigationTreeView()
+				navigationTreeView.addChild(navigationView.navigationTreeView)
+				navigationView.navigationTreeView.navigationViews = 
+					makeNavigationViewTree(navigation.children, 
+						navigationView.navigationTreeView)
+			}
 		}
-		navigationTreeView.navigationViews = navigationViews
-			
-		if(navigationOperation)
-		{
-			navigationOperation.targetView = navigationTreeView					
-			navigationOperation.initialize()
-		}
+		return navigationChildren
 	}
 	
-
+	private function getNavigationByName(name:String, 
+									navigations:Vector.<Navigation>):Navigation
+	{
+		var returnValue:Navigation
+		for each(var navigation:Navigation in navigations)
+		{
+			if(navigation.slug == name)
+			{
+				returnValue = navigation
+				break
+			}
+		}
+		return returnValue
+	}
+	
 	//-------------------------------------------------------------------------
 	//
 	//	Public methods
@@ -85,7 +129,16 @@ public final class NavigationFactory extends EventDispatcher
 		var navigations:Vector.<Navigation> = Vector.<Navigation>(
 			event.collection)
 		_navigationTreeView = new NavigationTreeView()
-		buildNavigationViews(navigations)
+		var topLevelNavigation:Vector.<Navigation> = 
+			makeNavigationTree(navigations)
+		_navigationTreeView.navigationViews = 
+			makeNavigationViewTree(topLevelNavigation, _navigationTreeView)
+		
+		if(navigationOperation)
+		{
+			navigationOperation.targetView = navigationTreeView					
+			navigationOperation.initialize()
+		}
 		
 		dispatchEvent(event)
 	}
