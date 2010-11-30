@@ -22,8 +22,9 @@ public class Navigation extends AbstractModel
 	public var url:String = ""
 	public var slug:String = ""
 	private var _pages:String
-	private var _children:Vector.<Navigation>
+	private var _children:Vector.<Navigation> = new Vector.<Navigation>
 	public var indexPageID:int
+	private var _parentNavigation:Navigation
 
 	public static var languages:Array
 	
@@ -77,13 +78,23 @@ public class Navigation extends AbstractModel
 		return _children
 	}
 	
-	public function get parentSlug():String
+	public function set parentNavigation(value:Navigation):void
 	{
-		var returnValue:String
-		var navigationURL:Array = url.substring(1, url.length - 1).split('/')
-		if(navigationURL.length > 1)
-			returnValue = navigationURL[navigationURL.length - 2]
-		return returnValue
+		_parentNavigation = value
+	}
+	
+	public function get parentNavigation():Navigation
+	{
+		return _parentNavigation
+	}
+	
+	public function hasChildren():Boolean
+	{
+		var hasChildren:Boolean = false
+		if(_children.length)
+			hasChildren = true
+			
+		return hasChildren
 	}
 }
 }

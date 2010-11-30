@@ -26,9 +26,9 @@ public final class NavigationFactory extends EventDispatcher
 	//-------------------------------------------------------------------------
 	
 	public function NavigationFactory(
-		navigationFormatter:INavigationOperation = null)
+		navigationOperation:INavigationOperation = null)
 	{
-		_navigationOperation = navigationFormatter
+		_navigationOperation = navigationOperation
 	}
 	
 	
@@ -39,7 +39,7 @@ public final class NavigationFactory extends EventDispatcher
 	//-------------------------------------------------------------------------
 	
 	/**
-	 * Creates a tree of navigations.
+	 * Creates a tree of Navigation instances.
 	 */
 	private function makeNavigationTree(navigations:Vector.<Navigation>):
 		Vector.<Navigation>
@@ -52,20 +52,23 @@ public final class NavigationFactory extends EventDispatcher
 			if(navigationURL.length > 1)
 			{
 				var childNavigation:Navigation = 
-					getNavigationByName(navigationURL.pop(), navigations)
+					getNavigationByURL(navigation.url, navigations)
+				navigationURL.pop()
 				var parentNavigation:Navigation = 
-					getNavigationByName(navigationURL.pop(), navigations)
-				if(!parentNavigation.children)
-					parentNavigation.children = new Vector.<Navigation>
+					getNavigationByURL(makeHash(navigationURL), navigations)
 				parentNavigation.children.push(childNavigation)
+				childNavigation.parentNavigation = parentNavigation
 			}
 			
-			if(!navigation.parentSlug)
+			if(!navigation.parentNavigation)
 				topLevelNavigation.push(navigation)
 		}
 		return topLevelNavigation
 	}
 	
+	/**
+	 * Creates a tree of NavigationView instances.
+	 */
 	private function makeNavigationViewTree(navigations:Vector.<Navigation>,
 		navigationTreeView:NavigationTreeView):Vector.<NavigationView>
 	{
@@ -75,7 +78,7 @@ public final class NavigationFactory extends EventDispatcher
 		{
 			var navigationView:NavigationView = new NavigationView(navigation)
 			navigationChildren.push(navigationView)
-			if(navigation.children)
+			if(navigation.hasChildren())
 			{
 				navigationView.navigationTreeView = new NavigationTreeView()
 				navigationTreeView.addChild(navigationView.navigationTreeView)
@@ -87,13 +90,19 @@ public final class NavigationFactory extends EventDispatcher
 		return navigationChildren
 	}
 	
-	private function getNavigationByName(name:String, 
+	/**
+	 * Returns a Navigation instance by URL.
+	 * @url The URL of the desired Navigation instance.
+	 * @navigations A Vector of Navigation instances, where the
+	 *  quested Navigation instance should be.
+	 */
+	private function getNavigationByURL(url:String, 
 									navigations:Vector.<Navigation>):Navigation
 	{
 		var returnValue:Navigation
 		for each(var navigation:Navigation in navigations)
 		{
-			if(navigation.slug == name)
+			if(navigation.url == url)
 			{
 				returnValue = navigation
 				break
@@ -102,12 +111,30 @@ public final class NavigationFactory extends EventDispatcher
 		return returnValue
 	}
 	
+	/**
+	 * Makes an URL from an array with paths. (Django-conform)
+	 */
+	private function makeHash(path:Array):String
+	{
+		var hash:String = "/"
+		var numPath:int = path.length
+		for (var i:int = 0; i < numPath; i++)
+		{
+			hash += path[i]
+			hash += "/"
+		}
+		return hash
+	}
+	
 	//-------------------------------------------------------------------------
 	//
 	//	Public methods
 	//
 	//-------------------------------------------------------------------------
 	
+	/**
+	 * Builds a Navigation 
+	 **/
 	public function build():void
 	{
 		var modelFactory:ModelFactory = new ModelFactory()
@@ -143,11 +170,24 @@ public final class NavigationFactory extends EventDispatcher
 		dispatchEvent(event)
 	}
 	
+	//-------------------------------------------------------------------------
+	//
+	//	Properties
+	//
+	//-------------------------------------------------------------------------
+	
+	
+	/**
+	 * The Topelevel NavigationTreeView instance. 
+	 */
 	public function get navigationTreeView():NavigationTreeView
 	{
 		return _navigationTreeView
 	}
 	
+	/**
+	 * NavigationOperation
+	 */
 	public function set navigationOperation(value:INavigationOperation):void
 	{
 		_navigationOperation = value

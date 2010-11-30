@@ -43,8 +43,6 @@ public class NavigationView extends AbstractView
 	
 	public var textFieldConfig:Function
 	public var textFormatConfig:Function
-	public var customRollOutAction:Function
-	public var customRollOverAction:Function
 	
 	private var _textField:TextField
 	private var _textFormat:TextFormat
@@ -135,9 +133,9 @@ public class NavigationView extends AbstractView
 		
 		//Individuelle Einstellungen setzen
 		if(textFieldConfig != null)
-			_textField = textFieldConfig(_textField)
+			textFieldConfig(_textField)
 		if(textFormatConfig != null)
-			_textFormat = textFormatConfig(_textFormat)
+			textFormatConfig(_textFormat)
 		_textField.setTextFormat(_textFormat)
 		//Nur bei gesetzem Font soll das Textfeld embedded werden
 		if(_textFormat.font != null)
@@ -161,16 +159,11 @@ public class NavigationView extends AbstractView
 				time: tweeningTime,
 				_color: rollOverColor
 			})
-			
-		if(customRollOverAction != null)
-			customRollOverAction(event.currentTarget)
 	}
 	
 	public function rollOutHandler(event:MouseEvent):void
 	{
 		reset()
-		if(customRollOutAction != null)
-			customRollOutAction(event.currentTarget)
 	}
 	
 	private function stage_MouseMoveHandler(event:MouseEvent):void
