@@ -69,21 +69,21 @@ public class BackgroundView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	public function buildBG(fileID:int):void
+	public function buildBG(image:Image):void
 	{
 		var oldModel:Image = oldImageView.image 
 		var model:Image = imageView.image
-		if(oldModel.uniqueid != fileID ||
+		if(oldModel.url != image.url ||
 		   imageView.currentBitmap == null)
 		{
 			if(imageView.isLoading)
 				imageView.loader.close()
 					
-			imageView = new ImageView()
+			imageView = new ImageView(image)
 			imageView.addEventListener(Event.ADDED_TO_STAGE, imageView_addedHandler)
 			imageView.addEventListener(Event.COMPLETE, imageView_completeHandler)
 			oldImageView = imageView
-			imageView.buildByFileID(fileID)
+			imageView.build()
 		}
 	}
 	

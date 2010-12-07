@@ -1,10 +1,6 @@
 package ch.allink.microsite.imageElement
 {
-import ch.allink.microsite.cmsConnector.CMSXmlPath;
-import ch.allink.microsite.cmsConnector.ModelFactory;
-import ch.allink.microsite.cmsConnector.ModelRequest;
 import ch.allink.microsite.core.AbstractView;
-import ch.allink.microsite.events.ResultEvent;
 
 import flash.display.Bitmap;
 import flash.display.BitmapData;
@@ -38,7 +34,7 @@ public class ImageView extends AbstractView
 	//	Constructor
 	//
 	//-------------------------------------------------------------------------
-	public function ImageView(image:Image=null)
+	public function ImageView(image:Image = null)
 	{
 		model = image
 		this.image = image
@@ -55,7 +51,7 @@ public class ImageView extends AbstractView
 	
 	final public override function build():void
 	{
-		var urlRequest:URLRequest = new URLRequest(fileURL)
+		var urlRequest:URLRequest = new URLRequest(image.url)
 		loader = new Loader()
 		loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS,
 			loader_progressHandler)
@@ -169,16 +165,6 @@ public class ImageView extends AbstractView
 		focusRect = !value;
 	}	
 	
-	
-	public function buildByFileID(fileID:int):void
-	{
-		var modelFactory:ModelFactory = new ModelFactory
-		var modelReqeust:ModelRequest = modelFactory.load(Image,
-			CMSXmlPath.IMAGE_PATH + fileID,ModelFactory.TYPE_MODEL)
-		modelReqeust.addEventListener(ResultEvent.DATA_LOADED,
-										modelRequest_dataLoadedHandler)
-	}
-	
 	public function attachBitmap(bitmap:Bitmap):void
 	{
 		if(_currentBitmap)
@@ -223,14 +209,6 @@ public class ImageView extends AbstractView
 		dispatchEvent(event)
 	}
 	
-	private function modelRequest_dataLoadedHandler(event:ResultEvent):void
-	{
-		var image:Image = event.model as Image
-		model = image
-		this.image = image
-		build()
-	}
-	
 	//-------------------------------------------------------------------------
 	//
 	//	Properties
@@ -245,24 +223,6 @@ public class ImageView extends AbstractView
 	public function get currentBitmap():Bitmap
 	{
 		return _currentBitmap
-	}
-	
-	public function get imageOptions():ImageOptions
-	{
-		if(!_imageOptions)
-		{
-			_imageOptions = new ImageOptions
-			_imageOptions.width = image.width
-		}
-		
-		return _imageOptions
-	}
-	
-	public function get fileURL():String
-	{
-		var image:Image = model as Image
-		return imageOptions.basePath+image.uniqueid+"_"+_imageOptions.width
-			+imageOptions.option1+".jpg"
 	}
 	
 	public function get loaded():Boolean
