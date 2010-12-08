@@ -44,6 +44,11 @@ public final class AllinkLogo extends Sprite
 	//
 	//-------------------------------------------------------------------------
 	
+	public function resize():void
+	{
+		resizeHandler(null)
+	}
+	
 	private function clickHandler(event:MouseEvent):void
 	{
 		navigateToURL(new URLRequest("http://www.allink.ch"), "_blank")
