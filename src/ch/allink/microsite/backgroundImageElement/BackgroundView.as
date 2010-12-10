@@ -4,8 +4,10 @@ import caurina.transitions.Tweener;
 
 import ch.allink.microsite.core.AbstractModel;
 import ch.allink.microsite.core.AbstractView;
+import ch.allink.microsite.imageElement.IImageViewOperation;
 import ch.allink.microsite.imageElement.Image;
 import ch.allink.microsite.imageElement.ImageView;
+import ch.allink.microsite.imageElement.ImageViewResizeAlign;
 
 import flash.events.Event;
 
@@ -18,8 +20,10 @@ public class BackgroundView extends AbstractView
 	//-------------------------------------------------------------------------
 	
 	private var oldImageView:ImageView
+	private var _imageOperation:IImageViewOperation
 	public var imageView:ImageView
 	public var animationTime:Number
+	
 	
 	//-------------------------------------------------------------------------
 	//
@@ -90,7 +94,8 @@ public class BackgroundView extends AbstractView
 	public function resize():void
 	{
 		if (imageView.currentBitmap)
-			imageView.resizeBitmapAspectRatioTo(stage.stageWidth, stage.stageHeight)
+			imageView.resizeBitmapAspectRatioTo(stage.stageWidth, 
+				stage.stageHeight, ImageViewResizeAlign.CENTRE)
 	}
 	
 	//-------------------------------------------------------------------------
@@ -102,6 +107,7 @@ public class BackgroundView extends AbstractView
 	private function imageView_completeHandler(event:Event):void
 	{
 		var imageView:ImageView = event.target as ImageView
+		imageView.operation = imageOperation
 		imageView.visible = false
 		imageView.alpha = 0
 		if(oldImageView.currentBitmap != null)
@@ -114,6 +120,22 @@ public class BackgroundView extends AbstractView
 	private function imageView_addedHandler(event:Event):void 
 	{
 		resize()
+	}
+	
+	//-------------------------------------------------------------------------
+	//
+	//	Properties
+	//
+	//-------------------------------------------------------------------------
+	
+	public function set imageOperation(value:IImageViewOperation):void
+	{
+		_imageOperation = value
+	}
+	
+	public function get imageOperation():IImageViewOperation
+	{
+		return _imageOperation
 	}
 }
 }

@@ -60,7 +60,7 @@ public class FilterOperation implements IImageViewOperation
 	private function createMask():Shape
 	{
 		var mask:Shape = new Shape()
-		mask.graphics.beginFill(0x00FFFF)
+		mask.graphics.beginFill(0xFF0000)
 		mask.graphics.drawRect(0, 0, 1, 1)
 		mask.graphics.endFill()
 			
@@ -140,6 +140,11 @@ public class FilterOperation implements IImageViewOperation
 	public function set targetSprite(value:Sprite):void
 	{
 		_targetSprite = value
+	}
+	
+	public function get targetSprite():Sprite
+	{
+		return _targetSprite
 	}
 }
 }
