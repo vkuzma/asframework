@@ -1,10 +1,9 @@
 package ch.allink.microsite.pageElement
 {
+import ch.allink.microsite.core.AbstractModel;
 import ch.allink.microsite.core.CMSAbstractModel;
 import ch.allink.microsite.imageElement.Image;
 import ch.allink.microsite.sectionElement.Section;
-
-import flash.net.registerClassAlias;
 
 /**
  * The Page class is a model for the PageView class.
@@ -28,9 +27,12 @@ public class Page extends CMSAbstractModel
 	/**Formats for special situations**/
 	public var format:String
 	public var extraFields:String
-	public var fileid:int
-	public var languageid:int
 	public var visiblecontent:Boolean
+	public var languagemenu:String = ""
+	public var language:String = ""
+	public var has_children:String = ""
+		
+	private var _backgroundImage:Array
 	
 	//-------------------------------------------------------------------------
 	//
@@ -79,6 +81,16 @@ public class Page extends CMSAbstractModel
 			}
 		}
 		return files
+	}
+	
+	public function set backgroundimage(values:Array):void
+	{
+		_backgroundImage = fillCollection(Image, values)
+	}
+	
+	public function get backgroundimage():Array
+	{
+		return _backgroundImage 
 	}
 }
 }

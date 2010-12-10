@@ -20,11 +20,12 @@ public class Section extends AbstractModel
 	
 	public var title:String
 	public var date:String
-	public var content:String
 	public var type:String
-	public var format:String
+	public var format:String = SectionContentTypes.TEXT_ONLY
 	public var extraFields:String
-	public var pageid:int
+	public var ordering:String = ""
+	public var text:String = ""
+	public var region:String = ""
 	
 	private var _files:Array
 	

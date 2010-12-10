@@ -86,7 +86,7 @@ public class ModelFactory extends EventDispatcher
 									 xml:XML):Vector.<AbstractModel>
 	{
 		var result:Vector.<AbstractModel> = new Vector.<AbstractModel>
-		for each(var node:XML in xml.children().children())
+		for each(var node:XML in xml.children())
 			result.push(create(klass, node))
 		
 		return result
