@@ -7,6 +7,10 @@ import ch.allink.microsite.events.ResultEvent;
 
 import flash.events.EventDispatcher;
 
+/**
+ * Create a Navigation from the FeinCMS.
+ * @author Vladimir Kuzma
+ */
 public final class NavigationFactory extends EventDispatcher
 {
 	//-------------------------------------------------------------------------
@@ -29,6 +33,7 @@ public final class NavigationFactory extends EventDispatcher
 		navigationOperation:INavigationOperation = null)
 	{
 		_navigationOperation = navigationOperation
+		navigationViews = new Vector.<NavigationView>
 	}
 	
 	
@@ -77,6 +82,7 @@ public final class NavigationFactory extends EventDispatcher
 		for each(var navigation:Navigation in navigations)
 		{
 			var navigationView:NavigationView = new NavigationView(navigation)
+			navigationViews.push(navigationView)
 			navigationChildren.push(navigationView)
 			if(navigation.hasChildren())
 			{
@@ -135,14 +141,32 @@ public final class NavigationFactory extends EventDispatcher
 	/**
 	 * Builds a Navigation 
 	 **/
-	public function build():void
+	public function buildByLanguage(language:String):void
 	{
 		var modelFactory:ModelFactory = new ModelFactory()
 		var modelReqeust:ModelRequest = modelFactory.load(Navigation,
-			CMSXmlPath.NAVIGATION_PATH,
+			CMSXmlPath.getNavigationPathByLanguage(language),
 			ModelFactory.TYPE_COLLECTION)
 		modelReqeust.addEventListener(ResultEvent.DATA_LOADED,
 			modelRequest_dataLoadedHandler)
+	}
+	
+	
+	/**
+	 * Return a NavigationView instance by url.
+	 */
+	public function getNavigationViewByURL(url:String):NavigationView
+	{
+		var navigationViewByURL:NavigationView
+		for each(var navigationView:NavigationView in navigationViews)
+		{
+			if(navigationView.navigation.url == url+"/")
+			{
+				navigationViewByURL = navigationView
+				break
+			}
+		}
+		return navigationViewByURL
 	}
 	
 	//-------------------------------------------------------------------------
