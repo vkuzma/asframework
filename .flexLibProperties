@@ -10,7 +10,7 @@
     <classEntry path="ch.allink.microsite.events.NavigationViewEvent"/>
     <classEntry path="ch.allink.microsite.pageElement.PageView"/>
     <classEntry path="ch.allink.microsite.sectionElement.SectionView"/>
-    <classEntry path="ch.allink.microsite.widgets.DisplayFormatter"/>
+    <classEntry path="ch.allink.microsite.pageElement.PageFormatter"/>
     <classEntry path="ch.allink.microsite.cmsConnector.CMSXmlPath"/>
     <classEntry path="ch.allink.microsite.imageElement.ImageViewService"/>
     <classEntry path="ch.allink.microsite.backgroundImageElement.SimpleBackgroundView"/>
@@ -21,14 +21,19 @@
     <classEntry path="ch.allink.microsite.imageElement.IImageViewOperation"/>
     <classEntry path="ch.allink.microsite.imageElement.FilterOperation"/>
     <classEntry path="ch.allink.microsite.pageElement.IPageOperation"/>
-    <classEntry path="ch.allink.microsite.sectionElement.ISectionOperation"/>
+    <classEntry path="ch.allink.microsite.sectionElement.operation.ISectionOperation"/>
     <classEntry path="ch.allink.microsite.pageElement.MulitpleSectionTypeOperation"/>
-    <classEntry path="ch.allink.microsite.sectionElement.TextImageOperation"/>
-    <classEntry path="ch.allink.microsite.sectionElement.TextOperation"/>
-    <classEntry path="ch.allink.microsite.pageElement.SectionOperationFormat"/>
+    <classEntry path="ch.allink.microsite.sectionElement.operation.TextImageOperation"/>
+    <classEntry path="ch.allink.microsite.sectionElement.operation.TextOperation"/>
+    <classEntry path="ch.allink.microsite.sectionElement.SectionContentTypes"/>
     <classEntry path="ch.allink.microsite.navigationElement.NavigationFactory"/>
     <classEntry path="ch.allink.microsite.navigationElement.INavigationOperation"/>
-    <classEntry path="ch.allink.microsite.navigationElement.accordionNavigationOperation"/>
+    <classEntry path="ch.allink.microsite.navigationElement.AccordionNavigationOperation"/>
+    <classEntry path="ch.allink.microsite.widgets.AllinkLogo"/>
+    <classEntry path="ch.allink.microsite.navigationElement.NavigationLanguageService"/>
+    <classEntry path="ch.allink.microsite.widgets.TextFieldFactory"/>
+    <classEntry path="ch.allink.microsite.sectionElement.style.TextStyle"/>
+    <classEntry path="ch.allink.microsite.sectionElement.style.ISectionStyle"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

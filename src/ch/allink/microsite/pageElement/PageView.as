@@ -62,6 +62,7 @@ public class PageView extends AbstractView
 				sectionView.dispose()
 			}
 		}
+		sectionViews = null
 	}
 	
 	//-------------------------------------------------------------------------
@@ -73,11 +74,11 @@ public class PageView extends AbstractView
 	/**
 	 * Loads a Page instance by the pageid and will be buildded by the loaded Page instance.
 	 **/
-	public function buildByPageID(pageID:int):void
-	{
+	public function buildPageByURL(url:String):void
+	{ 
 		var modelFactory:ModelFactory = new ModelFactory()
 		var modelRequest:ModelRequest = modelFactory.load(Page, 
-			CMSXmlPath.PAGE_PATH+pageID,
+			CMSXmlPath.getPagePathByURL(url.slice(1)),	
 			ModelFactory.TYPE_MODEL)
 		modelRequest.addEventListener(ResultEvent.DATA_LOADED,
 			modelRequest_dataLoadedHandler)
@@ -91,7 +92,8 @@ public class PageView extends AbstractView
 		if(sectionViews)
 			clearSectionViews(sectionViews)
 		var sections:Array = page.sections
-		sections.forEach(operation.buildSectionViews)	
+		operation.buildSectionViews(sections)
+		operation.formatSectionViews()
 	}
 	
 	//-------------------------------------------------------------------------

@@ -6,7 +6,7 @@ import com.greensock.TweenLite;
 
 import flash.display.Shape;
 
-public class accordionNavigationOperation implements INavigationOperation
+public class AccordionNavigationOperation implements INavigationOperation
 {
 	//-------------------------------------------------------------------------
 	//
@@ -24,7 +24,7 @@ public class accordionNavigationOperation implements INavigationOperation
 	//
 	//-------------------------------------------------------------------------
 	
-	public function accordionNavigationOperation()
+	public function AccordionNavigationOperation()
 	{
 	}
 	

@@ -7,8 +7,6 @@ import ch.allink.microsite.sectionElement.SectionView;
 import ch.allink.microsite.sectionElement.style.TextStyle;
 import ch.allink.microsite.widgets.TextFieldFactory;
 
-import flash.text.AntiAliasType;
-import flash.text.GridFitType;
 import flash.text.TextField;
 
 public class TextOperation implements ISectionOperation
@@ -47,7 +45,6 @@ public class TextOperation implements ISectionOperation
 	
 	private function setUpTextField(textField:TextField):void
 	{
-		trace(textStyle.textAlign)
 		textField.width = pageFormatter.sectionWidth
 		textField.styleSheet = textStyle.styleSheet
 		textField.autoSize = textStyle.textAlign

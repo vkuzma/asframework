@@ -5,6 +5,7 @@ import ch.allink.microsite.imageElement.Image;
 import ch.allink.microsite.imageElement.ImageView;
 
 import flash.text.TextField;
+import ch.allink.microsite.sectionElement.operation.ISectionOperation;
 
 public class SectionView extends AbstractView
 {
@@ -17,7 +18,6 @@ public class SectionView extends AbstractView
 	private var _operation:ISectionOperation
 	private var imageViews:Vector.<ImageView>
 	private var images:Array
-
 	public var section:Section
 	
 	//-------------------------------------------------------------------------
@@ -40,11 +40,12 @@ public class SectionView extends AbstractView
 	
 	final public override function build():void
 	{
-		if(section.files != null)
+		if(section.files)
 		{
 			images = section.files
 			imageViews = buildImageViews(images)
 		}
+		operation.build()
 	}
 	
 	public override function dispose():void
