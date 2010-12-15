@@ -130,7 +130,6 @@ public class NavigationView extends AbstractView
 		_textField.antiAliasType = AntiAliasType.ADVANCED
 		_textField.gridFitType = GridFitType.PIXEL
 		
-		
 		//Individuelle Einstellungen setzen
 		if(textFieldConfig != null)
 			textFieldConfig(_textField)
