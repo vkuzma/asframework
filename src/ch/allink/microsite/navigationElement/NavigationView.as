@@ -27,6 +27,7 @@ public class NavigationView extends AbstractView
 	//-------------------------------------------------------------------------
 	
 	public static const REQUEST_ACTIVATE:String = "requestActivate"
+	public static const REQUEST_MAJOR_ACTIVATE:String = "majorRequestActivate"
 	
 	//-------------------------------------------------------------------------
 	//
@@ -118,6 +119,11 @@ public class NavigationView extends AbstractView
 	public function requestActivate():void
 	{
 		dispatchEvent(new Event(REQUEST_ACTIVATE))
+	}
+	
+	public function requestMajorActivate():void
+	{
+		dispatchEvent(new Event(REQUEST_MAJOR_ACTIVATE))
 	}
 
 	public function setUpText():void

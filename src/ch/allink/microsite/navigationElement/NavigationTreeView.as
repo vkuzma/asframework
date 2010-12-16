@@ -41,6 +41,19 @@ public class NavigationTreeView extends Sprite
 	//
 	//-------------------------------------------------------------------------
 	
+	private function majorActivate(navigationView:NavigationView):void
+	{
+		activate(navigationView)
+		
+		//Deaktiviert Unternavigationen
+		if(navigationView.navigationTreeView != null)
+			navigationView.navigationTreeView.activate(null)
+		
+		var bubbleEvent:NavigationViewEvent = new NavigationViewEvent(
+			NavigationViewEvent.NAVIGATION_CLICK, false, false, navigationView)
+		dispatchEvent(bubbleEvent)
+	}
+	
 	//-------------------------------------------------------------------------
 	//
 	//	Public methods
@@ -64,17 +77,6 @@ public class NavigationTreeView extends Sprite
 			navigationView.active = false
 	}
 	
-	public function openAnimation():void
-	{
-		
-	}
-		
-	public function closeAnimation():void
-	{
-		
-	}
-	
-	
 	//-------------------------------------------------------------------------
 	//
 	//	Event handlers
@@ -83,18 +85,9 @@ public class NavigationTreeView extends Sprite
 	
 	private function navigationView_clickHandler(event:MouseEvent):void
 	{
-		var navigationView:NavigationView = event.currentTarget as 
-												NavigationView
-		activate(navigationView)
-			
-		//Deaktiviert Unternavigationen
-		if(navigationView.navigationTreeView != null)
-			navigationView.navigationTreeView.activate(null)
-			
-		var bubbleEvent:NavigationViewEvent = new NavigationViewEvent(
-			NavigationViewEvent.NAVIGATION_CLICK, false, false, navigationView)
-		dispatchEvent(bubbleEvent)
-		
+		var navigationView:NavigationView = event.currentTarget 
+											as NavigationView
+		majorActivate(navigationView)
 	}
 	
 	private function navigationView_activatedHandler(
@@ -115,13 +108,6 @@ public class NavigationTreeView extends Sprite
 		event:NavigationViewEvent):void
 	{
 		activate(null)	
-		closeAnimation()
-	}
-	
-	private function parentNavigationV_activateHandler(
-		event:NavigationViewEvent):void
-	{
-		openAnimation()
 	}
 	
 	private function navigationView_subNavigationClicked(
@@ -131,6 +117,13 @@ public class NavigationTreeView extends Sprite
 		var navigationViewService:NavigationTreeView = navigationView.
 														  navigationTreeView
 		dispatchEvent(event)
+	}
+	
+	private function navigationView_requestMajorActivate(event:Event):void
+	{
+		var navigationView:NavigationView = event.currentTarget 
+											as NavigationView
+		majorActivate(navigationView)	
 	}
 	
 	//-------------------------------------------------------------------------
@@ -155,6 +148,9 @@ public class NavigationTreeView extends Sprite
 											navigationView_activatedHandler)
 			navigationView.addEventListener(NavigationView.REQUEST_ACTIVATE,
 										navigationView_requestActivatedHandler)
+			navigationView.addEventListener(
+										NavigationView.REQUEST_MAJOR_ACTIVATE,
+										navigationView_requestMajorActivate)
 			navigationView.addEventListener(NavigationViewEvent.
 											NAVIGATION_CLICK,
 											navigationView_subNavigationClicked)
@@ -171,8 +167,6 @@ public class NavigationTreeView extends Sprite
 		_parentNavigationView = value
 		_parentNavigationView.addEventListener(NavigationViewEvent.DEACTIVATED,
 										    parentNavigationV_deactivateHandler)
-		_parentNavigationView.addEventListener(NavigationViewEvent.ACTIVATED,
-										    parentNavigationV_activateHandler)
 	}
 	
 	public function get parentNavigationView():NavigationView
