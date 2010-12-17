@@ -2,16 +2,35 @@ package ch.allink.microsite.core
 {
 import ch.allink.microsite.cmsConnector.ModelFactory;
 
-import mx.events.CollectionEvent;
-
+/**
+ * @author Mike Walder
+ **/
 public class AbstractModel extends Object
 {
+	//-------------------------------------------------------------------------
+	//
+	//	Variables
+	//
+	//-------------------------------------------------------------------------
+
 	protected var modelFactory:ModelFactory
+	
+	//-------------------------------------------------------------------------
+	//
+	//	Constructor
+	//
+	//-------------------------------------------------------------------------
 	
 	public function AbstractModel()
 	{
 		modelFactory = new ModelFactory()
 	}
+	
+	//-------------------------------------------------------------------------
+	//
+	//	Protected methods
+	//
+	//-------------------------------------------------------------------------
 	
 	protected function fillCollection(klass:Class, values:Array):Array
 	{
@@ -24,7 +43,7 @@ public class AbstractModel extends Object
 				collection.push(modelFactory.create(klass, s))
 			}
 		}	
-		return collection;
+		return collection
 	}		
 }
 }
