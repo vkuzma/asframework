@@ -5,8 +5,10 @@ import ch.allink.microsite.events.NavigationViewEvent;
 import com.greensock.TweenLite;
 
 import flash.display.Shape;
+import flash.events.EventDispatcher;
 
-public class AccordionNavigationOperation implements INavigationOperation
+public class AccordionNavigationOperation extends EventDispatcher
+										  implements INavigationOperation
 {
 	//-------------------------------------------------------------------------
 	//

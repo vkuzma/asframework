@@ -1,8 +1,8 @@
 package ch.allink.microsite.pageElement
 {
-import ch.allink.microsite.sectionElement.operation.ISectionOperation;
 import ch.allink.microsite.sectionElement.Section;
 import ch.allink.microsite.sectionElement.SectionView;
+import ch.allink.microsite.sectionElement.operation.ISectionOperation;
 import ch.allink.microsite.sectionElement.operation.TextImageOperation;
 import ch.allink.microsite.sectionElement.operation.TextOperation;
 
@@ -20,7 +20,6 @@ public final class MulitpleSectionTypeOperation implements IPageOperation
 	
 	private var _targetView:PageView
 	private var _pageFormatter:PageFormatter
-	private var sections:Array
 	private var _sectionViews:Vector.<SectionView>
 	private var sectionOperationClasses:Vector.<Class>
 	private var sectionOperations:Vector.<ISectionOperation>
@@ -37,6 +36,38 @@ public final class MulitpleSectionTypeOperation implements IPageOperation
 		sectionOperationClasses.push(TextImageOperation)
 		sectionOperationClasses.push(TextOperation)
 		sectionOperations = new Vector.<ISectionOperation>
+	}
+	
+	//-------------------------------------------------------------------------
+	//
+	//	Private methods
+	//
+	//-------------------------------------------------------------------------
+	
+	private function missingSectionOperationError(type:String):void
+	{
+		var error:Error = new Error()
+		error.name = "allink Error: Error #XXXX"
+		error.message = "A SectionOperation with type \""+type+"\" doesen't exist"
+		throw error
+	}
+	
+	/**
+	 * Returns an instance of a Class with the desired format.
+	 * @format Format of the Section, also known as contenttpe in FeinCMS.
+	 */
+	private function getOperationByFormat(format:String):ISectionOperation
+	{
+		var operationByFormat:ISectionOperation
+		for each(var operation:Class in sectionOperationClasses)
+		{
+			if(operation.FORMAT == format)
+			{
+				operationByFormat = new operation()
+				break
+			}
+		}
+		return operationByFormat
 	}
 	
 	//-------------------------------------------------------------------------
@@ -59,7 +90,9 @@ public final class MulitpleSectionTypeOperation implements IPageOperation
 		for each(var section:Section in sections)
 		{
 			var sectionOperation:ISectionOperation = 
-				getOperationByFormat(section.format)
+				getOperationByFormat(section.type)
+			if(!sectionOperation) missingSectionOperationError(section.type)
+				
 			sectionOperations.push(sectionOperation)
 			sectionOperation.pageFormatter = pageFormatter
 			var sectionView:SectionView = new SectionView(section)
@@ -72,24 +105,6 @@ public final class MulitpleSectionTypeOperation implements IPageOperation
 	}
 	
 	/**
-	 * Returns an instance of a Class with the desired format.
-	 * @format Format of the Section, also known as contenttpe in FeinCMS.
-	 */
-	private function getOperationByFormat(format:String):ISectionOperation
-	{
-		var operationByFormat:ISectionOperation
-		for each(var operation:Class in sectionOperationClasses)
-		{
-			if(operation.FORMAT == format)
-			{
-				operationByFormat = new operation()
-				break
-			}
-		}
-		return operationByFormat
-	}
-	
-	/**
 	 * Sets the position of all SectionView instances.
 	 */
 	//TODO: The SectionView instances should be formated by the DisplayFormatter
@@ -99,18 +114,30 @@ public final class MulitpleSectionTypeOperation implements IPageOperation
 		for each(var sectionView:SectionView in sectionViews)
 		{
 			if(prevSectionView)
-				sectionView.y = prevSectionView.height + prevSectionView.y +
-								pageFormatter.sectionVerticalSpacing
+				sectionView.y = Math.round(prevSectionView.height + 
+								prevSectionView.y +
+								pageFormatter.sectionVerticalSpacing)
 			else
 				sectionView.y = 0
 			prevSectionView = sectionView
 		}
 	}
 	
+	/**
+	 * Resize
+	 */
 	public function resize(sourceWidth:Number, sourceHeight:Number):void
 	{
 		for each(var sectionOperation:ISectionOperation in sectionOperations)
 			sectionOperation.resize(sourceWidth, sourceHeight)
+	}
+	
+	/**
+	 * Adds a contenttype class to the contenttype collection.
+	 */
+	public function addContentType(contentType:Class):void
+	{
+		sectionOperationClasses.push(contentType)
 	}
 	
 	//-------------------------------------------------------------------------

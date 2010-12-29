@@ -12,6 +12,8 @@ import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.geom.Rectangle;
 
+import spark.primitives.Rect;
+
 /**
  * Darstellung eines Scrollbalken aus dem *_assets.fla
  * @date 4.11.2010
@@ -31,6 +33,7 @@ public class ScrollPaneView extends AbstractView
 	private var scrollTimer:Object
 	public var contentArea:Rectangle
 	public var scrollStepHeight:Number
+	public var fixedDraggerSize:Boolean
 	
 	//---------------------------------
 	//	Layout
@@ -50,6 +53,7 @@ public class ScrollPaneView extends AbstractView
 	{
 		this.addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler)
 			
+		fixedDraggerSize = false
 		scrollStepHeight = 50
 		contentArea = new Rectangle(0, 0, 100, 100)
 		_scrollContainer = new Sprite()
@@ -151,14 +155,24 @@ public class ScrollPaneView extends AbstractView
 		scrollClipHolder.scrollBottom.y = contentArea.bottom
 			- scrollClipHolder.scrollBottom.height
 		scrollClipHolder.scrollBarBackground.height = contentArea.height
-		scrollClipHolder.scrollDragger.height = ratioContentMask 
-			* scrollClipHolder.scrollArea.height / 100
+			
+		scrollClipHolder.scrollDraggerNominal = ratioContentMask 
+									* scrollClipHolder.scrollArea.height / 100
+		if(!fixedDraggerSize)
+			scrollClipHolder.scrollDragger.height = scrollClipHolder.
+													scrollDraggerNominal
+				
 		scrollClipHolder.scrollDragger.y = 
 			scrollClipHolder.currentScrollPosition 
 			* scrollClipHolder.effectiveScrollArea.height / 100
 			+ scrollClipHolder.effectiveScrollArea.top
 			
 		moveContainer()
+	}
+	
+	public function resetScrollDragger():void
+	{
+		scrollClipHolder.scrollDragger.y = 0
 	}
 	
 	//-------------------------------------------------------------------------
@@ -239,7 +253,6 @@ public class ScrollPaneView extends AbstractView
 	public function set useScrollButtons(value:Boolean):void
 	{
 		scrollClipHolder.useScrollButtons = value
-		setUpScrollBar()
 	}
 	
 	public function get useScrollButtons():Boolean
@@ -305,7 +318,7 @@ public class ScrollPaneView extends AbstractView
 	}
 	
 	/**
-	 * Current scrollposition of the scrolldragge in percent.
+	 * Current scrollposition of the scrolldragger in percent.
 	 **/
 	public function set scrollPosition(value:Number):void
 	{

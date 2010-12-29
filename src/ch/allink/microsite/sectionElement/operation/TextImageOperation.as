@@ -80,7 +80,7 @@ public class TextImageOperation implements ISectionOperation
 		return null
 	}
 	
-	public function get format():String
+	public function get contentType():String
 	{
 		return SectionContentTypes.TEXT_IMAGE_LEFT
 	}

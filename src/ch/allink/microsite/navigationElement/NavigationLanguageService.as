@@ -1,15 +1,13 @@
-package ch.allink.microsite.sectionElement.style
+package ch.allink.microsite.navigationElement
 {
-import ch.allink.microsite.sectionElement.SectionContentTypes;
-
-import flash.text.StyleSheet;
-import flash.text.TextFieldAutoSize;
+import flash.events.EventDispatcher;
+import flash.events.IEventDispatcher;
 
 /**
  * @author vkuzma
- * @date Dec 9, 2010
+ * @date Dec 2, 2010
  **/
-public class TextStyle implements ISectionStyle
+public class NavigationLanguageService extends EventDispatcher
 {
 	//-------------------------------------------------------------------------
 	//
@@ -17,8 +15,7 @@ public class TextStyle implements ISectionStyle
 	//
 	//-------------------------------------------------------------------------
 	
-	public var enableEmbedFonts:Boolean = false
-	public var sectionTitleUpperCase:Boolean = false
+	
 	
 	//-------------------------------------------------------------------------
 	//
@@ -26,13 +23,9 @@ public class TextStyle implements ISectionStyle
 	//
 	//-------------------------------------------------------------------------
 	
-	public function TextStyle() 
+	public function NavigationLanguageService(target:IEventDispatcher=null)
 	{
-	}
-	
-	public function get contentType():String
-	{
-		return SectionContentTypes.TEXT_ONLY
+		super(target)
 	}
 	
 	//-------------------------------------------------------------------------

@@ -55,6 +55,7 @@ public class TextFieldFactory
 		textField.gridFitType = GridFitType.PIXEL
 		textField.selectable = false
 		textField.wordWrap = true
+		textField.multiline = true
 	}
 	
 	//-------------------------------------------------------------------------

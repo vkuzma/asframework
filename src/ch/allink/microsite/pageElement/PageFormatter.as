@@ -15,8 +15,7 @@ public class PageFormatter extends AbstractModel
 	//
 	//-------------------------------------------------------------------------
 	
-	public var sectionStyleClasses:Vector.<Class>
-	public var sectionStyles:Vector.<ISectionStyle>
+	private var sectionStyles:Vector.<ISectionStyle>
 	
 	//---------------------------------
 	//	Layout
@@ -26,6 +25,10 @@ public class PageFormatter extends AbstractModel
 	public var sectionWidth:Number = 500
 	public var paddingLeft:Number = 0
 	public var paddingTop:Number = 0
+	public var styleSheet:StyleSheet
+	public var enableEmbedFonts:Boolean = false
+	public var textAlign:String = TextFieldAutoSize.LEFT
+	public var titleContentSpacing:Number = 0
 		
 	//-------------------------------------------------------------------------
 	//
@@ -35,12 +38,8 @@ public class PageFormatter extends AbstractModel
 	
 	public function PageFormatter()
 	{
-		sectionStyleClasses = new Vector.<Class>
-		sectionStyleClasses.push(TextStyle)
-			
 		sectionStyles = new Vector.<ISectionStyle>
-			
-		createStyleInstances()
+		sectionStyles.push(new TextStyle())
 	}
 	
 	//-------------------------------------------------------------------------
@@ -48,15 +47,6 @@ public class PageFormatter extends AbstractModel
 	//	Private methods
 	//
 	//-------------------------------------------------------------------------
-	
-	private function createStyleInstances():void
-	{
-		for each(var klass:Class in sectionStyleClasses)
-		{
-			var sectionStyle:Object = new klass()
-			sectionStyles.push(sectionStyle)
-		}
-	}
 	
 	//-------------------------------------------------------------------------
 	//
@@ -77,6 +67,11 @@ public class PageFormatter extends AbstractModel
 			}
 		}
 		return sectionStyleByContentType
+	}
+	
+	public function addSectionStyle(sectionStyle:ISectionStyle):void
+	{
+		sectionStyles.push(sectionStyle)
 	}
 	
 	//-------------------------------------------------------------------------

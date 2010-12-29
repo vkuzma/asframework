@@ -4,6 +4,7 @@ import caurina.transitions.Tweener;
 
 import ch.allink.microsite.core.AbstractView;
 import ch.allink.microsite.events.NavigationViewEvent;
+import ch.allink.microsite.widgets.TextFieldFactory;
 
 import flash.events.Event;
 import flash.events.MouseEvent;
@@ -41,9 +42,6 @@ public class NavigationView extends AbstractView
 	public var activeColor:uint
 	public var rollOverColor:uint
 	public var tweeningTime:Number
-	
-	public var textFieldConfig:Function
-	public var textFormatConfig:Function
 	
 	private var _textField:TextField
 	private var _textFormat:TextFormat
@@ -128,23 +126,11 @@ public class NavigationView extends AbstractView
 
 	public function setUpText():void
 	{
+		TextFieldFactory.setDefaultFormats(_textField)
 		_textField.textColor = defaultColor
-		_textField.selectable = false
 		_textField.autoSize = TextFieldAutoSize.LEFT
 		_textField.multiline = false
 		_textField.wordWrap = false
-		_textField.antiAliasType = AntiAliasType.ADVANCED
-		_textField.gridFitType = GridFitType.PIXEL
-		
-		//Individuelle Einstellungen setzen
-		if(textFieldConfig != null)
-			textFieldConfig(_textField)
-		if(textFormatConfig != null)
-			textFormatConfig(_textFormat)
-		_textField.setTextFormat(_textFormat)
-		//Nur bei gesetzem Font soll das Textfeld embedded werden
-		if(_textFormat.font != null)
-			_textField.embedFonts = true
 	}
 	
 	//-------------------------------------------------------------------------

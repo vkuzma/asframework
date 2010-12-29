@@ -17,11 +17,11 @@ public class TextOperation implements ISectionOperation
 	//
 	//-------------------------------------------------------------------------
 	
+	public var titleField:TextField
+	public var textField:TextField
 	private var _targetView:SectionView
 	private var _pageFormatter:PageFormatter
 	private var _textStyle:TextStyle
-	private var titleField:TextField
-	private var textField:TextField
 	private var section:Section
 	
 	//-------------------------------------------------------------------------
@@ -46,10 +46,11 @@ public class TextOperation implements ISectionOperation
 	private function setUpTextField(textField:TextField):void
 	{
 		textField.width = pageFormatter.sectionWidth
-		textField.styleSheet = textStyle.styleSheet
-		textField.autoSize = textStyle.textAlign
+		textField.styleSheet = pageFormatter.styleSheet
+		textField.autoSize = pageFormatter.textAlign
+		textField.condenseWhite = true
 		TextFieldFactory.setDefaultFormats(textField, pageFormatter)
-		textField.embedFonts = textStyle.enableEmbedFonts
+		textField.embedFonts = pageFormatter.enableEmbedFonts
 	}
 	
 	private function layOut():void
@@ -81,7 +82,8 @@ public class TextOperation implements ISectionOperation
 	/**
 	 *	Resizes the title and text. 
 	 */
-	public function resize(sourceWidth:Number, sourceHeight:Number):void
+	public function resize(sourceWidth:Number, 
+									sourceHeight:Number):void
 	{
 		titleField.y = pageFormatter.paddingLeft
 		textField.x = pageFormatter.paddingLeft
@@ -104,7 +106,7 @@ public class TextOperation implements ISectionOperation
 		return _targetView
 	}
 	
-	public function get format():String
+	public function get contentType():String
 	{
 		return SectionContentTypes.TEXT_ONLY
 	}
@@ -114,11 +116,12 @@ public class TextOperation implements ISectionOperation
 		return SectionContentTypes.TEXT_ONLY
 	}
 	
-	public function set pageFormatter(value:PageFormatter):void
+	public  function set pageFormatter(value:PageFormatter):void
 	{
 		_pageFormatter = value
 		_textStyle =
-			_pageFormatter.getSectionStyleByContentType(format) as TextStyle 
+			_pageFormatter.getSectionStyleByContentType(contentType) 
+			as TextStyle 
 	}
 	
 	public function get pageFormatter():PageFormatter

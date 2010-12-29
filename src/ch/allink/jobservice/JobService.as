@@ -1,11 +1,12 @@
 package ch.allink.jobservice
 {
+import flash.events.EventDispatcher;
 
 /**
  * @author Vladimir Kuzma
  * @date 13.11.2010
  **/
-public class JobService
+public class JobService extends EventDispatcher
 {
 	//-------------------------------------------------------------------------
 	//
@@ -92,7 +93,9 @@ public class JobService
 	public function addJob(job:Job):void
 	{
 		if(maxJobs > jobCollection.length || maxJobs == 0)
+		{
 			jobCollection.push(job)
+		}
 	}
 	
 	/**
@@ -102,6 +105,8 @@ public class JobService
 	public function jobDone():void
 	{
 		if(jobCollection.length > 0) removeJob(jobCollection[0])
+		else dispatchEvent(new JobEvent(JobEvent.COMPLETE_ALL)) 
+		dispatchEvent(new JobEvent(JobEvent.COMPLETE))
 	}
 	
 	/**
@@ -122,7 +127,20 @@ public class JobService
 		if(jobCollection.length > 0)
 		{
 			if(jobCollection[0])
-				jobCollection[0].execute()
+			{
+				//execute and call job as finished
+				if(jobCollection[0].autoFinish)
+				{
+					jobCollection[0].execute()
+					jobDone()
+					doJob()
+				}
+				//execute and coll job manually as finished
+				else
+				{
+					jobCollection[0].execute()
+				}
+			}
 		}
 	}
 	
@@ -151,6 +169,14 @@ public class JobService
 	public function get jobs():int
 	{
 		return jobCollection.length
+	}
+	
+	public function get isWorking():Boolean
+	{
+		var _isWorking:Boolean = false
+			
+		if(jobs > 0) _isWorking = true
+		return _isWorking
 	}
 }
 }

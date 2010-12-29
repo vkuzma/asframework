@@ -76,7 +76,7 @@ public class ModelFactory extends EventDispatcher
 			}
 			catch(error:TypeError)
 			{
-				trace(error)
+//				trace(error)
 			}
 		}
 		return model

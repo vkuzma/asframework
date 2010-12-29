@@ -237,5 +237,10 @@ public class ImageView extends AbstractView
 		if(_loadedBitmap)
 			_operation.initialize(_loadedBitmap)
 	}
+	
+	public function get operation():IImageViewOperation
+	{
+		return _operation
+	}
 }
 }

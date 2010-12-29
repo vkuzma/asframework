@@ -1,24 +1,29 @@
-package ch.allink.microsite.sectionElement.style
+package ch.allink.jobservice
 {
-import ch.allink.microsite.sectionElement.SectionContentTypes;
-
-import flash.text.StyleSheet;
-import flash.text.TextFieldAutoSize;
+import flash.events.Event;
 
 /**
  * @author vkuzma
- * @date Dec 9, 2010
+ * @date Dec 27, 2010
  **/
-public class TextStyle implements ISectionStyle
+public class JobEvent extends Event
 {
+	//-------------------------------------------------------------------------
+	//
+	//	Constants
+	//
+	//-------------------------------------------------------------------------
+	
+	public static const COMPLETE:String = "jobComplete"
+	public static const COMPLETE_ALL:String = "jobsComplete"
+	
 	//-------------------------------------------------------------------------
 	//
 	//	Variables
 	//
 	//-------------------------------------------------------------------------
 	
-	public var enableEmbedFonts:Boolean = false
-	public var sectionTitleUpperCase:Boolean = false
+	
 	
 	//-------------------------------------------------------------------------
 	//
@@ -26,13 +31,21 @@ public class TextStyle implements ISectionStyle
 	//
 	//-------------------------------------------------------------------------
 	
-	public function TextStyle() 
+	public function JobEvent(type:String, bubbles:Boolean = false, 
+							 cancelable:Boolean = false)
 	{
+		super(type, bubbles, cancelable)
 	}
 	
-	public function get contentType():String
+	//-------------------------------------------------------------------------
+	//
+	//	Override methods
+	//
+	//-------------------------------------------------------------------------
+	
+	public override function clone():Event
 	{
-		return SectionContentTypes.TEXT_ONLY
+		return new JobEvent(type, bubbles, cancelable)
 	}
 	
 	//-------------------------------------------------------------------------

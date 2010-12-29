@@ -34,6 +34,9 @@
     <classEntry path="ch.allink.microsite.widgets.TextFieldFactory"/>
     <classEntry path="ch.allink.microsite.sectionElement.style.TextStyle"/>
     <classEntry path="ch.allink.microsite.sectionElement.style.ISectionStyle"/>
+    <classEntry path="ch.allink.jobservice.JobService"/>
+    <classEntry path="ch.allink.jobservice.Job"/>
+    <classEntry path="ch.allink.jobservice.JobEvent"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

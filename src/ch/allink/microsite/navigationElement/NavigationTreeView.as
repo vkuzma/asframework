@@ -101,7 +101,7 @@ public class NavigationTreeView extends Sprite
 	public function navigationView_requestActivatedHandler(event:Event):void
 	{
 		var navigationView:NavigationView = event.target as NavigationView
-		activate(navigationView)
+		if(!navigationView.active) activate(navigationView)
 	}
 	
 	private function parentNavigationV_deactivateHandler(

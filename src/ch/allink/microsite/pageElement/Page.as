@@ -1,9 +1,11 @@
 package ch.allink.microsite.pageElement
 {
+import ch.allink.microsite.cmsConnector.CMSXmlPath;
 import ch.allink.microsite.core.AbstractModel;
 import ch.allink.microsite.core.CMSAbstractModel;
 import ch.allink.microsite.imageElement.Image;
 import ch.allink.microsite.sectionElement.Section;
+import ch.allink.microsite.sectionElement.SectionContentTypes;
 
 /**
  * The Page class is a model for the PageView class.
@@ -31,6 +33,7 @@ public class Page extends CMSAbstractModel
 	public var languagemenu:String = ""
 	public var language:String = ""
 	public var has_children:String = ""
+	public var _cached_url:String
 		
 	private var _backgroundImage:Array
 	
@@ -59,7 +62,16 @@ public class Page extends CMSAbstractModel
 	 **/
 	public function set sections(values:Array):void
 	{
-		_sections = fillCollection(Section, values)
+		_sections = []
+		for each(var xml:XML in values)
+		{
+			var sectionClass:Class = SectionContentTypes.
+									 getContentTypeModelByType(xml.type)
+			if(sectionClass && xml is XML)
+			{
+				_sections.push(modelFactory.create(sectionClass, xml))
+			}
+		}
 	}
 	
 	public function get sections():Array

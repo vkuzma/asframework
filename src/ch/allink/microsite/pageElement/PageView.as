@@ -15,8 +15,10 @@ public class PageView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	private var _operation:IPageOperation
 	public var page:Page
+	private var _operation:IPageOperation
+	private var _isLoading:Boolean
+	private var modelRequest:ModelRequest
 	
 	//-------------------------------------------------------------------------
 	//
@@ -27,6 +29,7 @@ public class PageView extends AbstractView
 	public function PageView()
 	{
 		super()
+		_isLoading = false
 		build()
 	}
 	
@@ -76,12 +79,13 @@ public class PageView extends AbstractView
 	 **/
 	public function buildPageByURL(url:String):void
 	{ 
+		if(isLoading) stopLoading()
 		var modelFactory:ModelFactory = new ModelFactory()
-		var modelRequest:ModelRequest = modelFactory.load(Page, 
-			CMSXmlPath.getPagePathByURL(url.slice(1)),	
-			ModelFactory.TYPE_MODEL)
+		modelRequest = modelFactory.load(Page, CMSXmlPath.getPagePathByURL(url),	
+										 ModelFactory.TYPE_MODEL)
 		modelRequest.addEventListener(ResultEvent.DATA_LOADED,
 			modelRequest_dataLoadedHandler)
+		_isLoading = true
 	}
 	
 	/**
@@ -96,6 +100,11 @@ public class PageView extends AbstractView
 		operation.formatSectionViews()
 	}
 	
+	public function stopLoading():void
+	{
+		modelRequest.dispose()
+	}
+	
 	//-------------------------------------------------------------------------
 	//
 	//  Event handlers
@@ -104,6 +113,7 @@ public class PageView extends AbstractView
 	
 	private function modelRequest_dataLoadedHandler(event:ResultEvent):void
 	{
+		_isLoading = false
 		page = event.model as Page
 		buildByPage(page)
 		dispatchEvent(event)
@@ -114,6 +124,11 @@ public class PageView extends AbstractView
 	//  Properties
 	//
 	//-------------------------------------------------------------------------
+	
+	public function get sectionViews():Vector.<SectionView>
+	{
+		return operation.sectionViews
+	}
 	
 	public function set operation(value:IPageOperation):void
 	{
@@ -126,9 +141,10 @@ public class PageView extends AbstractView
 		return _operation
 	}
 	
-	private function get sectionViews():Vector.<SectionView>
+	
+	public function get isLoading():Boolean
 	{
-		return operation.sectionViews
+		return _isLoading
 	}
 }
 }

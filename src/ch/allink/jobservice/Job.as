@@ -16,9 +16,10 @@ public class Job
 	//-------------------------------------------------------------------------
 	
 	private var _funktion:Function
-	private var _params:Array
+	public var params:Array
 	
 	public var delay:Number
+	public var autoFinish:Boolean
 	
 	//-------------------------------------------------------------------------
 	//
@@ -29,12 +30,13 @@ public class Job
 	/**
 	 * Creates a new Job instance.
 	 **/
-	public function Job(funktion:Function, params:Array = null,
-						delay:Number = 0)
+	public function Job(funktion:Function, options:Object = null)
 	{
 		_funktion = funktion
-		_params = params
-		this.delay = delay
+		params = null
+		delay = 0
+		autoFinish = false
+		if(options) initOptions(options)
 	}
 	
 	//-------------------------------------------------------------------------
@@ -46,6 +48,23 @@ public class Job
 	private function timer_timerCompleteHandler(event:TimerEvent):void
 	{
 		_funktion.apply(null, params)
+	}
+	
+	private function initOptions(options:Object):void
+	{
+		for (var key:String in options)
+		{
+			try
+			{
+				this[key] = options[key]
+			}
+			catch(error:Error)
+			{
+				error.name = "allink Error: Error #XXXX"
+				error.message = "Option " + key +" doesn't exist"
+				throw error
+			}
+		}
 	}
 	
 	//-------------------------------------------------------------------------
@@ -81,11 +100,6 @@ public class Job
 	public function get funktion():Function
 	{
 		return _funktion
-	}
-	
-	public function get params():Array
-	{
-		return _params
 	}
 }
 }
