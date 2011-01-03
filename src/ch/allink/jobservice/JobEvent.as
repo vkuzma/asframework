@@ -16,6 +16,7 @@ public class JobEvent extends Event
 	
 	public static const COMPLETE:String = "jobComplete"
 	public static const COMPLETE_ALL:String = "jobsComplete"
+	public static const EXECUTED:String = "jobExecutet"
 	
 	//-------------------------------------------------------------------------
 	//

@@ -63,8 +63,18 @@ public class ImageView extends AbstractView
 	
 	public override function dispose():void
 	{
-		if(loader)
-			loader.unload()
+		if(loader) 
+		{
+			try
+			{
+				loader.close()
+				loader.unload()
+			}
+			catch(error:Error)
+			{
+				
+			}
+		}			
 	}
 	
 	//-------------------------------------------------------------------------

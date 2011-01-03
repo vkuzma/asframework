@@ -15,7 +15,11 @@ public class JobService extends EventDispatcher
 	//-------------------------------------------------------------------------
 	
 	private var jobCollection:Vector.<Job>
+	private var freezedJobCollection:Vector.<Job>
+	private var _freezed:Boolean
 	
+	private var _destination:State
+	private var _beginning:State
 	public var maxJobs:int
 	
 	//-------------------------------------------------------------------------
@@ -26,8 +30,9 @@ public class JobService extends EventDispatcher
 	
 	public function JobService()
 	{
+		addEventListener(JobEvent.COMPLETE_ALL, completeAllHandler)
 		jobCollection = new Vector.<Job>
-			
+		_freezed = false
 		maxJobs = 0
 	}
 	
@@ -80,6 +85,17 @@ public class JobService extends EventDispatcher
 		return indexByJob
 	}
 	
+	/**
+	 * Clones a entire jobCollection.
+	 **/
+	private function cloneJobCollection(jobCollection:Vector.<Job>):Vector.<Job>
+	{
+		var clonedJobCollection:Vector.<Job> = new Vector.<Job>()
+		for each(var job:Job in jobCollection)
+			clonedJobCollection.push(job)
+		return clonedJobCollection
+	}
+	
 	//-------------------------------------------------------------------------
 	//
 	//	Public methods
@@ -94,6 +110,7 @@ public class JobService extends EventDispatcher
 	{
 		if(maxJobs > jobCollection.length || maxJobs == 0)
 		{
+			job.parentJobService = this
 			jobCollection.push(job)
 		}
 	}
@@ -105,7 +122,8 @@ public class JobService extends EventDispatcher
 	public function jobDone():void
 	{
 		if(jobCollection.length > 0) removeJob(jobCollection[0])
-		else dispatchEvent(new JobEvent(JobEvent.COMPLETE_ALL)) 
+		if(jobCollection.length == 0)
+			dispatchEvent(new JobEvent(JobEvent.COMPLETE_ALL)) 
 		dispatchEvent(new JobEvent(JobEvent.COMPLETE))
 	}
 	
@@ -124,24 +142,34 @@ public class JobService extends EventDispatcher
 	 **/
 	public function doJob():void
 	{
-		if(jobCollection.length > 0)
+		if(jobCollection.length == 0) return
+			
+		var currentJob:Job = jobCollection[0]
+			
+		//execute and call job as finished
+		if(currentJob.autoFinish)
 		{
-			if(jobCollection[0])
-			{
-				//execute and call job as finished
-				if(jobCollection[0].autoFinish)
-				{
-					jobCollection[0].execute()
-					jobDone()
-					doJob()
-				}
-				//execute and coll job manually as finished
-				else
-				{
-					jobCollection[0].execute()
-				}
-			}
+			currentJob.addEventListener(JobEvent.EXECUTED,
+										currentJob_executedHandler)
+			currentJob.execute()
 		}
+		//execute and call job manually as finished
+		else
+		{
+			if(currentJob.jobService)
+			currentJob.jobService.addEventListener(JobEvent.COMPLETE_ALL, 
+											childJobService_completeAllHandler)
+			currentJob.execute()
+		}
+	}
+	
+	/**
+	 * Has the same effect like executing jobDone() and doJob() one after another.
+	 **/
+	public function doNextJob():void
+	{
+		jobDone()
+		doJob()
 	}
 	
 	/**
@@ -158,6 +186,55 @@ public class JobService extends EventDispatcher
 	public function getJobByIndex(index:int):Job
 	{
 		return jobCollection[index]
+	}
+	
+	
+	public function pop():Job
+	{
+		return jobCollection.pop()
+	}
+	
+	/**
+	 * Saves the current jobs collection. When all jobs are done or 
+	 * clear() will be called, the job collection will be reset to the state of
+	 * the freeze() call.
+	 **/
+	public function freeze():void
+	{
+		freezedJobCollection = cloneJobCollection(jobCollection)
+		_freezed = true
+	}
+	
+	/**
+	 * Removes all job instances from the collection. If previous freeze() has 
+	 * been called, the job collection will be reset to the state of the freeze()
+	 * call.
+	 **/
+	public function clear():void
+	{
+		if(freezed) jobCollection = cloneJobCollection(freezedJobCollection)
+		else jobCollection = new Vector.<Job>
+	}
+	
+	//-------------------------------------------------------------------------
+	//
+	//	Event handlers
+	//
+	//-------------------------------------------------------------------------
+	
+	private function currentJob_executedHandler(event:JobEvent):void
+	{
+		doNextJob()
+	}
+	
+	private function completeAllHandler(event:JobEvent):void
+	{
+		clear()
+	}
+	
+	private function childJobService_completeAllHandler(event:JobEvent):void
+	{
+		doNextJob()
 	}
 	
 	//-------------------------------------------------------------------------
@@ -177,6 +254,39 @@ public class JobService extends EventDispatcher
 			
 		if(jobs > 0) _isWorking = true
 		return _isWorking
+	}
+	
+	/**
+	 * By true, the jobCollection was freezed and can be reset by clear().
+	 **/
+	public function get freezed():Boolean
+	{
+		return _freezed
+	}
+	
+	public function set destination(value:State):void
+	{
+		_destination = value
+		_destination.addJobService(this)
+	}
+	
+	public function get destination():State
+	{
+		return _destination
+	}
+	
+	/**
+	 * Beginning state of this transition.
+	 **/
+	public function set beginning(value:State):void
+	{
+		_beginning = value
+		_beginning.addJobService(this)
+	}
+	
+	public function get beginning():State
+	{
+		return _beginning
 	}
 }
 }

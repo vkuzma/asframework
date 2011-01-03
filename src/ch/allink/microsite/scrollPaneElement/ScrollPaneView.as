@@ -6,6 +6,7 @@ import ch.allink.microsite.core.AbstractView;
 
 import com.osx.MacMouseWheel;
 
+import flash.display.Scene;
 import flash.display.Shape;
 import flash.display.Sprite;
 import flash.events.Event;
@@ -83,9 +84,6 @@ public class ScrollPaneView extends AbstractView
 		scrollClipHolder.scrollDragger.addEventListener(MouseEvent.MOUSE_DOWN, 
 			scrollDragger_mouseDownHandler)
 			
-		MacMouseWheel.addJSListener()
-		scrollContainer.addEventListener(MouseEvent.MOUSE_WHEEL, 
-			scrollContainer_mouseWheelHandler)
 		setUpScrollBar()
 	}
 
@@ -106,7 +104,9 @@ public class ScrollPaneView extends AbstractView
 		if(isNecessary)
 			scrollContainer.y = -scrollClipHolder.currentScrollPosition 
 				* (scrollContainer.height - contentArea.height)
-				/ 100  + this.y
+				/ 100  + y
+		else 
+			scrollContainer.y = y
 	}
 	
 	private function scroll(scrollStep:Number):void
@@ -183,8 +183,9 @@ public class ScrollPaneView extends AbstractView
 	
 	private function addedToStageHandler(event:Event):void
 	{
-		stage.addEventListener(MouseEvent.MOUSE_UP, stage_mouseUpHandler)
 		MacMouseWheel.setup(stage)
+		MacMouseWheel.addJSListener()
+		stage.addEventListener(MouseEvent.MOUSE_UP, stage_mouseUpHandler)
 	}
 	
 	private function scrollBottom_mouseDownHandler(event:MouseEvent):void
@@ -212,7 +213,6 @@ public class ScrollPaneView extends AbstractView
 	
 	private function stage_mouseUpHandler(event:MouseEvent):void
 	{
-		stage.removeEventListener(MouseEvent.MOUSE_MOVE, stage_mouseMoveHandler)
 		scrollClipHolder.scrollDragger.stopDrag()
 		Tweener.removeTweens(scrollTimer)
 		scrolling = false
@@ -224,6 +224,7 @@ public class ScrollPaneView extends AbstractView
 		scrollPosition = delta
 		moveContainer()
 	}
+	
 	
 	//-------------------------------------------------------------------------
 	//
@@ -237,6 +238,8 @@ public class ScrollPaneView extends AbstractView
 	public function set scrollClip(value:Sprite):void
 	{
 		scrollClipHolder = new ScrollPaneClipHolder(value)
+		value.addEventListener(MouseEvent.MOUSE_WHEEL, 
+			scrollContainer_mouseWheelHandler)
 	}
 	
 	/**
@@ -288,6 +291,8 @@ public class ScrollPaneView extends AbstractView
 	{
 		_scrollContainer = value
 		_scrollContainer.mask = scrollClipHolder.scrollPaneMask
+		_scrollContainer.addEventListener(MouseEvent.MOUSE_WHEEL, 
+										  scrollContainer_mouseWheelHandler)
 	}
 	
 	public function get scrollContainer():Sprite

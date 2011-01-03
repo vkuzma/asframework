@@ -37,6 +37,11 @@
     <classEntry path="ch.allink.jobservice.JobService"/>
     <classEntry path="ch.allink.jobservice.Job"/>
     <classEntry path="ch.allink.jobservice.JobEvent"/>
+    <classEntry path="ch.allink.jobservice.JobUtils"/>
+    <classEntry path="ch.allink.microsite.util.GoogleAnalytics"/>
+    <classEntry path="ch.allink.jobservice.StateMachine"/>
+    <classEntry path="ch.allink.microsite.util.Layout"/>
+    <classEntry path="ch.allink.jobservice.State"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

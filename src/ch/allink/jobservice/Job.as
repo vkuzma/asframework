@@ -1,5 +1,6 @@
 package ch.allink.jobservice
 {
+import flash.events.EventDispatcher;
 import flash.events.TimerEvent;
 import flash.utils.Timer;
 
@@ -7,7 +8,7 @@ import flash.utils.Timer;
  * @author Vladimir Kuzma
  * @date 13.11.2010
  **/
-public class Job
+public class Job extends EventDispatcher
 {
 	//-------------------------------------------------------------------------
 	//
@@ -16,10 +17,15 @@ public class Job
 	//-------------------------------------------------------------------------
 	
 	private var _funktion:Function
-	public var params:Array
+	private var _jobService:JobService
 	
+	public var parentJobService:JobService
+	public var params:Array
 	public var delay:Number
 	public var autoFinish:Boolean
+	public var finishState:String
+	public var beginState:String
+	public var returnValue:Object
 	
 	//-------------------------------------------------------------------------
 	//
@@ -30,9 +36,13 @@ public class Job
 	/**
 	 * Creates a new Job instance.
 	 **/
-	public function Job(funktion:Function, options:Object = null)
+	public function Job(jobOperation:Object, options:Object = null)
 	{
-		_funktion = funktion
+		if(jobOperation is Function)
+			_funktion = jobOperation as Function
+		else if(jobOperation is JobService)
+			_jobService = jobOperation as JobService
+				
 		params = null
 		delay = 0
 		autoFinish = false
@@ -47,7 +57,8 @@ public class Job
 	
 	private function timer_timerCompleteHandler(event:TimerEvent):void
 	{
-		_funktion.apply(null, params)
+		startOperation()
+		dispatchEvent(new JobEvent(JobEvent.EXECUTED))
 	}
 	
 	private function initOptions(options:Object):void
@@ -65,6 +76,12 @@ public class Job
 				throw error
 			}
 		}
+	}
+	
+	private function startOperation():void
+	{
+		if(funktion != null) returnValue = funktion.apply(null, params)
+		else if(jobService) jobService.doJob()
 	}
 	
 	//-------------------------------------------------------------------------
@@ -87,7 +104,8 @@ public class Job
 		}
 		else
 		{
-			_funktion.apply(null, params)
+			startOperation()
+			dispatchEvent(new JobEvent(JobEvent.EXECUTED))
 		}
 	}
 	
@@ -100,6 +118,11 @@ public class Job
 	public function get funktion():Function
 	{
 		return _funktion
+	}
+	
+	public function get jobService():JobService
+	{
+		return _jobService
 	}
 }
 }

@@ -1,5 +1,7 @@
 package ch.allink.microsite.backgroundImageElement
 {
+import ch.allink.jobservice.Job;
+import ch.allink.jobservice.JobService;
 import ch.allink.microsite.core.AbstractModel;
 import ch.allink.microsite.core.AbstractView;
 import ch.allink.microsite.imageElement.IImageViewOperation;
@@ -32,11 +34,11 @@ public class BackgroundView extends AbstractView
 	private var oldImageView:ImageView
 	private var _imageOperation:IImageViewOperation
 	private var currentImage:Image
+	private var blendJobs:JobService
 	public var imageView:ImageView
 	public var animationTime:Number
 	public var blendInOperation:Function
 	public var blendOutOperation:Function
-	
 	
 	//-------------------------------------------------------------------------
 	//
@@ -49,7 +51,7 @@ public class BackgroundView extends AbstractView
 		super()
 		imageView = new ImageView(new Image())
 		oldImageView = new ImageView(new Image())
-		animationTime = 2
+		animationTime = 1.2
 		currentImage = new Image()
 	}
 	
@@ -62,22 +64,33 @@ public class BackgroundView extends AbstractView
 	private function blendIn(imageView:ImageView):void
 	{
 		if(blendInOperation != null) blendInOperation(imageView)
-		else
-			TweenLite.to(imageView, animationTime, {autoAlpha: 1})
 	}
 	
 	private function blendOut(imageView:ImageView):void
 	{
-		if(blendOutOperation != null) blendInOperation(imageView)
+		if(blendOutOperation != null) blendOutOperation(imageView)
 		else
 			TweenLite.to(imageView, animationTime,
 				{
 					autoAlpha: 0,
 					onComplete: function():void
 					{
-						imageView = null
+						blendJobs.doNextJob()
 					}
 				})
+				
+	TweenLite.to(imageView, 0,
+		{
+			onComplete: function():void
+			{
+				blendJobs.doNextJob()
+//				removeChild(imageView)
+//				imageView.dispose()
+//				imageView = null
+			}
+		})
+				
+		
 	}
 	
 	//-------------------------------------------------------------------------
@@ -95,9 +108,8 @@ public class BackgroundView extends AbstractView
 		if(oldModel.url != image.url ||
 		   imageView.currentBitmap == null)
 		{
-			if(imageView.isLoading)
-				imageView.loader.close()
-					
+			if(imageView.isLoading) imageView.dispose()
+
 			imageView = new ImageView(image)
 			imageView.addEventListener(Event.ADDED_TO_STAGE, 
 									   imageView_addedHandler)
@@ -130,13 +142,17 @@ public class BackgroundView extends AbstractView
 	private function imageView_completeHandler(event:Event):void
 	{
 		var imageView:ImageView = event.target as ImageView
-		imageView.operation = imageOperation
+		if(imageOperation) imageView.operation = imageOperation
 		imageView.visible = false
 		imageView.alpha = 0
+		addChild(imageView)
+		
+		blendJobs = new JobService()
 		if(oldImageView.currentBitmap != null)
-			blendOut(oldImageView)
-		this.addChild(imageView)
-		blendIn(imageView)
+			blendJobs.addJob(new Job(blendOut, {params: [oldImageView]}))
+		blendJobs.addJob(new Job(blendIn, {params: [imageView]}))
+		blendJobs.doJob()
+		
 		dispatchEvent(event)
 	}
 	

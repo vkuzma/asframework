@@ -7,6 +7,10 @@ import ch.allink.microsite.imageElement.Image;
 import ch.allink.microsite.sectionElement.Section;
 import ch.allink.microsite.sectionElement.SectionContentTypes;
 
+import flash.geom.ColorTransform;
+
+import spark.effects.interpolation.RGBInterpolator;
+
 /**
  * The Page class is a model for the PageView class.
  * @author Michael Walder
@@ -34,7 +38,9 @@ public class Page extends CMSAbstractModel
 	public var language:String = ""
 	public var has_children:String = ""
 	public var _cached_url:String
-		
+	
+	private var _color:uint	
+	private var _gabafter:Boolean
 	private var _backgroundImage:Array
 	
 	//-------------------------------------------------------------------------
@@ -103,6 +109,28 @@ public class Page extends CMSAbstractModel
 	public function get backgroundimage():Array
 	{
 		return _backgroundImage 
+	}
+	
+	
+	public function set gabafter(value:Object):void
+	{
+		if(value == "False") _gabafter = false
+		else if(value == "True") _gabafter = true
+	}
+	
+	public function get gabafter():Object
+	{
+		return _gabafter
+	}
+	
+	public function set color(value:Object):void
+	{
+		if(value) _color = uint(value)
+	}
+	
+	public function get color():Object
+	{
+		return _color
 	}
 }
 }

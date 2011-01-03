@@ -2,12 +2,16 @@ package ch.allink.microsite.core
 {
 import com.asual.swfaddress.SWFAddress;
 import com.asual.swfaddress.SWFAddressEvent;
+import com.osx.MacMouseWheel;
+
+import flash.events.Event;
 
 public class AbstractWebsiteView extends AbstractView
 {
 	public function AbstractWebsiteView()
 	{
 		super()
+		addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler)
 	}
 	
 	protected function initializeHistoryManagement():void
@@ -27,6 +31,11 @@ public class AbstractWebsiteView extends AbstractView
 	public function swfaddress_initHandler(event:SWFAddressEvent):void
 	{
 		
+	}
+	
+	private function addedToStageHandler(event:Event):void
+	{
+		MacMouseWheel.setup(stage)
 	}
 }
 }

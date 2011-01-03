@@ -188,6 +188,11 @@ public class NavigationView extends AbstractView
 		return _navigationTreeView
 	}
 	
+	public function signAsActive():void
+	{
+		
+	}
+	
 	public function set active(value:Boolean):void
 	{
 		_active = value

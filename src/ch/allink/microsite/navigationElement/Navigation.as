@@ -25,6 +25,8 @@ public class Navigation extends AbstractModel
 	private var _children:Vector.<Navigation> = new Vector.<Navigation>
 	public var indexPageID:int
 	private var _parentNavigation:Navigation
+	private var _gabafter:Boolean
+	private var _color:uint
 
 	public static var languages:Array
 	
@@ -95,6 +97,27 @@ public class Navigation extends AbstractModel
 			hasChildren = true
 			
 		return hasChildren
+	}
+	
+	public function set gabafter(value:Object):void
+	{
+		if(value == "False") _gabafter = false
+		else if(value == "True") _gabafter = true
+	}
+	
+	public function get gabafter():Object
+	{
+		return _gabafter
+	}
+	
+	public function set color(value:Object):void
+	{
+		if(value) _color = uint(value)
+	}
+	
+	public function get color():Object
+	{
+		return _color
 	}
 }
 }
