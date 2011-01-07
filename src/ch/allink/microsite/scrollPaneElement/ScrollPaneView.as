@@ -35,6 +35,7 @@ public class ScrollPaneView extends AbstractView
 	public var contentArea:Rectangle
 	public var scrollStepHeight:Number
 	public var fixedDraggerSize:Boolean
+	public var extraHeight:Number
 	
 	//---------------------------------
 	//	Layout
@@ -59,6 +60,7 @@ public class ScrollPaneView extends AbstractView
 		contentArea = new Rectangle(0, 0, 100, 100)
 		_scrollContainer = new Sprite()
 		scrollTimer = {}
+		extraHeight = 0
 
 		scrolling = false
 	}
@@ -184,7 +186,6 @@ public class ScrollPaneView extends AbstractView
 	private function addedToStageHandler(event:Event):void
 	{
 		MacMouseWheel.setup(stage)
-		MacMouseWheel.addJSListener()
 		stage.addEventListener(MouseEvent.MOUSE_UP, stage_mouseUpHandler)
 	}
 	
@@ -225,6 +226,15 @@ public class ScrollPaneView extends AbstractView
 		moveContainer()
 	}
 	
+	private function scrollContainer_mouseOverHandler(event:MouseEvent):void
+	{
+		MacMouseWheel.addJSListener()	
+	}
+	
+	private function scrollContainer_mouseOutHandler(event:MouseEvent):void
+	{
+		MacMouseWheel.removeJSListener()
+	}
 	
 	//-------------------------------------------------------------------------
 	//
@@ -277,7 +287,7 @@ public class ScrollPaneView extends AbstractView
 	private function get ratioContentMask():Number
 	{
 		var _ratioContentMask:Number = contentArea.height 
-			/ _scrollContainer.height * 100  
+			/ (_scrollContainer.height + extraHeight) * 100
 	
 		if(_ratioContentMask > 100)
 			_ratioContentMask = 100
@@ -293,6 +303,10 @@ public class ScrollPaneView extends AbstractView
 		_scrollContainer.mask = scrollClipHolder.scrollPaneMask
 		_scrollContainer.addEventListener(MouseEvent.MOUSE_WHEEL, 
 										  scrollContainer_mouseWheelHandler)
+		_scrollContainer.addEventListener(MouseEvent.MOUSE_OVER,
+										  scrollContainer_mouseOverHandler)
+		_scrollContainer.addEventListener(MouseEvent.MOUSE_OUT,
+										  scrollContainer_mouseOutHandler)
 	}
 	
 	public function get scrollContainer():Sprite

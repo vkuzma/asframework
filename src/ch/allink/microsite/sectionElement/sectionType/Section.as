@@ -1,7 +1,8 @@
-package ch.allink.microsite.sectionElement
+package ch.allink.microsite.sectionElement.sectionType
 {
 import ch.allink.microsite.core.AbstractModel;
 import ch.allink.microsite.imageElement.Image;
+import ch.allink.microsite.sectionElement.SectionContentTypes;
 
 /**
  * Die Section Klasse dient als Model für eine SectionView Instanz.
@@ -45,14 +46,9 @@ public class Section extends AbstractModel
 	//
 	//-------------------------------------------------------------------------
 	
-	public function set files(values:Array):void
+	public static function get TYPE():String
 	{
-			_files = fillCollection(Image, values)
-	}
-	
-	public function get files():Array
-	{
-		return _files
+		return SectionContentTypes.TEXT_ONLY
 	}
 }
 }

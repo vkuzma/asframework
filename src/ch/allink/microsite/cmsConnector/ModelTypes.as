@@ -1,27 +1,22 @@
-package ch.allink.microsite.sectionElement
+package ch.allink.microsite.cmsConnector
 {
-import ch.allink.microsite.core.AbstractModel;
-import ch.allink.microsite.sectionElement.sectionType.ImageSection;
-import ch.allink.microsite.sectionElement.sectionType.Section;
-
 import flash.utils.Dictionary;
 
-public class SectionContentTypes
+/**
+ * @author vkuzma
+ * @date Jan 5, 2011
+ **/
+public class ModelTypes
 {
-	{
-		contentTypeModels[TEXT_ONLY] = Section
-		contentTypeModels[IMAGE] = ImageSection
-	}
-	
 	//-------------------------------------------------------------------------
 	//
 	//	Constants
 	//
 	//-------------------------------------------------------------------------
 	
-	public static const TEXT_ONLY:String = "RichTextContent"
+	public static const PAGE_TYPE:String = "pageType"
 	public static const TEXT_IMAGE_LEFT:String = "textimageleft"
-	public static const IMAGE:String = "ImageContentType"
+	public static const IMAGE:String = "image"
 	public static const GALLERY:String = "gallery"
 	
 	//-------------------------------------------------------------------------
@@ -29,8 +24,8 @@ public class SectionContentTypes
 	//	Variables
 	//
 	//-------------------------------------------------------------------------
-		
-	private static var contentTypeModels:Dictionary = new Dictionary()
+	
+	private static var modelTypes:Dictionary = new Dictionary()
 	
 	//-------------------------------------------------------------------------
 	//
@@ -38,25 +33,23 @@ public class SectionContentTypes
 	//
 	//-------------------------------------------------------------------------
 		
-	public function SectionContentTypes()
+	public function ModelTypes()
 	{
 	}
-	
 	//-------------------------------------------------------------------------
 	//
 	//	Static methods
 	//
 	//-------------------------------------------------------------------------
 	
-	public static function getContentTypeModelByType(type:String):Class
+	public static function getModelByType(type:String):Class
 	{
-		return contentTypeModels[type] 
+		return modelTypes[type] 
 	}
 	
-	public static function addContentTypeModel(value:Class,
-											   type:String):void
+	public static function addModel(value:Class, type:String):void
 	{
-		contentTypeModels[type] = value		
+		modelTypes[type] = value		
 	}
 }
 }

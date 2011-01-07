@@ -1,9 +1,9 @@
 package ch.allink.microsite.sectionElement.operation
 {
 import ch.allink.microsite.pageElement.PageFormatter;
-import ch.allink.microsite.sectionElement.Section;
 import ch.allink.microsite.sectionElement.SectionContentTypes;
 import ch.allink.microsite.sectionElement.SectionView;
+import ch.allink.microsite.sectionElement.sectionType.Section;
 import ch.allink.microsite.sectionElement.style.TextStyle;
 import ch.allink.microsite.widgets.TextFieldFactory;
 
@@ -17,7 +17,6 @@ public class TextOperation implements ISectionOperation
 	//
 	//-------------------------------------------------------------------------
 	
-	public var titleField:TextField
 	public var textField:TextField
 	private var _targetView:SectionView
 	private var _pageFormatter:PageFormatter
@@ -53,11 +52,6 @@ public class TextOperation implements ISectionOperation
 		textField.embedFonts = pageFormatter.enableEmbedFonts
 	}
 	
-	private function layOut():void
-	{
-		textField.y = titleField.y + titleField.height
-	}
-	
 	//-------------------------------------------------------------------------
 	//
 	//	Public methods
@@ -66,17 +60,10 @@ public class TextOperation implements ISectionOperation
 	
 	public function build():void
 	{
-		titleField = new TextField()
-		targetView.addChild(titleField)	
-		setUpTextField(titleField)
-		titleField.htmlText = "<h2>"+section.title+"</h2>"
-			
 		textField = new TextField()
 		targetView.addChild(textField)
 		setUpTextField(textField)
-		textField.htmlText = "<body>"+section.text+"</body>"
-			
-		layOut()
+		textField.htmlText = "<body>" + section.text + "</body>"
 	}
 	
 	/**
@@ -85,7 +72,6 @@ public class TextOperation implements ISectionOperation
 	public function resize(sourceWidth:Number, 
 									sourceHeight:Number):void
 	{
-		titleField.y = pageFormatter.paddingLeft
 		textField.x = pageFormatter.paddingLeft
 	}
 	
@@ -111,7 +97,7 @@ public class TextOperation implements ISectionOperation
 		return SectionContentTypes.TEXT_ONLY
 	}
 	
-	public static function get FORMAT():String
+	public static function get TYPE():String
 	{
 		return SectionContentTypes.TEXT_ONLY
 	}

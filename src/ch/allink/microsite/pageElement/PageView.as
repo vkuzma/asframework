@@ -6,6 +6,11 @@ import ch.allink.microsite.cmsConnector.ModelRequest;
 import ch.allink.microsite.core.AbstractView;
 import ch.allink.microsite.events.ResultEvent;
 import ch.allink.microsite.sectionElement.SectionView;
+import ch.allink.microsite.sectionElement.sectionType.Section;
+
+import flash.display.DisplayObject;
+import flash.display.Sprite;
+import flash.utils.Dictionary;
 
 public class PageView extends AbstractView
 {
@@ -16,6 +21,7 @@ public class PageView extends AbstractView
 	//-------------------------------------------------------------------------
 	
 	public var page:Page
+	public var regions:Dictionary
 	private var _operation:IPageOperation
 	private var _isLoading:Boolean
 	private var modelRequest:ModelRequest
@@ -30,7 +36,7 @@ public class PageView extends AbstractView
 	{
 		super()
 		_isLoading = false
-		build()
+		regions = new Dictionary
 	}
 	
 	//-------------------------------------------------------------------------
@@ -42,6 +48,7 @@ public class PageView extends AbstractView
 	public override function build():void
 	{
 	}
+	
 	
 	public override function dispose():void
 	{
@@ -60,8 +67,10 @@ public class PageView extends AbstractView
 		{
 			if(sectionView)
 			{
-				if(contains(sectionView))
-					removeChild(sectionView)
+				var section:Section = sectionView.section
+				var regionContainer:Sprite = regionByName(section.region)
+				if(regionContainer.contains(sectionView))
+					regionContainer.removeChild(sectionView)
 				sectionView.dispose()
 			}
 		}
@@ -96,13 +105,34 @@ public class PageView extends AbstractView
 		if(sectionViews)
 			clearSectionViews(sectionViews)
 		var sections:Array = page.sections
-		operation.buildSectionViews(sections)
+ 		operation.buildSectionViews(sections)
 		operation.formatSectionViews()
 	}
 	
 	public function stopLoading():void
 	{
 		modelRequest.dispose()
+	}
+	
+	public function addRegion(region:String):void
+	{
+		regionByName(region)
+	}
+	
+	public function addToRegion(region:String, displayObject:DisplayObject):void
+	{
+		regionByName(region).addChild(displayObject)
+	}
+	
+	public function regionByName(region:String):Sprite
+	{
+		if(!regions[region])
+		{
+			var regionContainer:Sprite = new Sprite()
+			addChild(regionContainer)
+			regions[region] = regionContainer
+		}
+		return regions[region]
 	}
 	
 	//-------------------------------------------------------------------------

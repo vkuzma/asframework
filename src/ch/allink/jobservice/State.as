@@ -18,7 +18,8 @@ public class State extends EventDispatcher
 	//-------------------------------------------------------------------------
 	
 	public var name:String
-	private var _jobServices:Vector.<JobService>
+	private var _beginJobServices:Vector.<JobService>
+	private var _destinationJobServices:Vector.<JobService>
 	
 	//-------------------------------------------------------------------------
 	//
@@ -29,7 +30,8 @@ public class State extends EventDispatcher
 	public function State(target:IEventDispatcher=null)
 	{
 		super(target)
-		_jobServices = new Vector.<JobService>()
+		_beginJobServices = new Vector.<JobService>()
+		_destinationJobServices = new Vector.<JobService>()
 	}
 	
 	//-------------------------------------------------------------------------
@@ -46,9 +48,14 @@ public class State extends EventDispatcher
 	//
 	//-------------------------------------------------------------------------
 	
-	public function addJobService(jobService:JobService):void
+	public function addDestinationJobService(jobService:JobService):void
 	{
-		_jobServices.push(jobService)
+		_destinationJobServices.push(jobService)
+	}
+	
+	public function addBeginJobService(jobService:JobService):void
+	{
+		_beginJobServices.push(jobService)
 	}
 	
 	public function containsInDestinations(jobService:JobService):Boolean
@@ -94,10 +101,16 @@ public class State extends EventDispatcher
 	//
 	//-------------------------------------------------------------------------
 	
-	public function get jobServices():Vector.<JobService>
+	public function get destinationJobServices():Vector.<JobService>
 	{
-		if(!_jobServices) return new Vector.<JobService>()
-		return _jobServices
+		if(!_destinationJobServices) return new Vector.<JobService>()
+		return _destinationJobServices
+	}
+	
+	public function get beginJobServices():Vector.<JobService>
+	{
+		if(!_beginJobServices) return new Vector.<JobService>()
+		return _beginJobServices
 	}
 }
 }

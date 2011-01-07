@@ -64,11 +64,12 @@ public class BackgroundView extends AbstractView
 	private function blendIn(imageView:ImageView):void
 	{
 		if(blendInOperation != null) blendInOperation(imageView)
+		else TweenLite.to(imageView, animationTime, {autoAlpha: 1})
 	}
 	
-	private function blendOut(imageView:ImageView):void
+	private function blendOut(imageView:ImageView, blendJobs:JobService):void
 	{
-		if(blendOutOperation != null) blendOutOperation(imageView)
+		if(blendOutOperation != null) blendOutOperation(imageView, blendJobs)
 		else
 			TweenLite.to(imageView, animationTime,
 				{
@@ -76,21 +77,11 @@ public class BackgroundView extends AbstractView
 					onComplete: function():void
 					{
 						blendJobs.doNextJob()
+						removeChild(imageView)
+						imageView.dispose()
+						imageView = null
 					}
 				})
-				
-	TweenLite.to(imageView, 0,
-		{
-			onComplete: function():void
-			{
-				blendJobs.doNextJob()
-//				removeChild(imageView)
-//				imageView.dispose()
-//				imageView = null
-			}
-		})
-				
-		
 	}
 	
 	//-------------------------------------------------------------------------
@@ -99,7 +90,7 @@ public class BackgroundView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	public function buildBG(image:Image):void
+	public function buildBackground(image:Image):void
 	{
 		if(currentImage.url == image.url) return
 		currentImage = image
@@ -110,6 +101,8 @@ public class BackgroundView extends AbstractView
 		{
 			if(imageView.isLoading) imageView.dispose()
 
+			oldImageView = imageView
+				
 			imageView = new ImageView(image)
 			imageView.addEventListener(Event.ADDED_TO_STAGE, 
 									   imageView_addedHandler)
@@ -117,7 +110,6 @@ public class BackgroundView extends AbstractView
 									   imageView_completeHandler)
 			imageView.addEventListener(ProgressEvent.PROGRESS, 
 									   imageView_progressHanlder)
-			oldImageView = imageView
 			imageView.build()
 		}
 	}
@@ -149,7 +141,8 @@ public class BackgroundView extends AbstractView
 		
 		blendJobs = new JobService()
 		if(oldImageView.currentBitmap != null)
-			blendJobs.addJob(new Job(blendOut, {params: [oldImageView]}))
+			blendJobs.addJob(new Job(blendOut, 
+									 {params: [oldImageView, blendJobs]}))
 		blendJobs.addJob(new Job(blendIn, {params: [imageView]}))
 		blendJobs.doJob()
 		

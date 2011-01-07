@@ -25,7 +25,7 @@ public class Navigation extends AbstractModel
 	private var _children:Vector.<Navigation> = new Vector.<Navigation>
 	public var indexPageID:int
 	private var _parentNavigation:Navigation
-	private var _gabafter:Boolean
+	private var _verticalspacing:Boolean
 	private var _color:uint
 
 	public static var languages:Array
@@ -99,15 +99,15 @@ public class Navigation extends AbstractModel
 		return hasChildren
 	}
 	
-	public function set gabafter(value:Object):void
+	public function set verticalspacing(value:Object):void
 	{
-		if(value == "False") _gabafter = false
-		else if(value == "True") _gabafter = true
+		if(value == "False") _verticalspacing = false
+		else if(value == "True") _verticalspacing = true
 	}
 	
-	public function get gabafter():Object
+	public function get verticalspacing():Object
 	{
-		return _gabafter
+		return _verticalspacing
 	}
 	
 	public function set color(value:Object):void

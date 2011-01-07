@@ -47,16 +47,19 @@ public class StateMachine extends EventDispatcher
 	 */
 	private function searchState(desiredState:State, currentState:State):int
 	{
-		for each(var jobService:JobService in currentState.jobServices)
+		for each(var jobService:JobService in 
+				 currentState.beginJobServices)
 		{
 			var destinationState:State = jobService.destination
 				
-			if(desiredState == destinationState ||
-			   searchState(desiredState, destinationState))
+			if(!destinationState.beginJobServices.length) return 0
+				
+			if(desiredState == destinationState)
 			{
 				transition.addJob(new Job(jobService))
 				return 1
 			}
+			if(searchState(desiredState, destinationState)) return 1
 		}
 		return 0
 	}
@@ -76,6 +79,8 @@ public class StateMachine extends EventDispatcher
 		_desiredState = state
 		transition = new JobService()
 		searchState(_desiredState, currentState)
+		transition.addEventListener(JobEvent.COMPLETE, 
+									transition_completeHandler)
 		transition.addEventListener(JobEvent.COMPLETE_ALL, 
 									transition_completeAllHandler)
 		transition.doJob()
@@ -87,8 +92,17 @@ public class StateMachine extends EventDispatcher
 	//
 	//-------------------------------------------------------------------------
 	
+	private function transition_completeHandler(event:JobEvent):void
+	{
+		dispatchEvent(event)
+	}
+	
 	private function transition_completeAllHandler(event:JobEvent):void
 	{
+		transition.removeEventListener(JobEvent.COMPLETE, 
+									   transition_completeHandler)
+		transition.removeEventListener(JobEvent.COMPLETE_ALL, 
+									   transition_completeAllHandler)
 		currentState = _desiredState
 		dispatchEvent(event)
 	}

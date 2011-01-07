@@ -42,6 +42,9 @@
     <classEntry path="ch.allink.jobservice.StateMachine"/>
     <classEntry path="ch.allink.microsite.util.Layout"/>
     <classEntry path="ch.allink.jobservice.State"/>
+    <classEntry path="ch.allink.microsite.cmsConnector.ModelTypes"/>
+    <classEntry path="ch.allink.microsite.sectionElement.sectionType.ImageSection"/>
+    <classEntry path="ch.allink.microsite.sectionElement.operation.ImageContentOperation"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

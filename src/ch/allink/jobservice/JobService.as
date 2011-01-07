@@ -21,6 +21,7 @@ public class JobService extends EventDispatcher
 	private var _destination:State
 	private var _beginning:State
 	public var maxJobs:int
+	public var name:String
 	
 	//-------------------------------------------------------------------------
 	//
@@ -224,6 +225,9 @@ public class JobService extends EventDispatcher
 	
 	private function currentJob_executedHandler(event:JobEvent):void
 	{
+		var currentJob:Job = event.target as Job
+		currentJob.removeEventListener(JobEvent.EXECUTED, 
+									   currentJob_executedHandler)
 		doNextJob()
 	}
 	
@@ -234,6 +238,9 @@ public class JobService extends EventDispatcher
 	
 	private function childJobService_completeAllHandler(event:JobEvent):void
 	{
+		var jobService:JobService = event.target as JobService
+		jobService.removeEventListener(JobEvent.COMPLETE_ALL, 
+									   childJobService_completeAllHandler)
 		doNextJob()
 	}
 	
@@ -243,6 +250,9 @@ public class JobService extends EventDispatcher
 	//
 	//-------------------------------------------------------------------------
 	
+	/**
+	 * Current number of added job instances.
+	 **/
 	public function get jobs():int
 	{
 		return jobCollection.length
@@ -267,7 +277,7 @@ public class JobService extends EventDispatcher
 	public function set destination(value:State):void
 	{
 		_destination = value
-		_destination.addJobService(this)
+		_destination.addDestinationJobService(this)
 	}
 	
 	public function get destination():State
@@ -281,7 +291,7 @@ public class JobService extends EventDispatcher
 	public function set beginning(value:State):void
 	{
 		_beginning = value
-		_beginning.addJobService(this)
+		_beginning.addBeginJobService(this)
 	}
 	
 	public function get beginning():State

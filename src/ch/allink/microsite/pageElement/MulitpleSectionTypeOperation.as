@@ -1,10 +1,13 @@
 package ch.allink.microsite.pageElement
 {
-import ch.allink.microsite.sectionElement.Section;
 import ch.allink.microsite.sectionElement.SectionView;
 import ch.allink.microsite.sectionElement.operation.ISectionOperation;
+import ch.allink.microsite.sectionElement.operation.ImageContentOperation;
 import ch.allink.microsite.sectionElement.operation.TextImageOperation;
 import ch.allink.microsite.sectionElement.operation.TextOperation;
+import ch.allink.microsite.sectionElement.sectionType.Section;
+
+import flash.display.Sprite;
 
 /**
  * @author Vladimir Kuzma
@@ -33,8 +36,8 @@ public final class MulitpleSectionTypeOperation implements IPageOperation
 	public function MulitpleSectionTypeOperation()
 	{
 		sectionOperationClasses = new Vector.<Class>
-		sectionOperationClasses.push(TextImageOperation)
 		sectionOperationClasses.push(TextOperation)
+		sectionOperationClasses.push(ImageContentOperation)
 		sectionOperations = new Vector.<ISectionOperation>
 	}
 	
@@ -56,18 +59,45 @@ public final class MulitpleSectionTypeOperation implements IPageOperation
 	 * Returns an instance of a Class with the desired format.
 	 * @format Format of the Section, also known as contenttpe in FeinCMS.
 	 */
-	private function getOperationByFormat(format:String):ISectionOperation
+	private function getOperationByFormat(type:String):ISectionOperation
 	{
 		var operationByFormat:ISectionOperation
 		for each(var operation:Class in sectionOperationClasses)
 		{
-			if(operation.FORMAT == format)
+			if(operation.TYPE == type)
 			{
 				operationByFormat = new operation()
 				break
 			}
 		}
 		return operationByFormat
+	}
+	
+	private function getSectionViewsByRegion(region:String):Vector.<SectionView>
+	{
+		var sectionViewsByRegion:Vector.<SectionView> = new Vector.<SectionView> 
+		for each(var sectionView:SectionView in sectionViews)
+		{
+			var section:Section = sectionView.section
+			if(section.region == region) sectionViewsByRegion.push(sectionView)	
+		}
+		return sectionViewsByRegion
+	}
+	
+	private function formatSectionViewsInRegion(
+		sectionViews:Vector.<SectionView>):void
+	{
+		var prevSectionView:SectionView
+		for each(var sectionView:SectionView in sectionViews)
+		{
+			if(prevSectionView)
+				sectionView.y = Math.round(prevSectionView.height + 
+					prevSectionView.y +
+					pageFormatter.sectionVerticalSpacing)
+			else
+				sectionView.y = 0
+			prevSectionView = sectionView
+		}
 	}
 	
 	//-------------------------------------------------------------------------
@@ -96,11 +126,14 @@ public final class MulitpleSectionTypeOperation implements IPageOperation
 			sectionOperations.push(sectionOperation)
 			sectionOperation.pageFormatter = pageFormatter
 			var sectionView:SectionView = new SectionView(section)
-			targetView.addChild(sectionView)
+				
 			sectionView.operation = sectionOperation
 			sectionView.build()
-			targetView.addChild(sectionView)
-			_sectionViews.push(sectionView)
+				
+			targetView.addRegion(section.region)
+			targetView.addToRegion(section.region, sectionView)
+			
+			sectionViews.push(sectionView)
 		}
 	}
 	
@@ -110,16 +143,17 @@ public final class MulitpleSectionTypeOperation implements IPageOperation
 	//TODO: The SectionView instances should be formated by the DisplayFormatter
 	public function formatSectionViews():void
 	{
-		var prevSectionView:SectionView
-		for each(var sectionView:SectionView in sectionViews)
+		for (var region:String in targetView.regions)
 		{
-			if(prevSectionView)
-				sectionView.y = Math.round(prevSectionView.height + 
-								prevSectionView.y +
-								pageFormatter.sectionVerticalSpacing)
-			else
-				sectionView.y = 0
-			prevSectionView = sectionView
+			var sectionViewsInRegion:Vector.<SectionView> = 
+				getSectionViewsByRegion(region)
+			//TODO throw error if sectionViewsInRegion is null
+			if(!sectionViewsInRegion)
+			{
+				trace("Allink error: " + "Region " + region + " doesn't exist.")
+				continue	
+			}
+			formatSectionViewsInRegion(sectionViewsInRegion)
 		}
 	}
 	

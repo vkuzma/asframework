@@ -10,6 +10,7 @@ public class Image extends CMSAbstractModel
 	public var imglink:String = ""
 	public var extraFields:String = ""
 	public var url:String = ""
+	public var type:String = "ImageContentType"
 	
 	private var _description:String = ""
 	
