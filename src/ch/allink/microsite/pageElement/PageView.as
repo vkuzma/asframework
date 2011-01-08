@@ -22,9 +22,9 @@ public class PageView extends AbstractView
 	
 	public var page:Page
 	public var regions:Dictionary
+	private var modelRequest:ModelRequest
 	private var _operation:IPageOperation
 	private var _isLoading:Boolean
-	private var modelRequest:ModelRequest
 	
 	//-------------------------------------------------------------------------
 	//
@@ -35,8 +35,7 @@ public class PageView extends AbstractView
 	public function PageView()
 	{
 		super()
-		_isLoading = false
-		regions = new Dictionary
+		
 	}
 	
 	//-------------------------------------------------------------------------
@@ -47,6 +46,8 @@ public class PageView extends AbstractView
 	
 	public override function build():void
 	{
+		_isLoading = false
+		regions = new Dictionary()
 	}
 	
 	
@@ -65,14 +66,11 @@ public class PageView extends AbstractView
 	{
 		for each(var sectionView:SectionView in sectionViews)
 		{
-			if(sectionView)
-			{
-				var section:Section = sectionView.section
-				var regionContainer:Sprite = regionByName(section.region)
-				if(regionContainer.contains(sectionView))
-					regionContainer.removeChild(sectionView)
-				sectionView.dispose()
-			}
+			var section:Section = sectionView.section
+			var regionContainer:Sprite = regionByName(section.region)
+			if(regionContainer.contains(sectionView))
+				regionContainer.removeChild(sectionView)
+			sectionView.dispose()
 		}
 		sectionViews = null
 	}
@@ -86,11 +84,12 @@ public class PageView extends AbstractView
 	/**
 	 * Loads a Page instance by the pageid and will be buildded by the loaded Page instance.
 	 **/
-	public function buildPageByURL(url:String):void
+	public function buildPageByURL(url:String, modelClass:Class = null):void
 	{ 
+		if(!modelClass) modelClass = Page
 		if(isLoading) stopLoading()
 		var modelFactory:ModelFactory = new ModelFactory()
-		modelRequest = modelFactory.load(Page, CMSXmlPath.getPagePathByURL(url),	
+		modelRequest = modelFactory.load(modelClass, CMSXmlPath.getPagePathByURL(url),	
 										 ModelFactory.TYPE_MODEL)
 		modelRequest.addEventListener(ResultEvent.DATA_LOADED,
 			modelRequest_dataLoadedHandler)
@@ -170,7 +169,6 @@ public class PageView extends AbstractView
 	{
 		return _operation
 	}
-	
 	
 	public function get isLoading():Boolean
 	{

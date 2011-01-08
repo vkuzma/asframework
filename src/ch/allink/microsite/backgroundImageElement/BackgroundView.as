@@ -31,8 +31,8 @@ public class BackgroundView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	private var oldImageView:ImageView
 	private var _imageOperation:IImageViewOperation
+	private var oldImageView:ImageView
 	private var currentImage:Image
 	private var blendJobs:JobService
 	public var imageView:ImageView
@@ -49,6 +49,16 @@ public class BackgroundView extends AbstractView
 	public function BackgroundView(model:AbstractModel=null)
 	{
 		super()
+	}
+	
+	//-------------------------------------------------------------------------
+	//
+	//	Override methods
+	//
+	//-------------------------------------------------------------------------
+	
+	public override function build():void
+	{
 		imageView = new ImageView(new Image())
 		oldImageView = new ImageView(new Image())
 		animationTime = 1.2
@@ -61,10 +71,11 @@ public class BackgroundView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	private function blendIn(imageView:ImageView):void
+	private function blendIn(imageView:ImageView, blendJobs:JobService):void
 	{
-		if(blendInOperation != null) blendInOperation(imageView)
-		else TweenLite.to(imageView, animationTime, {autoAlpha: 1})
+		if(blendInOperation != null) blendInOperation(imageView, blendJobs)
+		else TweenLite.to(imageView, animationTime, {autoAlpha: 1, 
+						  onComplete: blendJobs.doNextJob})
 	}
 	
 	private function blendOut(imageView:ImageView, blendJobs:JobService):void
@@ -72,16 +83,16 @@ public class BackgroundView extends AbstractView
 		if(blendOutOperation != null) blendOutOperation(imageView, blendJobs)
 		else
 			TweenLite.to(imageView, animationTime,
-				{
-					autoAlpha: 0,
-					onComplete: function():void
-					{
-						blendJobs.doNextJob()
-						removeChild(imageView)
-						imageView.dispose()
-						imageView = null
-					}
-				})
+						 {autoAlpha: 0, onComplete: blendJobs.doNextJob})
+	}
+	
+	private function removeImageView(imageView:ImageView):void
+	{
+		if(!imageView) return
+		if(!contains(imageView)) return
+		removeChild(imageView)
+		imageView.dispose()
+		imageView = null	
 	}
 	
 	//-------------------------------------------------------------------------
@@ -96,33 +107,25 @@ public class BackgroundView extends AbstractView
 		currentImage = image
 			
 		var oldModel:Image = oldImageView.image 
-		if(oldModel.url != image.url ||
-		   imageView.currentBitmap == null)
-		{
-			if(imageView.isLoading) imageView.dispose()
+		if(imageView.isLoading) imageView.dispose()
 
-			oldImageView = imageView
-				
-			imageView = new ImageView(image)
-			imageView.addEventListener(Event.ADDED_TO_STAGE, 
-									   imageView_addedHandler)
-			imageView.addEventListener(Event.COMPLETE, 
-									   imageView_completeHandler)
-			imageView.addEventListener(ProgressEvent.PROGRESS, 
-									   imageView_progressHanlder)
-			imageView.build()
-		}
+		oldImageView = imageView
+		imageView = new ImageView(image)
+		imageView.addEventListener(Event.ADDED_TO_STAGE, 
+								   imageView_addedToStageHandler)
+		imageView.addEventListener(Event.COMPLETE, 
+								   imageView_completeHandler)
+		imageView.addEventListener(ProgressEvent.PROGRESS, 
+								   imageView_progressHanlder)
+		imageView.build()
 	}
 	
 	public function resize():void
 	{
-		if (imageView.currentBitmap)
-		{
-			imageView.resizeBitmapAspectRatioTo(stage.stageWidth, 
-				stage.stageHeight, ImageViewResizeAlign.CENTRE)
-			if(imageView.operation)
-				imageView.operation.resize(stage.stageWidth, stage.stageHeight)
-		}
+		imageView.resizeBitmapAspectRatioTo(stage.stageWidth, 
+			stage.stageHeight, ImageViewResizeAlign.CENTRE)
+		if(imageView.operation)
+			imageView.operation.resize(stage.stageWidth, stage.stageHeight)
 	}
 	
 	//-------------------------------------------------------------------------
@@ -143,7 +146,8 @@ public class BackgroundView extends AbstractView
 		if(oldImageView.currentBitmap != null)
 			blendJobs.addJob(new Job(blendOut, 
 									 {params: [oldImageView, blendJobs]}))
-		blendJobs.addJob(new Job(blendIn, {params: [imageView]}))
+		blendJobs.addJob(new Job(blendIn, {params: [imageView, blendJobs]}))
+		blendJobs.addJob(new Job(removeImageView, {params: [oldImageView]}))
 		blendJobs.doJob()
 		
 		dispatchEvent(event)
@@ -154,7 +158,7 @@ public class BackgroundView extends AbstractView
 		dispatchEvent(event)
 	}
 	
-	private function imageView_addedHandler(event:Event):void 
+	private function imageView_addedToStageHandler(event:Event):void 
 	{
 		resize()
 	}

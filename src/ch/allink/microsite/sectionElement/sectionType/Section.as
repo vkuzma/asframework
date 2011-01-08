@@ -1,7 +1,6 @@
 package ch.allink.microsite.sectionElement.sectionType
 {
 import ch.allink.microsite.core.AbstractModel;
-import ch.allink.microsite.imageElement.Image;
 import ch.allink.microsite.sectionElement.SectionContentTypes;
 
 /**
@@ -21,13 +20,10 @@ public class Section extends AbstractModel
 	
 	public var title:String
 	public var date:String
-	public var type:String = ""
-	public var extraFields:String
-	public var ordering:String = ""
-	public var text:String = ""
-	public var region:String = ""
-	
-	private var _files:Array
+	public var type:String
+	public var ordering:String
+	public var text:String
+	public var region:String
 	
 	//-------------------------------------------------------------------------
 	//

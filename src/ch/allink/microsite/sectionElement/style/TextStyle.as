@@ -2,9 +2,6 @@ package ch.allink.microsite.sectionElement.style
 {
 import ch.allink.microsite.sectionElement.SectionContentTypes;
 
-import flash.text.StyleSheet;
-import flash.text.TextFieldAutoSize;
-
 /**
  * @author vkuzma
  * @date Dec 9, 2010
@@ -30,41 +27,15 @@ public class TextStyle implements ISectionStyle
 	{
 	}
 	
-	public function get contentType():String
-	{
-		return SectionContentTypes.TEXT_ONLY
-	}
-	
-	//-------------------------------------------------------------------------
-	//
-	//	Private methods
-	//
-	//-------------------------------------------------------------------------
-	
-	
-	
-	//-------------------------------------------------------------------------
-	//
-	//	Public methods
-	//
-	//-------------------------------------------------------------------------
-	
-	
-	
-	//-------------------------------------------------------------------------
-	//
-	//	Event handlers
-	//
-	//-------------------------------------------------------------------------
-	
-	
-	
 	//-------------------------------------------------------------------------
 	//
 	//	Properties
 	//
 	//-------------------------------------------------------------------------
 	
-	
+	public function get contentType():String
+	{
+		return SectionContentTypes.TEXT_ONLY
+	}
 }
 }

@@ -1,6 +1,5 @@
 package ch.allink.microsite.sectionElement
 {
-import ch.allink.microsite.core.AbstractModel;
 import ch.allink.microsite.sectionElement.sectionType.ImageSection;
 import ch.allink.microsite.sectionElement.sectionType.Section;
 
@@ -8,6 +7,9 @@ import flash.utils.Dictionary;
 
 public class SectionContentTypes
 {
+	//---------------------------------
+	//	Standard section models
+	//---------------------------------
 	{
 		contentTypeModels[TEXT_ONLY] = Section
 		contentTypeModels[IMAGE] = ImageSection
