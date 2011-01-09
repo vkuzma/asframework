@@ -116,7 +116,7 @@ public class BackgroundView extends AbstractView
 		imageView.addEventListener(Event.COMPLETE, 
 								   imageView_completeHandler)
 		imageView.addEventListener(ProgressEvent.PROGRESS, 
-								   imageView_progressHanlder)
+								   imageView_progressHandler)
 		imageView.build()
 	}
 	
@@ -153,7 +153,7 @@ public class BackgroundView extends AbstractView
 		dispatchEvent(event)
 	}
 	
-	private function imageView_progressHanlder(event:ProgressEvent):void
+	private function imageView_progressHandler(event:ProgressEvent):void
 	{
 		dispatchEvent(event)
 	}

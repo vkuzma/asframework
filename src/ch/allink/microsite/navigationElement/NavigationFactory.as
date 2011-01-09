@@ -82,6 +82,7 @@ public final class NavigationFactory extends EventDispatcher
 		for each(var navigation:Navigation in navigations)
 		{
 			var navigationView:NavigationView = new NavigationView(navigation)
+			navigationView.build()
 			navigationViews.push(navigationView)
 			navigationChildren.push(navigationView)
 			if(navigation.hasChildren())
@@ -141,16 +142,17 @@ public final class NavigationFactory extends EventDispatcher
 	/**
 	 * Builds a Navigation 
 	 **/
-	public function buildByLanguage(language:String):void
+	public function buildByLanguage(language:String, 
+									modelClass:Class = null):void
 	{
+		if(!modelClass) modelClass = Navigation
 		var modelFactory:ModelFactory = new ModelFactory()
-		var modelReqeust:ModelRequest = modelFactory.load(Navigation,
+		var modelReqeust:ModelRequest = modelFactory.load(modelClass,
 			CMSXmlPath.getNavigationPathByLanguage(language),
 			ModelFactory.TYPE_COLLECTION)
 		modelReqeust.addEventListener(ResultEvent.DATA_LOADED,
 			modelRequest_dataLoadedHandler)
 	}
-	
 	
 	/**
 	 * Return a NavigationView instance by url.
@@ -190,7 +192,6 @@ public final class NavigationFactory extends EventDispatcher
 			navigationOperation.targetView = navigationTreeView					
 			navigationOperation.initialize()
 		}
-		
 		dispatchEvent(event)
 	}
 	
@@ -199,7 +200,6 @@ public final class NavigationFactory extends EventDispatcher
 	//	Properties
 	//
 	//-------------------------------------------------------------------------
-	
 	
 	/**
 	 * The Topelevel NavigationTreeView instance. 

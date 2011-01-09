@@ -5,7 +5,7 @@ import ch.allink.microsite.sectionElement.SectionContentTypes;
 import ch.allink.microsite.sectionElement.SectionView;
 import ch.allink.microsite.sectionElement.sectionType.Section;
 import ch.allink.microsite.sectionElement.style.TextStyle;
-import ch.allink.microsite.widgets.TextFieldFactory;
+import ch.allink.microsite.util.TextFieldFactory;
 
 import flash.text.TextField;
 

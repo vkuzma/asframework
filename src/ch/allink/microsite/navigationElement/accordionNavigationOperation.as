@@ -1,6 +1,7 @@
 package ch.allink.microsite.navigationElement
 {
 import ch.allink.microsite.events.NavigationViewEvent;
+import ch.allink.microsite.util.DisplayFactory;
 
 import com.greensock.TweenLite;
 
@@ -17,8 +18,8 @@ public class AccordionNavigationOperation extends EventDispatcher
 	//-------------------------------------------------------------------------
 	
 	private var _navigationTreeView:NavigationTreeView
-	public var verticalSpacing:Number = 5.0
-	public var subMenuIndent:Number = 10.0
+	public var verticalSpacing:Number
+	public var subMenuIndent:Number
 	
 	//-------------------------------------------------------------------------
 	//
@@ -28,6 +29,8 @@ public class AccordionNavigationOperation extends EventDispatcher
 	
 	public function AccordionNavigationOperation()
 	{
+		verticalSpacing = 5.0
+		subMenuIndent = 10.0
 	}
 	
 	//-------------------------------------------------------------------------
@@ -50,21 +53,13 @@ public class AccordionNavigationOperation extends EventDispatcher
 			//Formatting subnavigations
 			if(navigationView.navigationTreeView)
 			{
-				var mask:Shape = createMask()
+				var mask:Shape = DisplayFactory.createMask()
 				navigationView.navigationTreeView.addChild(mask)
 				navigationView.navigationTreeView.mask = mask
 			}
 		}
 	}
 	
-	private function createMask():Shape
-	{
-		var mask:Shape = new Shape()
-		mask.graphics.beginFill(0xFF0000)
-		mask.graphics.drawRect(0, 0, 1, 1)
-		mask.graphics.endFill()
-		return mask
-	}
 	
 	protected function openMenu(navigationTreeView:NavigationTreeView):void
 	{

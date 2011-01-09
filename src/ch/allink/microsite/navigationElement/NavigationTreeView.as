@@ -4,7 +4,6 @@ import ch.allink.microsite.events.NavigationViewEvent;
 
 import flash.display.Sprite;
 import flash.events.Event;
-import flash.events.IEventDispatcher;
 import flash.events.MouseEvent;
 
 /** 
@@ -135,8 +134,6 @@ public class NavigationTreeView extends Sprite
 	public function set navigationViews(value:Vector.<NavigationView>):void
 	{
 		_navigationViews = value
-//		Es ist nicht nötig die navigations und navigationViews zugleich 
-//		zu speichern
 		navigations = null
 			
 		for each(var navigationView:NavigationView in _navigationViews)

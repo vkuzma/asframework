@@ -31,7 +31,7 @@
     <classEntry path="ch.allink.microsite.navigationElement.AccordionNavigationOperation"/>
     <classEntry path="ch.allink.microsite.widgets.AllinkLogo"/>
     <classEntry path="ch.allink.microsite.navigationElement.NavigationLanguageService"/>
-    <classEntry path="ch.allink.microsite.widgets.TextFieldFactory"/>
+    <classEntry path="ch.allink.microsite.util.TextFieldFactory"/>
     <classEntry path="ch.allink.microsite.sectionElement.style.TextStyle"/>
     <classEntry path="ch.allink.microsite.sectionElement.style.ISectionStyle"/>
     <classEntry path="ch.allink.jobservice.JobService"/>
@@ -42,9 +42,9 @@
     <classEntry path="ch.allink.jobservice.StateMachine"/>
     <classEntry path="ch.allink.microsite.util.Layout"/>
     <classEntry path="ch.allink.jobservice.State"/>
-    <classEntry path="ch.allink.microsite.cmsConnector.ModelTypes"/>
     <classEntry path="ch.allink.microsite.sectionElement.sectionType.ImageSection"/>
     <classEntry path="ch.allink.microsite.sectionElement.operation.ImageContentOperation"/>
+    <classEntry path="ch.allink.microsite.util.DisplayFactory"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

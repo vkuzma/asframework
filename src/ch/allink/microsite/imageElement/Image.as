@@ -1,22 +1,37 @@
 package ch.allink.microsite.imageElement
 {
-import ch.allink.microsite.core.CMSAbstractModel;
+import ch.allink.microsite.core.AbstractModel;
 
-public class Image extends CMSAbstractModel
+public class Image extends AbstractModel
 {
-	public var width:Number = 0
-	public var height:Number = 0
-	public var mimetype:String = ""
-	public var imglink:String = ""
-	public var url:String = ""
+	//-------------------------------------------------------------------------
+	//
+	//	Variables
+	//
+	//-------------------------------------------------------------------------
+	
+	private var _description:String
+	public var width:Number
+	public var height:Number
+	public var url:String
 	public var type:String = "ImageContentType"
 	
-	private var _description:String = ""
+	//-------------------------------------------------------------------------
+	//
+	//	Constructor
+	//
+	//-------------------------------------------------------------------------
 	
 	public function Image()
 	{
 		super()
 	}
+	
+	//-------------------------------------------------------------------------
+	//
+	//	Properties
+	//
+	//-------------------------------------------------------------------------
 	
 	public function set description(value:String):void
 	{

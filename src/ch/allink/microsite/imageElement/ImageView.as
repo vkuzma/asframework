@@ -2,6 +2,8 @@ package ch.allink.microsite.imageElement
 {
 import ch.allink.microsite.core.AbstractView;
 
+import com.greensock.loading.ImageLoader;
+
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Loader;
@@ -20,14 +22,13 @@ public class ImageView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	public var isLoading:Boolean
-	public var loader:Loader
-	public var image:Image
-	private var _imageOptions:ImageOptions
 	private var _loadedBitmap:Bitmap
 	private var _currentBitmap:Bitmap
 	private var _loaded:Boolean
 	private var _operation:IImageViewOperation
+	public var isLoading:Boolean
+	public var loader:Loader
+	public var image:Image
 	
 	//-------------------------------------------------------------------------
 	//
@@ -36,9 +37,8 @@ public class ImageView extends AbstractView
 	//-------------------------------------------------------------------------
 	public function ImageView(image:Image = null)
 	{
-		model = image
-		this.image = image
 		super()
+		this.image = image
 		isLoading = false
 		_loaded = false
 	}
@@ -58,23 +58,22 @@ public class ImageView extends AbstractView
 		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, 
 			loader_onCompleteHandler)
 		loader.load(urlRequest)
+		
 		isLoading = true
 	}
 	
 	public override function dispose():void
 	{
-		if(loader) 
+		if(!loader) return 
+		try
 		{
-			try
-			{
-				loader.close()
-				loader.unload()
-			}
-			catch(error:Error)
-			{
-				
-			}
-		}			
+			loader.close()
+			loader.unload()
+		}
+		catch(error:Error)
+		{
+			
+		}
 	}
 	
 	//-------------------------------------------------------------------------
@@ -87,23 +86,21 @@ public class ImageView extends AbstractView
 						  sourceHeight:Number, sourceWidth:Number,
 						  xOffset:Number, yOffset:Number):void
 	{
-		removeChild(_currentBitmap)
-		if(_currentBitmap != _loadedBitmap)
-			_currentBitmap.bitmapData.dispose()
-		
+		removeChild(currentBitmap)
+		if(currentBitmap != loadedBitmap) currentBitmap.bitmapData.dispose()
 		
 		_currentBitmap = null
 		var bmpData:BitmapData = new BitmapData(sourceWidth, sourceHeight,
-			false, 0xFFFFFF);
-		var matrix:Matrix = new Matrix();
-		matrix.scale(scaleX, scaleY);
+			false, 0xFFFFFF)
+		var matrix:Matrix = new Matrix()
+		matrix.scale(scaleX, scaleY)
 		matrix.tx = xOffset
 		matrix.ty = yOffset
-		_loadedBitmap.smoothing = true;
-		bmpData.draw(_loadedBitmap, matrix, null, null, null, false);
-		_loadedBitmap.smoothing = false;
-		_currentBitmap = new Bitmap(bmpData);
-		addChild(_currentBitmap);
+		loadedBitmap.smoothing = true;
+		bmpData.draw(_loadedBitmap, matrix, null, null, null, false)
+		loadedBitmap.smoothing = false
+		_currentBitmap = new Bitmap(bmpData)
+		addChild(currentBitmap)
 	}
 	
 	//-------------------------------------------------------------------------
@@ -115,17 +112,15 @@ public class ImageView extends AbstractView
 	public function resizeBitmapTo(sourceWidth:Number, sourceHeigth:Number, 
 								   transparent:Boolean = false):void
 	{
-		if(!_loadedBitmap)
-			return
+		if(!loadedBitmap) return
 		
-		if (_loadedBitmap.width == sourceWidth 
-			&& _loadedBitmap.height == sourceHeigth)
-			return
+		if (loadedBitmap.width == sourceWidth 
+			&& loadedBitmap.height == sourceHeigth) return
 		
-		if(contains(_currentBitmap))
+		if(contains(currentBitmap))
 		{
-			draw(sourceWidth / _loadedBitmap.width,
-				sourceHeigth / _loadedBitmap.height, sourceHeigth, sourceWidth,
+			draw(sourceWidth / loadedBitmap.width,
+				sourceHeigth / loadedBitmap.height, sourceHeigth, sourceWidth,
 				0, 0)
 		}
 	}
@@ -134,57 +129,48 @@ public class ImageView extends AbstractView
 											  sourceHeight:Number,
 						 		align:String = ImageViewResizeAlign.LEFT):void
 	{
-		if(!_loadedBitmap)
+		if(!loadedBitmap)
 			return
 		
-		if (_loadedBitmap.width == sourceWidth 
-			&& _loadedBitmap.height == sourceHeight)
+		if (loadedBitmap.width == sourceWidth 
+			&& loadedBitmap.height == sourceHeight)
 			return
 		
-		if(contains(_currentBitmap))
+		if(contains(currentBitmap))
 		{
 			var xOffset:Number = 0
 			var yOffset:Number = 0
-			var targetScale:Number = sourceWidth / _loadedBitmap.width
-			var heightInFuture:Number = targetScale * _loadedBitmap.height
+			var targetScale:Number = sourceWidth / loadedBitmap.width
+			var heightInFuture:Number = targetScale * loadedBitmap.height
 			if(heightInFuture < sourceHeight)
 			{
-				targetScale =  sourceHeight / _loadedBitmap.height
+				targetScale =  sourceHeight / loadedBitmap.height
 				//xOffset sorgt dafür, dass das Bild in die Mitte von 
 				//sourceWidth zentriert wird.
 				if(align == ImageViewResizeAlign.CENTRE) 
-					xOffset = (sourceWidth - _loadedBitmap.width * targetScale) 
+					xOffset = (sourceWidth - loadedBitmap.width * targetScale) 
 						/ 2
 			}
 			if(align == ImageViewResizeAlign.CENTRE)
-				yOffset = (sourceHeight - _loadedBitmap.height * targetScale) 
+				yOffset = (sourceHeight - loadedBitmap.height * targetScale) 
 					/ 2
 			
 			draw(targetScale, targetScale, sourceHeight, sourceWidth, 
 			     xOffset, yOffset)
 			
-			if(_operation)
-				_operation.resize(sourceWidth, sourceHeight)
+			if(operation) operation.resize(sourceWidth, sourceHeight)
 		}
 	}
-	
-	public  function displayWithHandCursor(value:Boolean=true):void {
-		buttonMode = value;
-		useHandCursor = value;
-		mouseChildren = !value;
-		focusRect = !value;
-	}	
 	
 	public function attachBitmap(bitmap:Bitmap):void
 	{
 		if(_currentBitmap)
-			if(this.contains(_currentBitmap))
-				this.removeChild(_currentBitmap)
+			if(contains(currentBitmap))	removeChild(currentBitmap)
 		_loadedBitmap = bitmap
 		_currentBitmap = bitmap
 		_loaded = true
 		isLoading = false
-		this.addChild(_currentBitmap)
+		addChild(currentBitmap)
 	}
 	
 	public function closeLoading():void
@@ -203,20 +189,22 @@ public class ImageView extends AbstractView
 		isLoading = false
 		_loaded = true
 			
-		var bmp:Bitmap = event.target.content as Bitmap
-		_loadedBitmap = bmp
+		var bitmap:Bitmap = event.target.content as Bitmap
+		_loadedBitmap = bitmap
 		_currentBitmap = _loadedBitmap
-		this.addChild(_currentBitmap)
+		addChild(currentBitmap)
 			
-		if(_operation)
-			_operation.initialize(_loadedBitmap)
+		if(operation) operation.initialize(loadedBitmap)
 			
 		dispatchEvent(event)
 	}
 	
 	private function loader_progressHandler(event:ProgressEvent):void
 	{
-		dispatchEvent(event)
+		var bubbleProgressEvent:ProgressEvent = new ProgressEvent(event.type, 
+			event.bubbles, event.cancelable, event.bytesLoaded, 
+			event.bytesTotal)
+		dispatchEvent(bubbleProgressEvent)
 	}
 	
 	//-------------------------------------------------------------------------
@@ -244,8 +232,7 @@ public class ImageView extends AbstractView
 	{
 		_operation = value
 		_operation.targetSprite = this
-		if(_loadedBitmap)
-			_operation.initialize(_loadedBitmap)
+		if(loadedBitmap) _operation.initialize(loadedBitmap)
 	}
 	
 	public function get operation():IImageViewOperation

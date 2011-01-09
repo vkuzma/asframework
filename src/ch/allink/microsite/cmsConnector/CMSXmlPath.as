@@ -2,12 +2,21 @@ package ch.allink.microsite.cmsConnector
 {
 public class CMSXmlPath
 {
-	public static const PAGES_PATH:String = "./?do=xml&mode=pages&pageIDs="
-	public static const IMAGE_PATH:String = "./?do=xml&mode=resource&fileID="
-
+	//-------------------------------------------------------------------------
+	//
+	//	Constructor
+	//
+	//-------------------------------------------------------------------------
+	
 	public function CMSXmlPath()
 	{
 	}
+	
+	//-------------------------------------------------------------------------
+	//
+	//	Public methods
+	//
+	//-------------------------------------------------------------------------
 	
 	public static function getNavigationPathByLanguage(language:String):String
 	{

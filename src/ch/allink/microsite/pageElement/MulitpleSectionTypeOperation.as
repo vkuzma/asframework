@@ -3,11 +3,8 @@ package ch.allink.microsite.pageElement
 import ch.allink.microsite.sectionElement.SectionView;
 import ch.allink.microsite.sectionElement.operation.ISectionOperation;
 import ch.allink.microsite.sectionElement.operation.ImageContentOperation;
-import ch.allink.microsite.sectionElement.operation.TextImageOperation;
 import ch.allink.microsite.sectionElement.operation.TextOperation;
 import ch.allink.microsite.sectionElement.sectionType.Section;
-
-import flash.display.Sprite;
 
 /**
  * @author Vladimir Kuzma
@@ -205,8 +202,7 @@ public final class MulitpleSectionTypeOperation implements IPageOperation
 	
 	public function get pageFormatter():PageFormatter
 	{
-		if(!_pageFormatter)
-			_pageFormatter = new PageFormatter()
+		if(!_pageFormatter) _pageFormatter = new PageFormatter()
 		return _pageFormatter
 	}
 }

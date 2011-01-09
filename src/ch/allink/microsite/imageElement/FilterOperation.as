@@ -1,5 +1,7 @@
 package ch.allink.microsite.imageElement
 {
+import ch.allink.microsite.util.DisplayFactory;
+
 import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Shape;
@@ -48,23 +50,7 @@ public class FilterOperation implements IImageViewOperation
 	 **/
 	public function FilterOperation()
 	{
-		imageViewMask = createMask()
-	}
-	
-	//-------------------------------------------------------------------------
-	//
-	// Private methods
-	//
-	//-------------------------------------------------------------------------
-	
-	private function createMask():Shape
-	{
-		var mask:Shape = new Shape()
-		mask.graphics.beginFill(0xFF0000)
-		mask.graphics.drawRect(0, 0, 1, 1)
-		mask.graphics.endFill()
-			
-		return mask
+		imageViewMask = DisplayFactory.createMask()
 	}
 	
 	//-------------------------------------------------------------------------
@@ -78,11 +64,8 @@ public class FilterOperation implements IImageViewOperation
 	 **/
 	public function initialize(bitmap:Bitmap):void
 	{
-		if(!bitmap)
-			return
-			
-		if(imageView)
-			dispose()
+		if(!bitmap) return
+		if(imageView) dispose()
 			
 		var bitmapData:BitmapData = bitmap.bitmapData
 		var newBitmapData:BitmapData = bitmapData.clone()
@@ -104,8 +87,7 @@ public class FilterOperation implements IImageViewOperation
 	 **/
 	public function resize(sourceWidth:Number, sourceHeight:Number):void
 	{
-		if(!imageView)
-			return
+		if(!imageView) return
 			
 		if(_targetSprite.contains(imageView))
 			_targetSprite.setChildIndex(imageView, 
@@ -121,11 +103,9 @@ public class FilterOperation implements IImageViewOperation
 	 **/
 	public function dispose():void
 	{
-		if(imageView)
-		{
+		if(!imageView) return
 			if(_targetSprite.contains(imageView))
 				_targetSprite.removeChild(imageView)
-		}
 	}
 	
 	//-------------------------------------------------------------------------

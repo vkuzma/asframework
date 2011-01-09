@@ -1,6 +1,6 @@
 package ch.allink.microsite.pageElement
 {
-import ch.allink.microsite.core.CMSAbstractModel;
+import ch.allink.microsite.core.AbstractModel;
 import ch.allink.microsite.sectionElement.SectionContentTypes;
 
 /**
@@ -10,7 +10,7 @@ import ch.allink.microsite.sectionElement.SectionContentTypes;
  * @see ch.allink.microsite.pageElement.PageView
  **/
 
-public class Page extends CMSAbstractModel
+public class Page extends AbstractModel
 {
 	//-------------------------------------------------------------------------
 	//

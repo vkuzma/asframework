@@ -35,7 +35,6 @@ public class PageView extends AbstractView
 	public function PageView()
 	{
 		super()
-		
 	}
 	
 	//-------------------------------------------------------------------------
