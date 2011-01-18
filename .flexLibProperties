@@ -28,7 +28,7 @@
     <classEntry path="ch.allink.microsite.sectionElement.SectionContentTypes"/>
     <classEntry path="ch.allink.microsite.navigationElement.NavigationFactory"/>
     <classEntry path="ch.allink.microsite.navigationElement.INavigationOperation"/>
-    <classEntry path="ch.allink.microsite.navigationElement.AccordionNavigationOperation"/>
+    <classEntry path="ch.allink.microsite.navigationElement.AccordionNavigationOperationn"/>
     <classEntry path="ch.allink.microsite.widgets.AllinkLogo"/>
     <classEntry path="ch.allink.microsite.navigationElement.NavigationLanguageService"/>
     <classEntry path="ch.allink.microsite.util.TextFieldFactory"/>
