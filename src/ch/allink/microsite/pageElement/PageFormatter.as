@@ -60,12 +60,15 @@ public class PageFormatter extends AbstractModel
 		var sectionStyleByContentType:ISectionStyle
 		for each(var sectionStyle:ISectionStyle in sectionStyles)
 		{
-			if(sectionStyle.contentType == contentType)
+			if(sectionStyle.CONTENT_TYPE == contentType)
 			{
 				sectionStyleByContentType = sectionStyle
 				break
 			}
 		}
+		if(!sectionStyleByContentType)
+			trace("Allink warning: ContentStyle for ContentType: " + 
+				  contentType + " doesn't exist")
 		return sectionStyleByContentType
 	}
 	

@@ -1,29 +1,17 @@
-package ch.allink.jobservice
+package ch.allink.microsite.util
 {
-import flash.events.Event;
-
 /**
  * @author vkuzma
- * @date Dec 27, 2010
+ * @date Jan 14, 2011
  **/
-public class JobEvent extends Event
+public class AllinkError
 {
 	//-------------------------------------------------------------------------
 	//
-	//	Constants
+	//	Error mesages
 	//
 	//-------------------------------------------------------------------------
 	
-	public static const COMPLETE_ALL:String = "jobsComplete"
-	public static const EXECUTED:String = "jobExecutet"
-	
-	//-------------------------------------------------------------------------
-	//
-	//	Variables
-	//
-	//-------------------------------------------------------------------------
-	
-	private var _job:Job
 	
 	//-------------------------------------------------------------------------
 	//
@@ -31,22 +19,8 @@ public class JobEvent extends Event
 	//
 	//-------------------------------------------------------------------------
 	
-	public function JobEvent(type:String, bubbles:Boolean = false, 
-							 cancelable:Boolean = false, job:Job = null)
+	public function AllinkError()
 	{
-		super(type, bubbles, cancelable)
-		_job = job
-	}
-	
-	//-------------------------------------------------------------------------
-	//
-	//	Override methods
-	//
-	//-------------------------------------------------------------------------
-	
-	public override function clone():Event
-	{
-		return new JobEvent(type, bubbles, cancelable, job)
 	}
 	
 	//-------------------------------------------------------------------------
@@ -63,10 +37,7 @@ public class JobEvent extends Event
 	//
 	//-------------------------------------------------------------------------
 	
-	public function get job():Job
-	{
-		return _job
-	}
+	
 	
 	//-------------------------------------------------------------------------
 	//

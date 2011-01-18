@@ -1,7 +1,9 @@
-package ch.allink.microsite.navigationElement
+package ch.allink.microsite.navigationElement.remake
 {
 import ch.allink.microsite.core.AbstractView;
-import ch.allink.microsite.events.NavigationViewEvent;
+import ch.allink.microsite.events.remake.NavigationViewEvent;
+import ch.allink.microsite.util.Report;
+import ch.allink.microsite.util.ReportService;
 
 import flash.events.Event;
 import flash.events.MouseEvent;
@@ -22,6 +24,7 @@ public class NavigationTreeView extends AbstractView
 	
 	private var _navigationViews:Vector.<NavigationView>
 	private var _parentNavigationView:NavigationView
+	public var report:Report
 	
 	//-------------------------------------------------------------------------
 	//
@@ -31,6 +34,8 @@ public class NavigationTreeView extends AbstractView
 	
 	public function NavigationTreeView()
 	{
+		report = new Report(this)
+		ReportService.addReport(report)
 	}
 	
 	//-------------------------------------------------------------------------
@@ -39,19 +44,6 @@ public class NavigationTreeView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	private function majorActivate(navigationView:NavigationView):void
-	{
-		activate(navigationView)
-		
-		//Deactivates subnavigations
-		if(navigationView.navigationTreeView != null)
-			navigationView.navigationTreeView.activate(null)
-		
-		var bubbleEvent:NavigationViewEvent = new NavigationViewEvent(
-			NavigationViewEvent.NAVIGATION_CLICK, false, false, navigationView)
-		dispatchEvent(bubbleEvent)
-	}
-	
 	private function initializeNavigation(navigationView:NavigationView):void
 	{
 		addChild(navigationView)
@@ -59,12 +51,8 @@ public class NavigationTreeView extends AbstractView
 										navigationView_clickHandler)
 		navigationView.addEventListener(NavigationViewEvent.ACTIVATED,
 										navigationView_activatedHandler)
-		navigationView.addEventListener(NavigationView.REQUEST_ACTIVATE,
+		navigationView.addEventListener(NavigationViewEvent.REQUEST_ACTIVATE,
 										navigationView_requestActivatedHandler)
-		navigationView.addEventListener(NavigationView.REQUEST_MAJOR_ACTIVATE,
-										navigationView_requestMajorActivate)
-		navigationView.addEventListener(NavigationViewEvent.NAVIGATION_CLICK,
-										navigationView_subNavigationClicked)
 	}
 	
 	//-------------------------------------------------------------------------
@@ -77,14 +65,18 @@ public class NavigationTreeView extends AbstractView
 	 * Activates the given NavigationView instance and their parent NavigationView
 	 * instances. Deactivates the rest.
 	 **/
-	public function activate(toActivateNavigationView:NavigationView):void
+	public function activateNavigationView(
+		toActivateNavigationView:NavigationView):void
 	{
+		report.print("Activate navigationView: " + 
+					 toActivateNavigationView.name + 
+					 ", deactivating the rest.")
 		for each(var navigationView:NavigationView in navigationViews)
 		{
 			if(toActivateNavigationView == navigationView)
-				navigationView.active = true
+				navigationView.activate()
 			else
-				navigationView.active = false
+				navigationView.deactivate()
 		}
 	}
 	
@@ -94,7 +86,7 @@ public class NavigationTreeView extends AbstractView
 	public function resetAll():void
 	{
 		for each(var navigationView:NavigationView in navigationViews)
-			navigationView.active = false
+			navigationView.deactivate()
 	}
 	
 	public function addNavigationView(navigationView:NavigationView):void
@@ -111,43 +103,29 @@ public class NavigationTreeView extends AbstractView
 	
 	private function navigationView_clickHandler(event:MouseEvent):void
 	{
-		var navigationView:NavigationView = event.currentTarget 
-											as NavigationView
-		majorActivate(navigationView)
+		report.print(event.target.name + " has been clicked.")
+		var navigationView:NavigationView = event.target as NavigationView
+		activateNavigationView(navigationView)
 	}
 	
 	private function navigationView_activatedHandler(
 		event:NavigationViewEvent):void
 	{
-		if(parentNavigationView) parentNavigationView.requestActivate()
+		report.print("Current navigationTreeView: " + name)
+		if(parentNavigationView) parentNavigationView.requestActivate(
+			event.navigationView)
 	}
 	
 	public function navigationView_requestActivatedHandler(event:Event):void
 	{
 		var navigationView:NavigationView = event.target as NavigationView
-		if(!navigationView.active) activate(navigationView)
+		if(!navigationView.active) activateNavigationView(navigationView)
 	}
 	
 	private function parentNavigationV_deactivateHandler(
 		event:NavigationViewEvent):void
 	{
-		activate(null)	
-	}
-	
-	private function navigationView_subNavigationClicked(
-		event:NavigationViewEvent):void
-	{
-		var navigationView:NavigationView = event.target as NavigationView
-		var navigationViewService:NavigationTreeView = navigationView.
-														  navigationTreeView
-		dispatchEvent(event)
-	}
-	
-	private function navigationView_requestMajorActivate(event:Event):void
-	{
-		var navigationView:NavigationView = event.currentTarget 
-											as NavigationView
-		majorActivate(navigationView)	
+		resetAll()	
 	}
 	
 	//-------------------------------------------------------------------------

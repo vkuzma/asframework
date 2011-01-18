@@ -33,7 +33,7 @@ public class TextStyle implements ISectionStyle
 	//
 	//-------------------------------------------------------------------------
 	
-	public function get contentType():String
+	public function get CONTENT_TYPE():String
 	{
 		return SectionContentTypes.TEXT_ONLY
 	}

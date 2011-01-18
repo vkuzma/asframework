@@ -114,7 +114,12 @@ public class PageView extends AbstractView
 	
 	public function addRegion(region:String):void
 	{
-		regionByName(region)
+		if(!regions[region])
+		{
+			var regionContainer:Sprite = new Sprite()
+			addChild(regionContainer)
+			regions[region] = regionContainer
+		}
 	}
 	
 	public function addToRegion(region:String, displayObject:DisplayObject):void
@@ -124,12 +129,7 @@ public class PageView extends AbstractView
 	
 	public function regionByName(region:String):Sprite
 	{
-		if(!regions[region])
-		{
-			var regionContainer:Sprite = new Sprite()
-			addChild(regionContainer)
-			regions[region] = regionContainer
-		}
+		if(!regions[region]) addRegion(region)
 		return regions[region]
 	}
 	

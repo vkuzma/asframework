@@ -184,8 +184,8 @@ public final class NavigationFactory extends EventDispatcher
 		_navigationTreeView = new NavigationTreeView()
 		var topLevelNavigation:Vector.<Navigation> = 
 			makeNavigationTree(navigations)
-		_navigationTreeView.navigationViews = 
-			makeNavigationViewTree(topLevelNavigation, _navigationTreeView)
+		navigationTreeView.navigationViews = 
+			makeNavigationViewTree(topLevelNavigation, navigationTreeView)
 		
 		if(navigationOperation)
 		{

@@ -45,6 +45,10 @@
     <classEntry path="ch.allink.microsite.sectionElement.sectionType.ImageSection"/>
     <classEntry path="ch.allink.microsite.sectionElement.operation.ImageContentOperation"/>
     <classEntry path="ch.allink.microsite.util.DisplayFactory"/>
+    <classEntry path="ch.allink.microsite.allinkWebsite.SiteLoader"/>
+    <classEntry path="ch.allink.microsite.util.Report"/>
+    <classEntry path="ch.allink.microsite.util.ReportService"/>
+    <classEntry path="ch.allink.microsite.util.AllinkError"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

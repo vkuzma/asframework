@@ -127,7 +127,6 @@ public final class MulitpleSectionTypeOperation implements IPageOperation
 			sectionView.operation = sectionOperation
 			sectionView.build()
 				
-			targetView.addRegion(section.region)
 			targetView.addToRegion(section.region, sectionView)
 			
 			sectionViews.push(sectionView)

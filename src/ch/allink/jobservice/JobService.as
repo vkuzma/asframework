@@ -14,7 +14,7 @@ public class JobService extends EventDispatcher
 	//
 	//-------------------------------------------------------------------------
 	
-	private var jobCollection:Vector.<Job>
+	private var _jobCollection:Vector.<Job>
 	private var freezedJobCollection:Vector.<Job>
 	private var _freezed:Boolean
 	
@@ -32,7 +32,7 @@ public class JobService extends EventDispatcher
 	public function JobService()
 	{
 		addEventListener(JobEvent.COMPLETE_ALL, completeAllHandler)
-		jobCollection = new Vector.<Job>
+		_jobCollection = new Vector.<Job>
 		_freezed = false
 		maxJobs = 0
 	}
@@ -109,10 +109,10 @@ public class JobService extends EventDispatcher
 	 **/
 	public function addJob(job:Job):void
 	{
-		if(maxJobs > jobCollection.length || maxJobs == 0)
+		if(maxJobs > _jobCollection.length || maxJobs == 0)
 		{
 			job.parentJobService = this
-			jobCollection.push(job)
+			_jobCollection.push(job)
 		}
 	}
 	
@@ -122,10 +122,9 @@ public class JobService extends EventDispatcher
 	 **/
 	public function jobDone():void
 	{
-		if(jobCollection.length > 0) removeJob(jobCollection[0])
-		if(jobCollection.length == 0)
+		if(_jobCollection.length > 0) removeJob(_jobCollection[0])
+		if(_jobCollection.length == 0)
 			dispatchEvent(new JobEvent(JobEvent.COMPLETE_ALL)) 
-		dispatchEvent(new JobEvent(JobEvent.COMPLETE))
 	}
 	
 	/**
@@ -133,9 +132,9 @@ public class JobService extends EventDispatcher
 	 **/
 	public function removeJob(job:Job):void
 	{
-		var jobIndex:int = getIndexIDByJob(job, jobCollection)
-		jobCollection[jobIndex] = null
-		reSortJobs(jobCollection)
+		var jobIndex:int = getIndexIDByJob(job, _jobCollection)
+		_jobCollection[jobIndex] = null
+		reSortJobs(_jobCollection)
 	}
 	
 	/**
@@ -143,15 +142,16 @@ public class JobService extends EventDispatcher
 	 **/
 	public function doJob():void
 	{
-		if(jobCollection.length == 0) return
+		if(_jobCollection.length == 0) return
 			
-		var currentJob:Job = jobCollection[0]
+		var currentJob:Job = _jobCollection[0]
 			
 		//execute and call job as finished
 		if(currentJob.autoFinish)
 		{
 			currentJob.addEventListener(JobEvent.EXECUTED,
-										currentJob_executedHandler)
+										currentJob_executedHandler, false, 0,
+										true)
 			currentJob.execute()
 		}
 		//execute and call job manually as finished
@@ -178,7 +178,7 @@ public class JobService extends EventDispatcher
 	 **/
 	public function clearAllJobs():void
 	{
-		jobCollection = new Vector.<Job>		
+		_jobCollection = new Vector.<Job>		
 	}
 	
 	/**
@@ -186,13 +186,13 @@ public class JobService extends EventDispatcher
 	 **/
 	public function getJobByIndex(index:int):Job
 	{
-		return jobCollection[index]
+		return _jobCollection[index]
 	}
 	
 	
 	public function pop():Job
 	{
-		return jobCollection.pop()
+		return _jobCollection.pop()
 	}
 	
 	/**
@@ -202,7 +202,7 @@ public class JobService extends EventDispatcher
 	 **/
 	public function freeze():void
 	{
-		freezedJobCollection = cloneJobCollection(jobCollection)
+		freezedJobCollection = cloneJobCollection(_jobCollection)
 		_freezed = true
 	}
 	
@@ -213,8 +213,8 @@ public class JobService extends EventDispatcher
 	 **/
 	public function clear():void
 	{
-		if(freezed) jobCollection = cloneJobCollection(freezedJobCollection)
-		else jobCollection = new Vector.<Job>
+		if(freezed) _jobCollection = cloneJobCollection(freezedJobCollection)
+		else _jobCollection = new Vector.<Job>
 	}
 	
 	//-------------------------------------------------------------------------
@@ -226,8 +226,6 @@ public class JobService extends EventDispatcher
 	private function currentJob_executedHandler(event:JobEvent):void
 	{
 		var currentJob:Job = event.target as Job
-		currentJob.removeEventListener(JobEvent.EXECUTED, 
-									   currentJob_executedHandler)
 		doNextJob()
 	}
 	
@@ -255,7 +253,7 @@ public class JobService extends EventDispatcher
 	 **/
 	public function get jobs():int
 	{
-		return jobCollection.length
+		return _jobCollection.length
 	}
 	
 	public function get isWorking():Boolean
@@ -297,6 +295,11 @@ public class JobService extends EventDispatcher
 	public function get beginning():State
 	{
 		return _beginning
+	}
+	
+	public function get jobCollection():Vector.<Job>
+	{
+		return _jobCollection
 	}
 }
 }
