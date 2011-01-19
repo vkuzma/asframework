@@ -30,7 +30,6 @@
     <classEntry path="ch.allink.microsite.navigationElement.INavigationOperation"/>
     <classEntry path="ch.allink.microsite.navigationElement.AccordionNavigationOperation"/>
     <classEntry path="ch.allink.microsite.widgets.AllinkLogo"/>
-    <classEntry path="ch.allink.microsite.navigationElement.NavigationLanguageService"/>
     <classEntry path="ch.allink.microsite.util.TextFieldFactory"/>
     <classEntry path="ch.allink.microsite.sectionElement.style.TextStyle"/>
     <classEntry path="ch.allink.microsite.sectionElement.style.ISectionStyle"/>
@@ -49,6 +48,10 @@
     <classEntry path="ch.allink.microsite.util.Report"/>
     <classEntry path="ch.allink.microsite.util.ReportService"/>
     <classEntry path="ch.allink.microsite.util.AllinkError"/>
+    <classEntry path="ch.allink.microsite.soundElement.SoundPlayerController"/>
+    <classEntry path="ch.allink.microsite.soundElement.Track"/>
+    <classEntry path="ch.allink.microsite.soundElement.ISoundPlayerView"/>
+    <classEntry path="ch.allink.microsite.events.SoundPlayerEvent"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

@@ -1,6 +1,12 @@
-package ch.allink.microsite.navigationElement
+package ch.allink.microsite.soundElement
 {
-public class NavigationTreeService
+import ch.allink.microsite.core.AbstractModel;
+
+/**
+ * @author vkuzma
+ * @date Jan 19, 2011
+ **/
+public class Track extends AbstractModel
 {
 	//-------------------------------------------------------------------------
 	//
@@ -8,14 +14,18 @@ public class NavigationTreeService
 	//
 	//-------------------------------------------------------------------------
 	
+	public var url:String
+	public var name:String
+	
 	//-------------------------------------------------------------------------
 	//
 	//	Constructor
 	//
 	//-------------------------------------------------------------------------
 	
-	public function NavigationTreeService()
+	public function Track()
 	{
+		super()
 	}
 }
 }

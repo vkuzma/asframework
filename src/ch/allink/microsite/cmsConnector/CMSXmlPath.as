@@ -27,5 +27,10 @@ public class CMSXmlPath
 	{
 		return "api/page/"+page+".xml"
 	}
+	
+	public static function getSoundPath():String
+	{
+		return "api/sound.xml"
+	}
 }
 }

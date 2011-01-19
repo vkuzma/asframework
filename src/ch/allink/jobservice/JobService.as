@@ -109,10 +109,10 @@ public class JobService extends EventDispatcher
 	 **/
 	public function addJob(job:Job):void
 	{
-		if(maxJobs > _jobCollection.length || maxJobs == 0)
+		if(maxJobs > jobCollection.length || maxJobs == 0)
 		{
 			job.parentJobService = this
-			_jobCollection.push(job)
+			jobCollection.push(job)
 		}
 	}
 	
@@ -122,8 +122,8 @@ public class JobService extends EventDispatcher
 	 **/
 	public function jobDone():void
 	{
-		if(_jobCollection.length > 0) removeJob(_jobCollection[0])
-		if(_jobCollection.length == 0)
+		if(jobCollection.length > 0) jobCollection.shift()
+		if(jobCollection.length == 0)
 			dispatchEvent(new JobEvent(JobEvent.COMPLETE_ALL)) 
 	}
 	
@@ -132,9 +132,9 @@ public class JobService extends EventDispatcher
 	 **/
 	public function removeJob(job:Job):void
 	{
-		var jobIndex:int = getIndexIDByJob(job, _jobCollection)
-		_jobCollection[jobIndex] = null
-		reSortJobs(_jobCollection)
+		var jobIndex:int = getIndexIDByJob(job, jobCollection)
+		jobCollection[jobIndex] = null
+		reSortJobs(jobCollection)
 	}
 	
 	/**
@@ -142,9 +142,9 @@ public class JobService extends EventDispatcher
 	 **/
 	public function doJob():void
 	{
-		if(_jobCollection.length == 0) return
+		if(jobCollection.length == 0) return
 			
-		var currentJob:Job = _jobCollection[0]
+		var currentJob:Job = jobCollection[0]
 			
 		//execute and call job as finished
 		if(currentJob.autoFinish)

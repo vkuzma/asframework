@@ -1,6 +1,8 @@
 package ch.allink.microsite.core
 {
-public interface IAbstractView
+import flash.events.IEventDispatcher;
+
+public interface IAbstractView extends IEventDispatcher
 {
 	 function build():void
 	 function dispose():void
