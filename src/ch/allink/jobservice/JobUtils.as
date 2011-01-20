@@ -48,6 +48,11 @@ public class JobUtils
 		value = false
 	}
 	
+	public static function setValue(object:Object, value:Object):void
+	{
+		object = value
+	}
+	
 	//-------------------------------------------------------------------------
 	//
 	//	Event handlers
