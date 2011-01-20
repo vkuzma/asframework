@@ -14,8 +14,8 @@ public class Track extends AbstractModel
 	//
 	//-------------------------------------------------------------------------
 	
-	public var url:String
-	public var name:String
+	private var _url:String
+	private var _name:String
 	
 	//-------------------------------------------------------------------------
 	//
@@ -26,6 +26,23 @@ public class Track extends AbstractModel
 	public function Track()
 	{
 		super()
+	}
+	
+	public function set url(value:String):void
+	{
+		_url = value
+		var splitedUrl:Array = _url.split("/")
+		_name = String(splitedUrl[splitedUrl.length - 1])
+	}
+	
+	public function get url():String
+	{
+		return _url
+	}
+	
+	public function get name():String
+	{
+		return _name
 	}
 }
 }

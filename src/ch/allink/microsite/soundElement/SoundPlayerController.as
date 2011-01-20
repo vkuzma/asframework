@@ -1,5 +1,8 @@
 package ch.allink.microsite.soundElement
 {
+import ch.allink.jobservice.Job;
+import ch.allink.jobservice.JobService;
+import ch.allink.jobservice.JobUtils;
 import ch.allink.microsite.cmsConnector.CMSXmlPath;
 import ch.allink.microsite.cmsConnector.ModelFactory;
 import ch.allink.microsite.cmsConnector.ModelRequest;
@@ -7,6 +10,7 @@ import ch.allink.microsite.events.ResultEvent;
 import ch.allink.microsite.events.SoundPlayerEvent;
 import ch.allink.microsite.scrollPaneElement.ScrollPaneView;
 
+import com.greensock.TweenLite;
 import com.greensock.events.LoaderEvent;
 import com.greensock.loading.MP3Loader;
 
@@ -29,8 +33,10 @@ public class SoundPlayerController extends EventDispatcher
 	private var _sounds:Vector.<Track>
 	private var _soundPlayerView:ISoundPlayerView
 	private var mp3Loader:MP3Loader
+	private var mp3LoaderOld:MP3Loader
 	private var _currentIndex:int
 	public var autoPlay:Boolean
+	public var blendTime:Number
 	
 	//-------------------------------------------------------------------------
 	//
@@ -43,6 +49,7 @@ public class SoundPlayerController extends EventDispatcher
 		super()
 		autoPlay = false
 		_currentIndex = 0
+		blendTime = 0
 	}
 	
 	//-------------------------------------------------------------------------
@@ -51,16 +58,69 @@ public class SoundPlayerController extends EventDispatcher
 	//
 	//-------------------------------------------------------------------------
 	
-	private function pauseSound():void
+	private function slideVolumeTo(mp3Loader:MP3Loader, volume:Number,
+								   blendTime:Number, jobService:JobService):void
 	{
+		TweenLite.to(mp3Loader, blendTime, {volume: volume, 
+											onComplete: jobService.doNextJob})
+	}
+	
+	private function pauseSound(mp3Loader:MP3Loader,
+								jobService:JobService = null):void
+	{
+		var pauseActions:JobService = new JobService()
+		//Slided volume
+		pauseActions.addJob(new Job(slideVolumeTo, {params: [mp3Loader, 0, 
+			blendTime, pauseActions]}))
+		//Stops the sound
+		pauseActions.addJob(new Job(mp3Loader.pauseSound, {autoFinish: true}))
+		if(jobService) pauseActions.addJob(new Job(jobService.doNextJob, 
+									    		  {autoFinish: true}))
+		//Removes pauseActions
+		pauseActions.addJob(new Job(JobUtils.setValue, {params: 
+			[pauseActions, null]}))
+		pauseActions.doJob()
 		mp3Loader.pauseSound()
 //		soundPlayerView.pauseSound()
 	}
 	
-	private function playSound():void
+	private function playSound(mp3Loader:MP3Loader, 
+							   jobService:JobService = null):void
 	{
+		var pauseActions:JobService = new JobService()
+		//Slided volume
+		pauseActions.addJob(new Job(slideVolumeTo, {params: [mp3Loader, 1, 
+			blendTime, pauseActions]}))
+		//Play the sound
+		pauseActions.addJob(new Job(mp3Loader.playSound, {autoFinish: true}))
+		if(jobService) pauseActions.addJob(new Job(jobService.doNextJob, 
+									   			  {autoFinish: true}))
+		//Removes playActions
+		pauseActions.addJob(new Job(JobUtils.setValue, {params: 
+			[pauseActions, null]}))
+		pauseActions.doJob()
 		mp3Loader.playSound()
 //		soundPlayerView.playSound()
+	}
+	
+	private function stopSound(mp3Loader:MP3Loader, 
+							   jobService:JobService = null):void
+	{
+		var stopActions:JobService = new JobService()
+		//Slided volume
+		stopActions.addJob(new Job(slideVolumeTo, {params: [mp3Loader, 0, 
+			blendTime, stopActions]}))
+		//Stops the sound
+		stopActions.addJob(new Job(mp3Loader.pauseSound, {autoFinish: true}))
+		//Unload the sound
+		stopActions.addJob(new Job(mp3Loader.unload, {autoFinish: true}))
+		if(jobService) stopActions.addJob(new Job(jobService.doNextJob, 
+									   			  {autoFinish: true}))
+		//Removes playActions
+		stopActions.addJob(new Job(JobUtils.setValue, {params: 
+			[stopActions, null]}))
+		stopActions.doJob()
+		mp3Loader.playSound()
 	}
 	
 	private function assignListeners(soundPlayerView:ISoundPlayerView):void
@@ -86,44 +146,66 @@ public class SoundPlayerController extends EventDispatcher
 	//
 	//-------------------------------------------------------------------------
 	
-	public function buildTrackByIndex(index:int):void
+	public function loadTrackByIndex(index:int):void
 	{
 		currentIndex = index
-		buildByTrack(tracks[currentIndex])
+		loadByTrack(tracks[currentIndex])
 	}
 	
-	public function buildByTrack(track:Track):void
+	public function loadTrackByName(name:String):void
 	{
+		for each(var track:Track in tracks)
+			if(track.name == name)
+			{
+				currentIndex = tracks.indexOf(track)
+				loadByTrack(tracks[currentIndex])
+				break
+			}
+	}
+	
+	public function loadByTrack(track:Track):void
+	{
+		var soundActions:JobService = new JobService()
+		if(mp3Loader) 
+		{
+			mp3LoaderOld = mp3Loader
+			soundActions.addJob(new Job(stopSound, 
+				{params: [mp3LoaderOld, soundActions]}))
+		}
 		mp3Loader = new MP3Loader(track.url)
+		mp3Loader.volume = 0
 		mp3Loader.addEventListener(LoaderEvent.COMPLETE, 
 								   mp3Loader_completeHandler, false, 0, true)
 		mp3Loader.addEventListener(LoaderEvent.PROGRESS, 
 								   mp3Loader_progressHandler, false, 0, true)
-		mp3Loader.load()
+		soundActions.addJob(new Job(mp3Loader.load, {autoFinish: true}))
+		soundActions.addJob(new Job(JobUtils.setValue, 
+									{params: [soundActions, null]}))
+		soundActions.doJob()
 	}
 	
-	public function buildNextTrack():void
+	public function loadNextTrack():void
 	{
 		currentIndex++
-		buildByTrack(tracks[currentIndex])
+		loadByTrack(tracks[currentIndex])
 	}
 	
-	public function buildPrevTrack():void
+	public function loadPrevTrack():void
 	{
 		currentIndex--
-		buildByTrack(tracks[currentIndex])
+		loadByTrack(tracks[currentIndex])
 	}
 	
 	public function stop():void
 	{
-		pauseSound()
+		stopSound(mp3Loader)
 		currentIndex = 0
 	}
 	
 	public function playPause():void
 	{
-		if(mp3Loader.paused) playSound()
-		else pauseSound()
+		if(mp3Loader.paused) playSound(mp3Loader)
+		else pauseSound(mp3Loader)
 	}
 	
 	public function loadTracks():void
@@ -155,11 +237,11 @@ public class SoundPlayerController extends EventDispatcher
 	
 	private function mp3Loader_completeHandler(event:LoaderEvent):void
 	{
-		if(autoPlay) playSound()
-		else pauseSound()
+		var mp3Loader:MP3Loader = event.target as MP3Loader
+		if(autoPlay) playSound(mp3Loader)
+		else pauseSound(mp3Loader)
 		dispatchEvent(new Event(Event.COMPLETE))
-//		soundPlayerView.mp3Loader_completeHandler(event)
-		dispatchEvent(new SoundPlayerEvent(SoundPlayerEvent.SOUND_LOADED))
+ 		dispatchEvent(new SoundPlayerEvent(SoundPlayerEvent.SOUND_LOADED))
 	}
 	
 	private function soundPlayerView_pauseHandler(event:SoundPlayerEvent):void
