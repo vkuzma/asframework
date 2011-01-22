@@ -46,7 +46,8 @@ public final class AllinkLogo extends Sprite
 	
 	public function resize():void
 	{
-		resizeHandler(null)
+		allinkButton.x = stage.stageWidth - 15
+		allinkButton.y = height + 5
 	}
 	
 	private function clickHandler(event:MouseEvent):void
@@ -56,13 +57,12 @@ public final class AllinkLogo extends Sprite
 	
 	private function addedToStageHandler(event:Event):void
 	{
-		resizeHandler(null)
+		resize()
 	}
 	
 	private function resizeHandler(event:MouseEvent):void
 	{
-		allinkButton.x = stage.stageWidth - 15
-		allinkButton.y = height + 5
+		resize()
 	}
 }
 }
