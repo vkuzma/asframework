@@ -6,6 +6,8 @@ import ch.allink.microsite.cmsConnector.ModelRequest;
 import ch.allink.microsite.events.ResultEvent;
 
 import flash.events.EventDispatcher;
+import ch.allink.microsite.navigationElement.NavigationView;
+import ch.allink.microsite.navigationElement.NavigationTreeView;
 
 /**
  * Create a Navigation from the FeinCMS.
@@ -151,7 +153,7 @@ public final class NavigationFactory extends EventDispatcher
 			CMSXmlPath.getNavigationPathByLanguage(language),
 			ModelFactory.TYPE_COLLECTION)
 		modelReqeust.addEventListener(ResultEvent.DATA_LOADED,
-			modelRequest_dataLoadedHandler)
+			modelRequest_dataLoadedHandler, false, 0, true)
 	}
 	
 	/**
@@ -186,7 +188,6 @@ public final class NavigationFactory extends EventDispatcher
 			makeNavigationTree(navigations)
 		navigationTreeView.navigationViews = 
 			makeNavigationViewTree(topLevelNavigation, navigationTreeView)
-		
 		if(navigationOperation)
 		{
 			navigationOperation.targetView = navigationTreeView					

@@ -7,7 +7,6 @@
     <classEntry path="ch.allink.microsite.navigationElement.Navigation"/>
     <classEntry path="ch.allink.microsite.util.Translator"/>
     <classEntry path="ch.allink.micrositeframework.view.ImageView"/>
-    <classEntry path="ch.allink.microsite.events.NavigationViewEvent"/>
     <classEntry path="ch.allink.microsite.pageElement.PageView"/>
     <classEntry path="ch.allink.microsite.sectionElement.SectionView"/>
     <classEntry path="ch.allink.microsite.pageElement.PageFormatter"/>

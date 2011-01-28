@@ -1,5 +1,7 @@
 package ch.allink.microsite.navigationElement
 {
+import ch.allink.microsite.navigationElement.NavigationTreeView;
+
 public interface INavigationOperation
 {
 	function initialize():void
