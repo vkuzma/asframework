@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <flexLibProperties includeAllClasses="true" version="3">
   <includeClasses>
-    <classEntry path="ch.allink.microsite.cmsConnector.ModelCollectionEvent"/>
     <classEntry path="ch.allink.microsite.core.AbstractView"/>
     <classEntry path="ch.allink.microsite.core.AbstractWebsiteView"/>
     <classEntry path="ch.allink.microsite.navigationElement.Navigation"/>
@@ -12,8 +11,6 @@
     <classEntry path="ch.allink.microsite.pageElement.PageFormatter"/>
     <classEntry path="ch.allink.microsite.cmsConnector.CMSXmlPath"/>
     <classEntry path="ch.allink.microsite.imageElement.ImageViewService"/>
-    <classEntry path="ch.allink.microsite.backgroundImageElement.SimpleBackgroundView"/>
-    <classEntry path="ch.allink.microsite.backgroundImageElement.IBackgroundViewOperation"/>
     <classEntry path="ch.allink.microsite.events.ImageViewServiceEvent"/>
     <classEntry path="ch.allink.microsite.scrollPaneElement.ScrollPaneClipHolder"/>
     <classEntry path="ch.allink.microsite.imageElement.ImageViewResizeAlign"/>
@@ -21,7 +18,6 @@
     <classEntry path="ch.allink.microsite.imageElement.FilterOperation"/>
     <classEntry path="ch.allink.microsite.pageElement.IPageOperation"/>
     <classEntry path="ch.allink.microsite.sectionElement.operation.ISectionOperation"/>
-    <classEntry path="ch.allink.microsite.pageElement.MulitpleSectionTypeOperation"/>
     <classEntry path="ch.allink.microsite.sectionElement.operation.TextImageOperation"/>
     <classEntry path="ch.allink.microsite.sectionElement.operation.TextOperation"/>
     <classEntry path="ch.allink.microsite.sectionElement.SectionContentTypes"/>
@@ -46,11 +42,13 @@
     <classEntry path="ch.allink.microsite.allinkWebsite.SiteLoader"/>
     <classEntry path="ch.allink.microsite.util.Report"/>
     <classEntry path="ch.allink.microsite.util.ReportService"/>
-    <classEntry path="ch.allink.microsite.util.AllinkError"/>
     <classEntry path="ch.allink.microsite.soundElement.SoundPlayerController"/>
     <classEntry path="ch.allink.microsite.soundElement.Track"/>
     <classEntry path="ch.allink.microsite.soundElement.ISoundPlayerView"/>
     <classEntry path="ch.allink.microsite.events.SoundPlayerEvent"/>
+    <classEntry path="ch.allink.boxElement.BoxSprite"/>
+    <classEntry path="ch.allink.boxElement.BoxConfig"/>
+    <classEntry path="ch.allink.microsite.pageElement.MultipleSectionTypeOperation"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

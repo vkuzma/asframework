@@ -120,8 +120,10 @@ public class NavigationView extends AbstractView
 				false, this)
 		if(capture)
 		{
+			if(navigationTreeView) navigationTreeView.resetAll()
+			
 			var captureFirstEvent:NavigationViewEvent = new NavigationViewEvent(
-				NavigationViewEvent.CAPTURED_FIREST, false, false, this)
+				NavigationViewEvent.CAPTURED_FIRST, false, false, this)
 			dispatchEvent(captureFirstEvent)
 		}
 			

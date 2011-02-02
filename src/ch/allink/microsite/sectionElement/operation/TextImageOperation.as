@@ -1,12 +1,10 @@
 package ch.allink.microsite.sectionElement.operation
 {
-import ch.allink.microsite.core.AbstractView;
-import ch.allink.microsite.imageElement.Image;
 import ch.allink.microsite.imageElement.ImageView;
 import ch.allink.microsite.pageElement.PageFormatter;
-import ch.allink.microsite.sectionElement.sectionType.Section;
 import ch.allink.microsite.sectionElement.SectionContentTypes;
 import ch.allink.microsite.sectionElement.SectionView;
+import ch.allink.microsite.sectionElement.sectionType.Section;
 
 import flash.text.TextField;
 

@@ -1,19 +1,15 @@
 package ch.allink.microsite.scrollPaneElement
 {
-import caurina.transitions.Tweener;
-
 import ch.allink.microsite.core.AbstractView;
 
+import com.greensock.TweenLite;
 import com.osx.MacMouseWheel;
 
-import flash.display.Scene;
 import flash.display.Shape;
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.geom.Rectangle;
-
-import spark.primitives.Rect;
 
 /**
  * Darstellung eines Scrollbalken aus dem *_assets.fla
@@ -116,9 +112,8 @@ public class ScrollPaneView extends AbstractView
 		scrollPosition = scrollStep
 		moveContainer()
 		if(scrolling)
-			Tweener.addTween(scrollTimer,
+			TweenLite.to(scrollTimer, 0.05,
 				{
-					time: 0.05,
 					onComplete: scroll,
 					onCompleteParams: [scrollStep]
 				})
@@ -128,9 +123,8 @@ public class ScrollPaneView extends AbstractView
 	{
 		scroll(scrollStep)
 		scrolling = true
-		Tweener.addTween(scrollTimer,
+		TweenLite.to(scrollTimer, 1,
 			{
-				time: 1,
 				onComplete: scroll,
 				onCompleteParams: [scrollStep]
 			})	
@@ -215,7 +209,7 @@ public class ScrollPaneView extends AbstractView
 	private function stage_mouseUpHandler(event:MouseEvent):void
 	{
 		scrollClipHolder.scrollDragger.stopDrag()
-		Tweener.removeTweens(scrollTimer)
+		TweenLite.killTweensOf(scrollTimer)
 		scrolling = false
 	}
 	

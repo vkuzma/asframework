@@ -10,6 +10,8 @@ import flash.display.StageScaleMode;
 import flash.events.Event;
 
 /**
+ * The SiteLoader class is an example of how to load a mainsite. It can be used
+ * as a basetemplate.
  * @author vkuzma
  * @date Jan 11, 2011
  **/
@@ -21,6 +23,9 @@ public class SiteLoader extends Sprite
 	//
 	//-------------------------------------------------------------------------
 	
+	/**
+	 * Path of the main swfsite.
+	 **/
 	protected var websiteFileName:String = "/media/flash/sandbox.swf"
 	
 	//-------------------------------------------------------------------------

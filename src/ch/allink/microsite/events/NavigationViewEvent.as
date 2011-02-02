@@ -11,7 +11,7 @@ public class NavigationViewEvent extends Event
 	public static const ACTIVATED:String = "navigationActivatedd"
 	public static const DEACTIVATED:String = "navigationDeActivatedd"
 	public static const REQUEST_ACTIVATE:String = "navigationRequestActivate"
-	public static const CAPTURED_FIREST:String = "capturedFirst"
+	public static const CAPTURED_FIRST:String = "capturedFirst"
 	
 	private var _navigationView:NavigationView
 	public var capture:Boolean

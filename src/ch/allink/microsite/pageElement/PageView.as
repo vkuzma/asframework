@@ -112,6 +112,9 @@ public class PageView extends AbstractView
 		modelRequest.dispose()
 	}
 	
+	/**
+	 * Adds a new regioncontainer.
+	 **/
 	public function addRegion(region:String):void
 	{
 		if(!regions[region])
@@ -122,15 +125,20 @@ public class PageView extends AbstractView
 		}
 	}
 	
-	public function addToRegion(region:String, displayObject:DisplayObject):void
+	/**
+	 * Adds a displayObject to a region by name.
+	 **/
+	public function addToRegion(name:String, displayObject:DisplayObject):void
 	{
-		regionByName(region).addChild(displayObject)
+		regionByName(name).addChild(displayObject)
 	}
 	
-	public function regionByName(region:String):Sprite
+	/**
+	 * Returns a regioncontainer bei regionname.
+	 **/
+	public function regionByName(name:String):Sprite
 	{
-		if(!regions[region]) addRegion(region)
-		return regions[region]
+		return regions[name]
 	}
 	
 	//-------------------------------------------------------------------------

@@ -25,7 +25,7 @@ public class CMSXmlPath
 	
 	public static function getPagePathByURL(page:String):String
 	{
-		return "api/page/"+page+".xml"
+		return "api/page"+page.slice(0, page.length - 1)+".xml"
 	}
 	
 	public static function getSoundPath():String

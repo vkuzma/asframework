@@ -53,7 +53,7 @@ public class NavigationTreeView extends AbstractView
 										navigationView_activatedHandler)
 		navigationView.addEventListener(NavigationViewEvent.REQUEST_ACTIVATE,
 										navigationView_requestActivatedHandler)
-		navigationView.addEventListener(NavigationViewEvent.CAPTURED_FIREST,
+		navigationView.addEventListener(NavigationViewEvent.CAPTURED_FIRST,
 										navigationView_capturedFirstHandler)
 	}
 	
@@ -102,7 +102,9 @@ public class NavigationTreeView extends AbstractView
 		var targetNavigationView:NavigationView = 
 			navigationViewByURL(url, this)
 		if(targetNavigationView)
+		{
 			targetNavigationView.requestActivate()
+		}
 	}
 	
 	//-------------------------------------------------------------------------
@@ -138,7 +140,7 @@ public class NavigationTreeView extends AbstractView
 	{
 		report.print(event.target.name + " has been clicked.")
 		var navigationView:NavigationView = event.target as NavigationView
-		activateNavigationView(navigationView)
+		navigationView.requestActivate()
 	}
 	
 	private function navigationView_activatedHandler(

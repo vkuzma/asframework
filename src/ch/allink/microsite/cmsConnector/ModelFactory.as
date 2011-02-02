@@ -23,6 +23,9 @@ public class ModelFactory extends EventDispatcher
 	//
 	//-------------------------------------------------------------------------
 		
+	/**
+	 * Creates a new ModelFactory instance.
+	 **/
 	public function ModelFactory(target:IEventDispatcher = null)
 	{
 		super(target)
@@ -34,11 +37,19 @@ public class ModelFactory extends EventDispatcher
 	//
 	//-------------------------------------------------------------------------
 
+	/**
+	 * Loads a model from CMS.
+	 **/
 	public function load(klass:Class, url:String, type:String):ModelRequest
 	{
 		return new ModelRequest(klass, url, this, type)
 	}
 	
+	/**
+	 * Creates and fills a model.
+	 * @param klass Class of the model
+	 * @param xml Source of data
+	 **/
 	public function create(klass:Class, xml:XML):AbstractModel
 	{
 		var model:AbstractModel = new klass
@@ -71,6 +82,11 @@ public class ModelFactory extends EventDispatcher
 		return model
 	}
 	
+	/**
+	 * Creates and fills a collection of models.
+	 * @param klass Class of the model
+	 * @param xml Source of data
+	 **/
 	public function createCollection(klass:Class, 
 									 xml:XML):Vector.<AbstractModel>
 	{

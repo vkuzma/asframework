@@ -3,18 +3,21 @@ package ch.allink.microsite.pageElement
 import ch.allink.microsite.sectionElement.SectionView;
 import ch.allink.microsite.sectionElement.operation.ISectionOperation;
 import ch.allink.microsite.sectionElement.operation.ImageContentOperation;
+import ch.allink.microsite.sectionElement.operation.TextImageOperation;
 import ch.allink.microsite.sectionElement.operation.TextOperation;
 import ch.allink.microsite.sectionElement.sectionType.Section;
+
+import flash.display.Sprite;
 
 /**
  * @author Vladimir Kuzma
  * @date 03.12.2010
  */
-public final class MulitpleSectionTypeOperation implements IPageOperation
+public final class MultipleSectionTypeOperation implements IPageOperation
 {
 	//-------------------------------------------------------------------------
 	//
-	//	Variables
+	// Variables
 	//
 	//-------------------------------------------------------------------------
 	
@@ -26,11 +29,11 @@ public final class MulitpleSectionTypeOperation implements IPageOperation
 	
 	//-------------------------------------------------------------------------
 	//
-	//	Constructor
+	// Constructor
 	//
 	//-------------------------------------------------------------------------
 	
-	public function MulitpleSectionTypeOperation()
+	public function MultipleSectionTypeOperation():void
 	{
 		sectionOperationClasses = new Vector.<Class>
 		sectionOperationClasses.push(TextOperation)
@@ -40,7 +43,7 @@ public final class MulitpleSectionTypeOperation implements IPageOperation
 	
 	//-------------------------------------------------------------------------
 	//
-	//	Private methods
+	// Private methods
 	//
 	//-------------------------------------------------------------------------
 	
@@ -72,11 +75,11 @@ public final class MulitpleSectionTypeOperation implements IPageOperation
 	
 	private function getSectionViewsByRegion(region:String):Vector.<SectionView>
 	{
-		var sectionViewsByRegion:Vector.<SectionView> = new Vector.<SectionView> 
+		var sectionViewsByRegion:Vector.<SectionView> = new Vector.<SectionView>
 		for each(var sectionView:SectionView in sectionViews)
 		{
 			var section:Section = sectionView.section
-			if(section.region == region) sectionViewsByRegion.push(sectionView)	
+			if(section.region == region) sectionViewsByRegion.push(sectionView)
 		}
 		return sectionViewsByRegion
 	}
@@ -88,7 +91,7 @@ public final class MulitpleSectionTypeOperation implements IPageOperation
 		for each(var sectionView:SectionView in sectionViews)
 		{
 			if(prevSectionView)
-				sectionView.y = Math.round(prevSectionView.height + 
+				sectionView.y = Math.round(prevSectionView.height +
 					prevSectionView.y +
 					pageFormatter.sectionVerticalSpacing)
 			else
@@ -99,7 +102,7 @@ public final class MulitpleSectionTypeOperation implements IPageOperation
 	
 	//-------------------------------------------------------------------------
 	//
-	//	Public methods
+	// Public methods
 	//
 	//-------------------------------------------------------------------------
 	
@@ -112,21 +115,22 @@ public final class MulitpleSectionTypeOperation implements IPageOperation
 	 */
 	public function buildSectionViews(sections:Array):void
 	{
-		dispose()	
+		dispose()
 		_sectionViews = new Vector.<SectionView>
 		for each(var section:Section in sections)
 		{
-			var sectionOperation:ISectionOperation = 
+			var sectionOperation:ISectionOperation =
 				getOperationByFormat(section.type)
 			if(!sectionOperation) missingSectionOperationError(section.type)
-				
+			
 			sectionOperations.push(sectionOperation)
 			sectionOperation.pageFormatter = pageFormatter
 			var sectionView:SectionView = new SectionView(section)
-				
+			
 			sectionView.operation = sectionOperation
 			sectionView.build()
-				
+			
+			targetView.addRegion(section.region)
 			targetView.addToRegion(section.region, sectionView)
 			
 			sectionViews.push(sectionView)
@@ -141,13 +145,13 @@ public final class MulitpleSectionTypeOperation implements IPageOperation
 	{
 		for (var region:String in targetView.regions)
 		{
-			var sectionViewsInRegion:Vector.<SectionView> = 
+			var sectionViewsInRegion:Vector.<SectionView> =
 				getSectionViewsByRegion(region)
 			//TODO throw error if sectionViewsInRegion is null
 			if(!sectionViewsInRegion)
 			{
 				trace("Allink error: " + "Region " + region + " doesn't exist.")
-				continue	
+				continue
 			}
 			formatSectionViewsInRegion(sectionViewsInRegion)
 		}
@@ -159,7 +163,7 @@ public final class MulitpleSectionTypeOperation implements IPageOperation
 	public function resize(sourceWidth:Number, sourceHeight:Number):void
 	{
 		for each(var sectionOperation:ISectionOperation in sectionOperations)
-			sectionOperation.resize(sourceWidth, sourceHeight)
+		sectionOperation.resize(sourceWidth, sourceHeight)
 	}
 	
 	/**
@@ -172,7 +176,7 @@ public final class MulitpleSectionTypeOperation implements IPageOperation
 	
 	//-------------------------------------------------------------------------
 	//
-	//	Properties
+	// Properties
 	//
 	//-------------------------------------------------------------------------
 	
@@ -201,7 +205,8 @@ public final class MulitpleSectionTypeOperation implements IPageOperation
 	
 	public function get pageFormatter():PageFormatter
 	{
-		if(!_pageFormatter) _pageFormatter = new PageFormatter()
+		if(!_pageFormatter)
+			_pageFormatter = new PageFormatter()
 		return _pageFormatter
 	}
 }

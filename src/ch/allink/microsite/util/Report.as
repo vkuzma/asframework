@@ -1,6 +1,6 @@
 package ch.allink.microsite.util
 {
-import ch.allink.microsite.navigationElement.INavigationOperation;
+
 
 /**
  * @author vkuzma

@@ -1,5 +1,6 @@
 package ch.allink.boxElement
 {
+import flash.display.DisplayObject;
 import flash.display.Sprite;
 
 /**
@@ -42,7 +43,7 @@ public class BoxSprite extends Sprite
 	/**
 	 * Adds a BoxSprite instance to the collection.
 	 **/
-	public function addBoxChild(boxSprite:BoxSprite):void
+	public function addBoxChild(boxSprite:DisplayObject):void
 	{
 		
 	}

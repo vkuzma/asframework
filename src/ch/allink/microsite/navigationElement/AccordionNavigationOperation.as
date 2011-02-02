@@ -37,7 +37,7 @@ public class AccordionNavigationOperation extends EventDispatcher
 	
 	//-------------------------------------------------------------------------
 	//
-	//	Private methods
+	//	Protected methods
 	//
 	//-------------------------------------------------------------------------
 	
@@ -61,7 +61,6 @@ public class AccordionNavigationOperation extends EventDispatcher
 			}
 		}
 	}
-	
 	
 	protected function openMenu(navigationTreeView:NavigationTreeView):void
 	{
