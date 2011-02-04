@@ -26,7 +26,7 @@ public class SiteLoader extends Sprite
 	/**
 	 * Path of the main swfsite.
 	 **/
-	protected var websiteFileName:String = "/media/flash/sandbox.swf"
+	protected var websiteFileName:String = "noFlashPathGiven"
 	
 	//-------------------------------------------------------------------------
 	//
@@ -37,10 +37,6 @@ public class SiteLoader extends Sprite
 	public function SiteLoader()
 	{
 		super()
-		
-		build()
-		addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler)
-		loadWebsite()
 	}
 	
 	
@@ -52,6 +48,12 @@ public class SiteLoader extends Sprite
 	
 	protected function build():void
 	{
+		if(!stage)
+			addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler, false, 
+							 0, true)
+		else
+			addedToStageHandler()
+		loadWebsite()
 	}
 	
 	private function loadWebsite():void
@@ -77,7 +79,7 @@ public class SiteLoader extends Sprite
 	//
 	//-------------------------------------------------------------------------
 	
-	protected function addedToStageHandler(event:Event):void
+	protected function addedToStageHandler(event:Event = null):void
 	{
 		stage.addEventListener(Event.RESIZE, resizeHandler)
 		setupStage()
