@@ -26,6 +26,8 @@ public class DisplayFormatter extends AbstractModel
 //	protected var galleryImageYSpacing:int = -99;
 	public var sectionVerticalSpacing:Number = 8
 	public var sectionHorizontalSpacing:Number = 8
+	public var textImageWidth:Number = 200
+	public var textImageSpacing:Number = 0
 //	protected var styleSheet:StyleSheet;
 //	protected var imageHanlder:Function;
 //	protected var imageOnOverHandler:Function;
@@ -86,10 +88,16 @@ public class DisplayFormatter extends AbstractModel
 	//
 	//-------------------------------------------------------------------------
 	
+	public function textImageHeight(imageHeight:Number, imageWidth:Number):int
+	{
+		return Math.round(textImageWidth * imageHeight / imageWidth)
+	}
+	
 	//-------------------------------------------------------------------------
 	//
 	//	Properties
 	//
 	//-------------------------------------------------------------------------
+	
 }
 }

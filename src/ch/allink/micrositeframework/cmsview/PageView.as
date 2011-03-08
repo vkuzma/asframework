@@ -85,7 +85,8 @@ public class PageView extends AbstractView
 				if(prevSection.files)
 				{
 					var image:Image = prevSection.files[0]
-					extraSpacing = image.height
+					extraSpacing = displayFormatter.textImageHeight(
+								   image.height, image.width)
 				}
 				sectionView.y = prevSectionView.y + prevSectionView.height +
 								displayFormatter.sectionVerticalSpacing +
@@ -114,8 +115,10 @@ public class PageView extends AbstractView
 		var section:Section = sectionView.section
 		var image:Image = section.files[0]
 		var imageView:ImageView = new ImageView(image)
+		imageView.imageOptions.width = displayFormatter.textImageWidth
 		imageView.buildByFileID(image.uniqueid)
 		sectionView.addChild(imageView)
+		
 		formatImageTextLeft(image, sectionView.textField)
 	}
 	
@@ -123,7 +126,9 @@ public class PageView extends AbstractView
 	private function formatImageTextLeft(image:Image,
 										 textField:TextField):void
 	{
-		textField.x = image.width + displayFormatter.sectionHorizontalSpacing
+		textField.y = displayFormatter.textImageHeight(
+					  image.height, image.width) + 
+					  displayFormatter.textImageSpacing
 	}
 	
 	//-------------------------------------------------------------------------

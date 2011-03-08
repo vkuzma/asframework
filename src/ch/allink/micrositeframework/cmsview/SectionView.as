@@ -31,7 +31,7 @@ public class SectionView extends AbstractView
 	private var title:TextField
 	private var rawText:String
 	
-	private var imageViews:Vector.<ImageView>
+	public var imageViews:Vector.<ImageView>
 	private var images:Array
 
 	public var section:Section

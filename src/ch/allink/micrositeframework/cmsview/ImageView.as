@@ -27,7 +27,7 @@ public class ImageView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	public var _imageOptions:ImageOptions
+	private var _imageOptions:ImageOptions
 	public var isLoading:Boolean
 	public var loader:Loader
 	public var image:Image
@@ -254,7 +254,7 @@ public class ImageView extends AbstractView
 	{
 		if(!_imageOptions)
 		{
-			_imageOptions = new ImageOptions
+			_imageOptions = new ImageOptions()
 			_imageOptions.width = image.width
 		}
 		
