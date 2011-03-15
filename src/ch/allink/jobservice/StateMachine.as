@@ -73,7 +73,9 @@ public class StateMachine extends EventDispatcher
 				return 1
 			}
 			
-			if(!destinationState.beginJobServices.length) 
+			if(!destinationState.beginJobServices.length && 
+				currentState.beginJobServices.indexOf(jobService) == 
+				currentState.beginJobServices.length - 1) 
 			{
 				report.print("No transitions in " + destinationState.name)
 				return 0
@@ -126,7 +128,7 @@ public class StateMachine extends EventDispatcher
 		report.print("END: searchState")
 		report.print("------------------------")
 		if(transition.jobCollection.length == 0)
-			trace("Allink error: Destination state not found") 
+			trace("Allink error: Destination \"" + state.name + "\" not found") 
 		transition.jobCollection.reverse()		
 		transition.addEventListener(JobEvent.COMPLETE_ALL, 
 									transition_completeAllHandler, false, 0, 
