@@ -1,13 +1,12 @@
-package ch.allink.microsite.sectionElement.sectionType
+package ch.allink.microsite.sectionElement.style
 {
-import ch.allink.microsite.imageElement.Image;
 import ch.allink.microsite.sectionElement.SectionContentTypes;
 
 /**
  * @author vkuzma
- * @date Jan 6, 2011
+ * @date Apr 5, 2011
  **/
-public class ImageSection extends TextSection
+public class TextImageStyle implements ISectionStyle
 {
 	//-------------------------------------------------------------------------
 	//
@@ -15,7 +14,17 @@ public class ImageSection extends TextSection
 	//
 	//-------------------------------------------------------------------------
 	
-	private var _images:Array
+	public var textOffsetX:Number
+	public var textOffsetY:Number
+	public var titleOffsetX:Number
+	public var titleOffsetY:Number
+	public var titleTextVerticalSpacing:Number
+	
+	public var textImagehorizontalSpacing:Number
+	public var textImageVerticalSpacing:Number
+	
+	public var titleUpperCase:Boolean
+	public var textUpperCase:Boolean
 	
 	//-------------------------------------------------------------------------
 	//
@@ -23,9 +32,14 @@ public class ImageSection extends TextSection
 	//
 	//-------------------------------------------------------------------------
 	
-	public function ImageSection()
+	public function TextImageStyle()
 	{
-		super()
+		init()
+	}
+	
+	public function get CONTENT_TYPE():String
+	{
+		return SectionContentTypes.TEXT_IMAGE;
 	}
 	
 	//-------------------------------------------------------------------------
@@ -34,7 +48,20 @@ public class ImageSection extends TextSection
 	//
 	//-------------------------------------------------------------------------
 	
-	
+	private function init():void
+	{
+		textOffsetX = 0
+		textOffsetY = 0
+		titleOffsetX = 0
+		titleOffsetY = 0
+			
+		textImagehorizontalSpacing = 0
+			
+		textImageVerticalSpacing = 0
+		titleTextVerticalSpacing = 0
+		titleUpperCase = false
+		textUpperCase = false
+	}
 	
 	//-------------------------------------------------------------------------
 	//
@@ -58,19 +85,6 @@ public class ImageSection extends TextSection
 	//
 	//-------------------------------------------------------------------------
 	
-	public function set images(values:Array):void
-	{
-		_images = fillCollection(Image, values)
-	}
 	
-	public function get images():Array
-	{
-		return _images
-	}
-	
-	public static function get TYPE():String
-	{
-		return SectionContentTypes.IMAGE
-	}
 }
 }

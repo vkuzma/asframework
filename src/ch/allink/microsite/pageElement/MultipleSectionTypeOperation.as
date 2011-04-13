@@ -5,7 +5,7 @@ import ch.allink.microsite.sectionElement.operation.ISectionOperation;
 import ch.allink.microsite.sectionElement.operation.ImageContentOperation;
 import ch.allink.microsite.sectionElement.operation.TextImageOperation;
 import ch.allink.microsite.sectionElement.operation.TextOperation;
-import ch.allink.microsite.sectionElement.sectionType.Section;
+import ch.allink.microsite.sectionElement.sectionType.TextSection;
 
 import flash.display.Sprite;
 
@@ -38,6 +38,7 @@ public final class MultipleSectionTypeOperation implements IPageOperation
 		sectionOperationClasses = new Vector.<Class>
 		sectionOperationClasses.push(TextOperation)
 		sectionOperationClasses.push(ImageContentOperation)
+		sectionOperationClasses.push(TextImageOperation)
 		sectionOperations = new Vector.<ISectionOperation>
 	}
 	
@@ -78,7 +79,7 @@ public final class MultipleSectionTypeOperation implements IPageOperation
 		var sectionViewsByRegion:Vector.<SectionView> = new Vector.<SectionView>
 		for each(var sectionView:SectionView in sectionViews)
 		{
-			var section:Section = sectionView.section
+			var section:TextSection = sectionView.section
 			if(section.region == region) sectionViewsByRegion.push(sectionView)
 		}
 		return sectionViewsByRegion
@@ -117,7 +118,7 @@ public final class MultipleSectionTypeOperation implements IPageOperation
 	{
 		dispose()
 		_sectionViews = new Vector.<SectionView>
-		for each(var section:Section in sections)
+		for each(var section:TextSection in sections)
 		{
 			var sectionOperation:ISectionOperation =
 				getOperationByFormat(section.type)

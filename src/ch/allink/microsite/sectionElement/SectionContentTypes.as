@@ -1,7 +1,8 @@
 package ch.allink.microsite.sectionElement
 {
 import ch.allink.microsite.sectionElement.sectionType.ImageSection;
-import ch.allink.microsite.sectionElement.sectionType.Section;
+import ch.allink.microsite.sectionElement.sectionType.TextImageSection;
+import ch.allink.microsite.sectionElement.sectionType.TextSection;
 
 import flash.utils.Dictionary;
 
@@ -11,8 +12,11 @@ public class SectionContentTypes
 	//	Standard section models
 	//---------------------------------
 	{
-		contentTypeModels[TEXT_ONLY] = Section
+		contentTypeModels[TEXT_ONLY] = TextSection
 		contentTypeModels[IMAGE] = ImageSection
+		contentTypeModels[TEXT_IMAGE] = TextImageSection
+		contentTypeModels[TEXT_IMAGE] = TextImageSection
+		
 	}
 	
 	//-------------------------------------------------------------------------
@@ -22,7 +26,7 @@ public class SectionContentTypes
 	//-------------------------------------------------------------------------
 	
 	public static const TEXT_ONLY:String = "RichTextContent"
-	public static const TEXT_IMAGE_LEFT:String = "textimageleft"
+	public static const TEXT_IMAGE:String = "RichtTextWithImage"
 	public static const IMAGE:String = "ImageContentType"
 	public static const GALLERY:String = "gallery"
 	

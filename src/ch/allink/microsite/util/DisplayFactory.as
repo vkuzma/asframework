@@ -1,8 +1,13 @@
 package ch.allink.microsite.util
 {
+import flash.display.Bitmap;
+import flash.display.BitmapData;
 import flash.display.DisplayObject;
+import flash.display.GradientType;
+import flash.display.IBitmapDrawable;
 import flash.display.Shape;
 import flash.display.Sprite;
+import flash.geom.Matrix;
 
 /**
  * @author vkuzma
@@ -53,5 +58,12 @@ public class DisplayFactory
 			
 		return shape
 	}
+	
+	public static function flushSprite(sprite:Sprite):void
+	{
+		for(var i:int = sprite.numChildren - 1; i >= 0; i--)
+			sprite.removeChildAt(i)
+	}
+	
 }
 }

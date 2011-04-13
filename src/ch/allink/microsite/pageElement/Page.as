@@ -28,6 +28,7 @@ public class Page extends AbstractModel
 	public var language:String = ""
 	public var has_children:String = ""
 	public var _cached_url:String
+	public var template:String
 	
 	//-------------------------------------------------------------------------
 	//

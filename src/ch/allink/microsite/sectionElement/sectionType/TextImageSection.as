@@ -1,16 +1,14 @@
 package ch.allink.microsite.sectionElement.sectionType
 {
 import ch.allink.microsite.core.AbstractModel;
-import ch.allink.microsite.sectionElement.SectionContentTypes;
+import ch.allink.microsite.imageElement.Image;
+import ch.allink.microsite.sectionElement.sectionType.TextSection;
 
 /**
- * Die Section Klasse dient als Model für eine SectionView Instanz.
- * @author Michael Walder
- * @date 7.11.2010
- * @see ch.allink.micrositeframework.cmsview.SectionView
+ * @author vkuzma
+ * @date Apr 1, 2011
  **/
-
-public class Section extends AbstractModel
+public class TextImageSection extends TextSection
 {
 	//-------------------------------------------------------------------------
 	//
@@ -18,12 +16,9 @@ public class Section extends AbstractModel
 	//
 	//-------------------------------------------------------------------------
 	
+	private var _images:Array
+	public var alignment:String
 	public var title:String
-	public var date:String
-	public var type:String
-	public var ordering:String
-	public var text:String
-	public var region:String
 	
 	//-------------------------------------------------------------------------
 	//
@@ -31,9 +26,8 @@ public class Section extends AbstractModel
 	//
 	//-------------------------------------------------------------------------
 	
-	public function Section()
+	public function TextImageSection()
 	{
-		super()
 	}
 	
 	//-------------------------------------------------------------------------
@@ -42,9 +36,19 @@ public class Section extends AbstractModel
 	//
 	//-------------------------------------------------------------------------
 	
+	public function set images(values:Array):void
+	{
+		_images = fillCollection(Image, values)
+	}
+	
+	public function get images():Array
+	{
+		return _images
+	}
+	
 	public static function get TYPE():String
 	{
-		return SectionContentTypes.TEXT_ONLY
+		return "RichtTextWithImage"
 	}
 }
 }

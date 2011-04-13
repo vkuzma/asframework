@@ -2,7 +2,7 @@ package ch.allink.microsite.sectionElement
 {
 import ch.allink.microsite.core.AbstractView;
 import ch.allink.microsite.sectionElement.operation.ISectionOperation;
-import ch.allink.microsite.sectionElement.sectionType.Section;
+import ch.allink.microsite.sectionElement.sectionType.TextSection;
 
 public class SectionView extends AbstractView
 {
@@ -13,7 +13,7 @@ public class SectionView extends AbstractView
 	//-------------------------------------------------------------------------
 	
 	private var _operation:ISectionOperation
-	public var section:Section
+	public var section:TextSection
 	
 	//-------------------------------------------------------------------------
 	//
@@ -21,7 +21,7 @@ public class SectionView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	public function SectionView(section:Section = null)
+	public function SectionView(section:TextSection = null)
 	{
 		super()
 		this.section = section

@@ -78,11 +78,8 @@ public class SoundPlayerController extends EventDispatcher
 		pauseActions.addJob(new Job(mp3Loader.pauseSound, {autoFinish: true}))
 		if(jobService) pauseActions.addJob(new Job(jobService.doNextJob, 
 									    		  {autoFinish: true}))
-		//Removes pauseActions
-		pauseActions.addJob(new Job(JobUtils.setValue, {params: 
-			[pauseActions, null]}))
 		pauseActions.doJob()
-//		soundPlayerView.pauseSound()
+		dispatchEvent(new SoundPlayerEvent(SoundPlayerEvent.PAUSE))
 	}
 	
 	private function playSound(mp3Loader:MP3Loader, 
@@ -98,10 +95,8 @@ public class SoundPlayerController extends EventDispatcher
 		if(jobService) pauseActions.addJob(new Job(jobService.doNextJob, 
 									   			  {autoFinish: true}))
 		//Removes playActions
-		pauseActions.addJob(new Job(JobUtils.setValue, {params: 
-			[pauseActions, null]}))
 		pauseActions.doJob()
-//		soundPlayerView.playSound()
+		dispatchEvent(new SoundPlayerEvent(SoundPlayerEvent.PLAY))
 	}
 	
 	private function stopSound(mp3Loader:MP3Loader, 
@@ -125,12 +120,12 @@ public class SoundPlayerController extends EventDispatcher
 	
 	private function assignListeners(soundPlayerView:ISoundPlayerView):void
 	{
-		soundPlayerView.addEventListener(SoundPlayerEvent.PAUSE, 
-										 soundPlayerView_pauseHandler)
-		soundPlayerView.addEventListener(SoundPlayerEvent.PLAY, 
-										 soundPlayerView_playHandler)
-		soundPlayerView.addEventListener(SoundPlayerEvent.PLAYPAUSE, 
-										 soundPlayerView_playPauseHandler)
+//		soundPlayerView.addEventListener(SoundPlayerEvent.PAUSE, 
+//										 soundPlayerView_pauseHandler)
+//		soundPlayerView.addEventListener(SoundPlayerEvent.PLAY, 
+//										 soundPlayerView_playHandler)
+//		soundPlayerView.addEventListener(SoundPlayerEvent.PLAYPAUSE, 
+//										 soundPlayerView_playPauseHandler)
 	}
 	
 	private function doFunctionOnSoundPlayerClip(funktion:Function, 
@@ -149,7 +144,7 @@ public class SoundPlayerController extends EventDispatcher
 	public function loadTrackByIndex(index:int):void
 	{
 		currentIndex = index
-		loadByTrack(tracks[currentIndex])
+		loadTrackBy(tracks[currentIndex])
 	}
 	
 	public function loadTrackByName(name:String):void
@@ -158,12 +153,12 @@ public class SoundPlayerController extends EventDispatcher
 			if(track.name == name)
 			{
 				currentIndex = tracks.indexOf(track)
-				loadByTrack(tracks[currentIndex])
+				loadTrackBy(tracks[currentIndex])
 				break
 			}
 	}
 	
-	public function loadByTrack(track:Track):void
+	public function loadTrackBy(track:Track):void
 	{
 		var soundActions:JobService = new JobService()
 		if(mp3Loader) 
@@ -187,13 +182,13 @@ public class SoundPlayerController extends EventDispatcher
 	public function loadNextTrack():void
 	{
 		currentIndex++
-		loadByTrack(tracks[currentIndex])
+		loadTrackBy(tracks[currentIndex])
 	}
 	
 	public function loadPrevTrack():void
 	{
 		currentIndex--
-		loadByTrack(tracks[currentIndex])
+		loadTrackBy(tracks[currentIndex])
 	}
 	
 	public function stop():void
@@ -204,7 +199,7 @@ public class SoundPlayerController extends EventDispatcher
 	
 	public function playPause():void
 	{
-		if(mp3Loader.paused) playSound(mp3Loader)
+		if(mp3Loader.soundPaused) playSound(mp3Loader)
 		else pauseSound(mp3Loader)
 	}
 	
@@ -218,7 +213,7 @@ public class SoundPlayerController extends EventDispatcher
 		playSound(mp3Loader)
 	}
 	
-	public function loadTracks():void
+	public function loadTrackModels():void
 	{
 		var modelFactory:ModelFactory = new ModelFactory()
 		var modelRequst:ModelRequest = modelFactory.load(Track,

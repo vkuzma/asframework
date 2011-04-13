@@ -226,6 +226,7 @@ public class JobService extends EventDispatcher
 	private function currentJob_executedHandler(event:JobEvent):void
 	{
 		var currentJob:Job = event.target as Job
+		
 		doNextJob()
 	}
 	

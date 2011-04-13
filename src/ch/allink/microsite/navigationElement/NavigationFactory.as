@@ -13,7 +13,7 @@ import ch.allink.microsite.navigationElement.NavigationTreeView;
  * Create a Navigation from the FeinCMS.
  * @author Vladimir Kuzma
  */
-public final class NavigationFactory extends EventDispatcher
+public class NavigationFactory extends EventDispatcher
 {
 	//-------------------------------------------------------------------------
 	//
@@ -179,7 +179,7 @@ public final class NavigationFactory extends EventDispatcher
 	//
 	//-------------------------------------------------------------------------
 	
-	private function modelRequest_dataLoadedHandler(event:ResultEvent):void
+	protected function modelRequest_dataLoadedHandler(event:ResultEvent):void
 	{
 		var navigations:Vector.<Navigation> = Vector.<Navigation>(
 			event.collection)

@@ -68,7 +68,7 @@ public class AccordionNavigationOperation extends EventDispatcher
 			{height: navigationTreeView.height})
 	}
 	
-	protected function arrangeNavigationViews(
+	public function arrangeNavigationViews(
 		navigationViews:Vector.<NavigationView>):void
 	{
 		var prevNavigationView:NavigationView

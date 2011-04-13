@@ -2,6 +2,7 @@ package ch.allink.microsite.pageElement
 {
 import ch.allink.microsite.core.AbstractModel;
 import ch.allink.microsite.sectionElement.style.ISectionStyle;
+import ch.allink.microsite.sectionElement.style.TextImageStyle;
 import ch.allink.microsite.sectionElement.style.TextStyle;
 
 import flash.text.StyleSheet;
@@ -26,7 +27,7 @@ public class PageFormatter extends AbstractModel
 	public var paddingLeft:Number = 0
 	public var paddingTop:Number = 0
 	public var styleSheet:StyleSheet
-	public var enableEmbedFonts:Boolean = false
+	public var enableEmbedFonts:Boolean = true
 	public var textAlign:String = TextFieldAutoSize.LEFT
 	public var titleContentSpacing:Number = 0
 		
@@ -40,6 +41,7 @@ public class PageFormatter extends AbstractModel
 	{
 		sectionStyles = new Vector.<ISectionStyle>
 		sectionStyles.push(new TextStyle())
+		sectionStyles.push(new TextImageStyle())
 	}
 	
 	//-------------------------------------------------------------------------

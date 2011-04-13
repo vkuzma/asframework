@@ -107,6 +107,19 @@ public class NavigationTreeView extends AbstractView
 		}
 	}
 	
+	public function doOnAllNavigationViews(funktion:Function,
+							navigationViews:Vector.<NavigationView> = null):void
+	{
+		if(!navigationViews) navigationViews = this.navigationViews
+		for each(var navigationView:NavigationView in navigationViews)
+		{
+			funktion.call(null, navigationView)
+			if(navigationView.navigationTreeView.navigationViews.length > 0)
+				doOnAllNavigationViews(funktion, 
+							  navigationView.navigationTreeView.navigationViews)
+		}
+	}
+	
 	//-------------------------------------------------------------------------
 	//
 	//	Event handlers

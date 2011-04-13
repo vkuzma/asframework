@@ -6,7 +6,7 @@ import ch.allink.microsite.cmsConnector.ModelRequest;
 import ch.allink.microsite.core.AbstractView;
 import ch.allink.microsite.events.ResultEvent;
 import ch.allink.microsite.sectionElement.SectionView;
-import ch.allink.microsite.sectionElement.sectionType.Section;
+import ch.allink.microsite.sectionElement.sectionType.TextSection;
 
 import flash.display.DisplayObject;
 import flash.display.Sprite;
@@ -52,7 +52,7 @@ public class PageView extends AbstractView
 	
 	public override function dispose():void
 	{
-		operation.dispose()
+		clearSectionViews(sectionViews)
 	}
 	
 	//-------------------------------------------------------------------------
@@ -65,7 +65,7 @@ public class PageView extends AbstractView
 	{
 		for each(var sectionView:SectionView in sectionViews)
 		{
-			var section:Section = sectionView.section
+			var section:TextSection = sectionView.section
 			var regionContainer:Sprite = regionByName(section.region)
 			if(regionContainer.contains(sectionView))
 				regionContainer.removeChild(sectionView)
@@ -105,6 +105,7 @@ public class PageView extends AbstractView
 		var sections:Array = page.sections
  		operation.buildSectionViews(sections)
 		operation.formatSectionViews()
+			
 	}
 	
 	public function stopLoading():void
@@ -138,6 +139,7 @@ public class PageView extends AbstractView
 	 **/
 	public function regionByName(name:String):Sprite
 	{
+		if(!regions[name]) addRegion(name)
 		return regions[name]
 	}
 	
