@@ -16,7 +16,7 @@ public class TextOperation implements ISectionOperation
 	//	Variables
 	//
 	//-------------------------------------------------------------------------
-	
+	 
 	public var textField:TextField
 	private var _targetView:SectionView
 	private var _pageFormatter:PageFormatter

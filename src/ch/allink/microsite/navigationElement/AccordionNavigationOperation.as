@@ -64,8 +64,7 @@ public class AccordionNavigationOperation extends EventDispatcher
 	
 	protected function openMenu(navigationTreeView:NavigationTreeView):void
 	{
-		TweenLite.to(navigationTreeView.mask, 2, 
-			{height: navigationTreeView.height})
+		TweenLite.to(navigationTreeView.mask, 2, {height: navigationTreeView.height})
 	}
 	
 	public function arrangeNavigationViews(
@@ -126,8 +125,7 @@ public class AccordionNavigationOperation extends EventDispatcher
 	//
 	//-------------------------------------------------------------------------
 	
-	protected function navigationView_activatedHandler(
-		event:NavigationViewEvent):void
+	protected function navigationView_activatedHandler(event:NavigationViewEvent):void
 	{
 		if(event.navigationView.navigationTreeView)
 			openMenu(event.navigationView.navigationTreeView)
