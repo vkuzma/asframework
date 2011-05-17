@@ -1,0 +1,60 @@
+{% load applicationcontent_tags feincms_tags feincms_page_tags config_tags%}
+
+<!DOCTYPE HTML>
+
+<html>
+    <head>
+        <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+        <meta name="viewport" content="width=540">
+        
+        {% if not request.shebang_seo %}
+        <meta NAME="robots" CONTENT="noindex, nofollow">
+        <meta name="googlebot" content="noindex, nofollow">
+        {% else %}
+        <meta name="googlebot" content="noarchive">
+        {% endif %}
+        
+        <link rel="stylesheet" type="text/css" href="/media/stylesheets/screen.css" media="screen">
+        <title>{{ feincms_page.title|upper|safe }}</title>
+        
+        <script type="text/javascript">
+        var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+        document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+        </script>
+        <script type="text/javascript">
+        try{
+        var pageTracker = _gat._getTracker("{% google_analytics %}");
+        pageTracker._trackPageview();
+        } catch(err) {}
+        </script>
+        
+        <script type="text/javascript">
+            function rewriteLinks()
+            {
+                var links = document.getElementsByTagName('a');
+                for (var i = 0; i < links.length; i++)
+                   links[i].href = links[i].href.replace("/#!", "");
+            }           
+        </script>
+    </head>
+    <body onload="rewriteLinks()">
+    <div id="wrapper">
+        <h1>{{ feincms_page.title|upper|safe }}</h1>
+        <div id="navigation">
+            <ul>
+                {% feincms_navigation of feincms_page as toplevel level=1 %}
+                {% for page in toplevel %}
+                     <li>
+                        <a href="{{ page.get_absolute_url }}"{% if page|is_equal_or_parent_of:feincms_page %} class="active"{% endif %}>
+                            {{ page.title|upper|safe }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% feincms_render_region feincms_page "headline" request %}
+        </div>
+        {% block main %}
+        {% endblock %}
+    </div>
+    </body>
+</html>

@@ -1,0 +1,133 @@
+<html>
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">	
+	<title>{{current_config.page_title}}</title>	
+	<meta name="description" content="{{current_config.description}}">
+	<meta name="keywords" content="{{current_config.keywords}}">
+		
+	<script type="text/javascript" src="/media/javascript/swfobject.js"></script>
+    <script type="text/javascript" src="/media/javascript/swfaddress.js"></script>
+	<script type="text/javascript" src="/media/javascript/swfmacmousewheel2.js"></script>
+	
+	 {% if not debug %}
+        <script type="text/javascript">
+            var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+            document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+        </script>
+        {% endif %}
+
+	<script type="text/javascript">
+	 var pageTracker;
+	 function loadIphoneSite(event)
+     {
+         if(!event.success)
+            window.location.href = 'startseite';            
+        else
+            pageTracker = _gat._getTracker("{{current_config.analytics_code}}");
+    }
+        
+    var w = "100%";
+    var h = "100%";
+
+    // <!-- For version detection, set to min. required Flash Player version, or 0 (or 0.0.0), for no version detection. -->
+    var swfVersionStr = "10.0";
+    // <!-- To use express install, set to playerProductInstall.swf, otherwise the empty string. -->
+    var xiSwfUrlStr = "";
+    var flashvars = {};
+    flashvars.main_swf_path = '{{main_swf_path}}'
+    var params = {};
+    params.quality = "high";
+    params.bgcolor = "#6b6b6b";
+    params.allowscriptaccess = "always";
+    params.allowfullscreen = "true";
+    params.menu = "false";
+    var attributes = {};
+    attributes.id = "flashcontent";
+    attributes.name = "flashcontent";
+    attributes.align = "middle";
+    swfobject.embedSWF("{{swf_path}}", "flashcontent", w, h, swfVersionStr, xiSwfUrlStr, flashvars, params, attributes, loadIphoneSite);
+    swfobject.createCSS('object', 'position:absolute; outline:none');
+
+    if(swfmacmousewheel) 
+         swfmacmousewheel.registerObject("flashcontent");
+    				
+	</script>
+   
+ 		<style type="text/css"> 
+	    *{
+	        padding: 0;
+	        margin: 0;
+	    }
+		html{
+		    height: 100%;
+		    width: 100%;
+		}
+		
+		body{
+		    height: 100%;
+		    width: 100%;
+		}
+
+	</style>
+</head>
+<body onLoad="screenResize();">
+	<div id="flashcontent">
+	</div>
+		<script language="JavaScript" type="text/javascript">
+		window.onresize = screenResize;
+		var requiredW = 1210;
+		var requiredH = 590;
+		
+		function updateWithRequiredDimensions(w, h){
+			this.requiredW = w;
+			this.requiredH = h;
+		}
+		
+		function trackPageview(str){
+			pageTracker._trackEvent(str); 
+		}
+
+		function trackEvent(category, action, optional_label, optional_value){
+				if(optional_label && !optional_value){
+					pageTracker._trackEvent(category, action, optional_label);
+				}
+				else if(optional_value){
+					pageTracker._trackEvent(category, action, optional_label, optional_value);
+				}
+				else{
+					pageTracker._trackEvent(category, action);
+				}
+			}	
+   		   	
+		function screenResize(){
+		
+			var screenW = window.innerWidth;
+			var screenH = window.innerHeight;
+
+			if(!screenW){
+				screenW = document.body.offsetWidth;
+				screenH = document.body.offsetHeight;
+			}
+			
+			if(screenW < this.requiredW){
+				document.getElementById("flashcontent").width = this.requiredW;
+			}
+			else{
+				document.getElementById("flashcontent").width = "100%";
+			}
+			if(screenH < this.requiredH){
+				document.getElementById("flashcontent").height = this.requiredH;
+			}
+			else{
+				document.getElementById("flashcontent").height = "100%";
+			}
+			if(screenW > this.requiredW && screenH > this.requiredH){
+				document.body.scroll = "no";
+			}
+			else{
+				document.body.scroll = "yes";
+			}
+		}
+	</script>
+</body>
+</html>
