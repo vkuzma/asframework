@@ -7,11 +7,9 @@ import com.greensock.TweenLite;
 
 import flash.display.Shape;
 import flash.events.EventDispatcher;
-import ch.allink.microsite.navigationElement.NavigationView;
-import ch.allink.microsite.navigationElement.NavigationTreeView;
+import flash.text.StyleSheet;
 
-public class AccordionNavigationOperation extends EventDispatcher
-										  implements INavigationOperation
+public class AccordionNavigationOperation extends EventDispatcher implements INavigationOperation
 {
 	//-------------------------------------------------------------------------
 	//
@@ -20,6 +18,7 @@ public class AccordionNavigationOperation extends EventDispatcher
 	//-------------------------------------------------------------------------
 	
 	private var _navigationTreeView:NavigationTreeView
+	public var styleSheet:StyleSheet
 	public var verticalSpacing:Number
 	public var subMenuIndent:Number
 	
@@ -41,16 +40,14 @@ public class AccordionNavigationOperation extends EventDispatcher
 	//
 	//-------------------------------------------------------------------------
 	
-	protected function initializeNavigationViews
-		(navigationViews:Vector.<NavigationView>):void
+	protected function initializeNavigationViews (navigationViews:Vector.<NavigationView>):void
 	{
 		for each(var navigationView:NavigationView in navigationViews)
 		{
 			navigationView.addEventListener(NavigationViewEvent.ACTIVATED,
 				navigationView_activatedHandler)
 			if(navigationView.navigationTreeView)
-				initializeNavigationViews(
-					navigationView.navigationTreeView.navigationViews)
+				initializeNavigationViews(navigationView.navigationTreeView.navigationViews)
 			
 			//Formatting subnavigations
 			if(navigationView.navigationTreeView)
@@ -67,24 +64,31 @@ public class AccordionNavigationOperation extends EventDispatcher
 		TweenLite.to(navigationTreeView.mask, 2, {height: navigationTreeView.height})
 	}
 	
-	public function arrangeNavigationViews(
-		navigationViews:Vector.<NavigationView>):void
+	public function arrangeNavigationViews(navigationViews:Vector.<NavigationView>):void
 	{
 		var prevNavigationView:NavigationView
 		for each(var navigationView:NavigationView in navigationViews)
 		{
+			//set stylesheet
+			if(styleSheet) 
+			{
+				navigationView.textField.styleSheet = styleSheet
+				navigationView.textField.htmlText = "<span class=\"navigation\">"  +
+					navigationView.textField.text + "</span>"
+				navigationView.textField.embedFonts = true
+			}
+			
+			//arrange subnavigations
 			if(navigationView.navigationTreeView)
-				arrangeNavigationViews(
-					navigationView.navigationTreeView.navigationViews)
+				arrangeNavigationViews(navigationView.navigationTreeView.navigationViews)
 			
 			if(prevNavigationView)
 			{
-				navigationView.y = prevNavigationView.y + 
-					prevNavigationView.height + verticalSpacing 
+				navigationView.y = prevNavigationView.y + prevNavigationView.height + 
+					verticalSpacing 
 				if(prevNavigationView.navigationTreeView)
 				{
-					navigationView.y += 
-						prevNavigationView.navigationTreeView.height + 
+					navigationView.y += prevNavigationView.navigationTreeView.height + 
 						verticalSpacing
 				}
 			}

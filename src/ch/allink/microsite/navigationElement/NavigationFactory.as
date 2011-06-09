@@ -79,8 +79,7 @@ public class NavigationFactory extends EventDispatcher
 	private function makeNavigationViewTree(navigations:Vector.<Navigation>,
 		navigationTreeView:NavigationTreeView):Vector.<NavigationView>
 	{
-		var navigationChildren:Vector.<NavigationView> = 
-			new Vector.<NavigationView>
+		var navigationChildren:Vector.<NavigationView> = new Vector.<NavigationView>
 		for each(var navigation:Navigation in navigations)
 		{
 			var navigationView:NavigationView = new NavigationView(navigation)
@@ -92,8 +91,7 @@ public class NavigationFactory extends EventDispatcher
 				navigationView.navigationTreeView = new NavigationTreeView()
 				navigationTreeView.addChild(navigationView.navigationTreeView)
 				navigationView.navigationTreeView.navigationViews = 
-					makeNavigationViewTree(navigation.children, 
-						navigationView.navigationTreeView)
+					makeNavigationViewTree(navigation.children, navigationView.navigationTreeView)
 			}
 		}
 		return navigationChildren

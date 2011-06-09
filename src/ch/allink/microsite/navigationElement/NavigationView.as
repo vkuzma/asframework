@@ -229,7 +229,7 @@ public class NavigationView extends AbstractView
 	
 	public function set navigationText(value:String):void
 	{
-		_textField.text = value
+		textField.text = value
 		setUpText()
 	}
 	
