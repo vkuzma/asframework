@@ -62,7 +62,7 @@ public class NavigationFactory extends EventDispatcher
 					getNavigationByURL(navigation.url, navigations)
 				navigationURL.pop()
 				var parentNavigation:Navigation = 
-					getNavigationByURL(makeHash(navigationURL), navigations)
+					getNavigationByURL(cleanUrl(navigationURL), navigations)
 				parentNavigation.children.push(childNavigation)
 				childNavigation.parentNavigation = parentNavigation
 			}
@@ -123,7 +123,7 @@ public class NavigationFactory extends EventDispatcher
 	/**
 	 * Makes an URL from an array with paths. (Django-conform)
 	 */
-	private function makeHash(path:Array):String
+	private function cleanUrl(path:Array):String
 	{
 		var hash:String = "/"
 		var numPath:int = path.length
@@ -144,16 +144,13 @@ public class NavigationFactory extends EventDispatcher
 	/**
 	 * Builds a Navigation 
 	 **/
-	public function buildByLanguage(language:String, 
-									modelClass:Class = null):void
+	public function buildByLanguage(language:String, modelClass:Class = null):void
 	{
 		if(!modelClass) modelClass = Navigation
 		var modelFactory:ModelFactory = new ModelFactory()
-		var modelReqeust:ModelRequest = modelFactory.load(modelClass,
-			CMSXmlPath.getNavigationPathByLanguage(language),
+		modelFactory.addEventListener(ResultEvent.DATA_LOADED, modelRequest_dataLoadedHandler)
+		modelFactory.load(modelClass, CMSXmlPath.getNavigationPathByLanguage(language),
 			ModelFactory.TYPE_COLLECTION)
-		modelReqeust.addEventListener(ResultEvent.DATA_LOADED,
-			modelRequest_dataLoadedHandler, false, 0, true)
 	}
 	
 	/**
@@ -181,11 +178,10 @@ public class NavigationFactory extends EventDispatcher
 	
 	protected function modelRequest_dataLoadedHandler(event:ResultEvent):void
 	{
-		var navigations:Vector.<Navigation> = Vector.<Navigation>(
-			event.collection)
+		trace("navigation got")
+		var navigations:Vector.<Navigation> = Vector.<Navigation>(event.collection)
 		_navigationTreeView = new NavigationTreeView()
-		var topLevelNavigation:Vector.<Navigation> = 
-			makeNavigationTree(navigations)
+		var topLevelNavigation:Vector.<Navigation> = makeNavigationTree(navigations)
 		navigationTreeView.navigationViews = 
 			makeNavigationViewTree(topLevelNavigation, navigationTreeView)
 		if(navigationOperation)

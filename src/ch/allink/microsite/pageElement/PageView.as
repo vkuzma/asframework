@@ -88,10 +88,8 @@ public class PageView extends AbstractView
 		if(!modelClass) modelClass = Page
 		if(isLoading) stopLoading()
 		var modelFactory:ModelFactory = new ModelFactory()
-		modelRequest = modelFactory.load(modelClass, CMSXmlPath.getPagePathByURL(url),	
-										 ModelFactory.TYPE_MODEL)
-		modelRequest.addEventListener(ResultEvent.DATA_LOADED,
-			modelRequest_dataLoadedHandler)
+		modelFactory.addEventListener(ResultEvent.DATA_LOADED, modelRequest_dataLoadedHandler)
+		modelFactory.load(modelClass, CMSXmlPath.getPagePathByURL(url),	ModelFactory.TYPE_MODEL)
 		_isLoading = true
 	}
 	

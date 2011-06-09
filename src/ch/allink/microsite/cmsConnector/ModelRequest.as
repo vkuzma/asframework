@@ -31,18 +31,14 @@ public class ModelRequest extends EventDispatcher
 	//
 	//-------------------------------------------------------------------------
 	
-	public function ModelRequest(klass:Class, url:String, 
-								 modelFactory:ModelFactory, requestType:String)
+	public function ModelRequest(klass:Class, url:String, modelFactory:ModelFactory,
+								 requestType:String)
 	{
 		xmlLoader = new XMLLoader(url)
 			
 		this.requestType = requestType
 		this.modelFactory = modelFactory
 		_klass = klass
-			
-		xmlLoader.addEventListener(LoaderEvent.COMPLETE, 
-								   xmlLoader_completeHandler)
-		xmlLoader.load()
 	}
 	
 	//-------------------------------------------------------------------------
@@ -50,6 +46,12 @@ public class ModelRequest extends EventDispatcher
 	//	Public methods
 	//
 	//-------------------------------------------------------------------------
+	
+	public function load():void
+	{
+		xmlLoader.addEventListener(LoaderEvent.COMPLETE, xmlLoader_completeHandler)
+		xmlLoader.load()
+	}
 	
 	public function dispose():void
 	{
@@ -75,12 +77,9 @@ public class ModelRequest extends EventDispatcher
 			collection = modelFactory.createCollection(klass, data)
 		else
 			abstractModel = modelFactory.create(klass, data) 
-		
-		var resutlEvent:ResultEvent = 
-			new ResultEvent(ResultEvent.DATA_LOADED, false, false, this, 
-			collection, abstractModel)
-		dispatchEvent(resutlEvent)
-		dispose()
+		var resultEvent:ResultEvent = 
+			new ResultEvent(ResultEvent.DATA_LOADED, false, false, this, collection, abstractModel)
+		dispatchEvent(resultEvent)
 	}
 	
 	//-------------------------------------------------------------------------

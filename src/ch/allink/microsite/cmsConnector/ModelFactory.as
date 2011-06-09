@@ -2,6 +2,7 @@ package ch.allink.microsite.cmsConnector
 {
 
 import ch.allink.microsite.core.AbstractModel;
+import ch.allink.microsite.events.ResultEvent;
 
 import flash.events.EventDispatcher;
 import flash.events.IEventDispatcher;
@@ -17,6 +18,14 @@ public class ModelFactory extends EventDispatcher
 	public static const TYPE_COLLECTION:String = "typeCollection"
 	public static const TYPE_MODEL:String = "typeModel"
 	
+	//-------------------------------------------------------------------------
+	//
+	//	Variables
+	//
+	//-------------------------------------------------------------------------
+		
+	private var _modelRequest:ModelRequest
+		
 	//-------------------------------------------------------------------------
 	//
 	//	Constructor
@@ -40,9 +49,11 @@ public class ModelFactory extends EventDispatcher
 	/**
 	 * Loads a model from CMS.
 	 **/
-	public function load(klass:Class, url:String, type:String):ModelRequest
+	public function load(klass:Class, url:String, type:String):void
 	{
-		return new ModelRequest(klass, url, this, type)
+		_modelRequest =  new ModelRequest(klass, url, this, type)
+		modelRequest.addEventListener(ResultEvent.DATA_LOADED, modelRequest_dataLoadedHandler)
+		modelRequest.load()
 	}
 	
 	/**
@@ -87,14 +98,24 @@ public class ModelFactory extends EventDispatcher
 	 * @param klass Class of the model
 	 * @param xml Source of data
 	 **/
-	public function createCollection(klass:Class, 
-									 xml:XML):Vector.<AbstractModel>
+	public function createCollection(klass:Class, xml:XML):Vector.<AbstractModel>
 	{
 		var result:Vector.<AbstractModel> = new Vector.<AbstractModel>
 		for each(var node:XML in xml.children())
 			result.push(create(klass, node))
 		
 		return result
+	}
+	
+	private function modelRequest_dataLoadedHandler(event:ResultEvent):void
+	{
+		trace("model finished")
+		dispatchEvent(event)
+	}
+	
+	public function get modelRequest():ModelRequest
+	{
+		return _modelRequest
 	}
 }
 }

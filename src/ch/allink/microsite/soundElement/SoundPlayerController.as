@@ -14,6 +14,7 @@ import com.greensock.events.LoaderEvent;
 import com.greensock.loading.MP3Loader;
 
 import flash.events.*;
+import flash.trace.Trace;
 
 /**
  * @author vkuzma
@@ -32,6 +33,7 @@ public class SoundPlayerController extends EventDispatcher
 	private var mp3Loader:MP3Loader
 	private var mp3LoaderOld:MP3Loader
 	private var _currentIndex:int
+	private var _currentTrack:Track
 	public var autoPlay:Boolean
 	public var blendInTime:Number
 	public var blendOutTime:Number
@@ -63,8 +65,7 @@ public class SoundPlayerController extends EventDispatcher
 								   blendTime:Number, jobService:JobService):void
 	{
 		TweenLite.killTweensOf(mp3Loader)
-		TweenLite.to(mp3Loader, blendTime, {volume: volume, 
-											onComplete: jobService.doNextJob})
+		TweenLite.to(mp3Loader, blendTime, {volume: volume, onComplete: jobService.doNextJob})
 	}
 	
 	private function pauseSound(mp3Loader:MP3Loader,
@@ -128,8 +129,7 @@ public class SoundPlayerController extends EventDispatcher
 //										 soundPlayerView_playPauseHandler)
 	}
 	
-	private function doFunctionOnSoundPlayerClip(funktion:Function, 
-												 params:Array):void
+	private function doFunctionOnSoundPlayerClip(funktion:Function, params:Array):void
 	{
 		if(soundPlayerView)
 			Object(soundPlayerView).apply(funktion, params)
@@ -160,6 +160,8 @@ public class SoundPlayerController extends EventDispatcher
 	
 	public function loadTrackBy(track:Track):void
 	{
+		_currentTrack = track
+			
 		var soundActions:JobService = new JobService()
 		if(mp3Loader) 
 		{
@@ -216,10 +218,8 @@ public class SoundPlayerController extends EventDispatcher
 	public function loadTrackModels():void
 	{
 		var modelFactory:ModelFactory = new ModelFactory()
-		var modelRequst:ModelRequest = modelFactory.load(Track,
-			CMSXmlPath.getSoundPath(), ModelFactory.TYPE_COLLECTION)
-		modelRequst.addEventListener(ResultEvent.DATA_LOADED, 
-									 modelRequst_dataLoadedHandler)
+		modelFactory.addEventListener(ResultEvent.DATA_LOADED, modelRequst_dataLoadedHandler)
+		modelFactory.load(Track, CMSXmlPath.getSoundPath(), ModelFactory.TYPE_COLLECTION)
 	}
 	
 	public function addTrack(track:Track):void
@@ -258,11 +258,9 @@ public class SoundPlayerController extends EventDispatcher
 	
 	private function soundPlayerView_playHandler(event:SoundPlayerEvent):void
 	{
-		
 	}
 	
-	private function soundPlayerView_playPauseHandler(
-		event:SoundPlayerEvent):void
+	private function soundPlayerView_playPauseHandler(event:SoundPlayerEvent):void
 	{
 		
 	}
@@ -323,6 +321,11 @@ public class SoundPlayerController extends EventDispatcher
 	public function get currentIndex():int
 	{
 		return _currentIndex
+	}
+	
+	public function get currentTrack():Track
+	{
+		return _currentTrack
 	}
 }
 }
