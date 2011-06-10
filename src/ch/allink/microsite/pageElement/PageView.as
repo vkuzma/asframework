@@ -22,7 +22,7 @@ public class PageView extends AbstractView
 	
 	public var page:Page
 	public var regions:Dictionary
-	private var modelRequest:ModelRequest
+	private var modelFactory:ModelFactory 
 	private var _operation:IPageOperation
 	private var _isLoading:Boolean
 	
@@ -32,9 +32,10 @@ public class PageView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	public function PageView()
+	public function PageView(operation:IPageOperation = null)
 	{
 		super()
+		this.operation = operation
 	}
 	
 	//-------------------------------------------------------------------------
@@ -87,7 +88,7 @@ public class PageView extends AbstractView
 	{ 
 		if(!modelClass) modelClass = Page
 		if(isLoading) stopLoading()
-		var modelFactory:ModelFactory = new ModelFactory()
+		modelFactory = new ModelFactory()
 		modelFactory.addEventListener(ResultEvent.DATA_LOADED, modelRequest_dataLoadedHandler)
 		modelFactory.load(modelClass, CMSXmlPath.getPagePathByURL(url),	ModelFactory.TYPE_MODEL)
 		_isLoading = true
@@ -108,7 +109,7 @@ public class PageView extends AbstractView
 	
 	public function stopLoading():void
 	{
-		modelRequest.dispose()
+		modelFactory.stopLoading()
 	}
 	
 	/**
@@ -174,6 +175,7 @@ public class PageView extends AbstractView
 	
 	public function get operation():IPageOperation
 	{
+		if(!_operation) throw new Error("No operation available, PageView can be only used with a IPageOperation!")
 		return _operation
 	}
 	

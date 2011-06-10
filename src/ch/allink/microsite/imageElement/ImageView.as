@@ -1,6 +1,7 @@
 package ch.allink.microsite.imageElement
 {
 import ch.allink.microsite.core.AbstractView;
+import ch.allink.microsite.widgets.AllinkLogo;
 
 import com.greensock.loading.ImageLoader;
 
@@ -119,7 +120,7 @@ public class ImageView extends AbstractView
 	}
 	
 	public function resizeBitmapAspectRatioTo(sourceWidth:Number, sourceHeight:Number,
-						 		align:String = ImageViewResizeAlign.LEFT, 
+						 		align:String = ImageViewResizeAlign.LEFT_TOP, 
 								transparent:Boolean = false):void
 	{
 		if(!loadedBitmap) return
@@ -129,6 +130,9 @@ public class ImageView extends AbstractView
 		{
 			var xOffset:Number = 0
 			var yOffset:Number = 0
+			var differenceX:Number = sourceWidth - loadedBitmap.width
+			var differenceY:Number = sourceHeight - loadedBitmap.height
+				
 			var targetScale:Number = sourceWidth / loadedBitmap.width
 			var heightInFuture:Number = targetScale * loadedBitmap.height
 			if(heightInFuture < sourceHeight)
@@ -141,8 +145,9 @@ public class ImageView extends AbstractView
 			}
 			if(align == ImageViewResizeAlign.CENTRE)
 				yOffset = (sourceHeight - loadedBitmap.height * targetScale) / 2
-			
+					
 			draw(targetScale, targetScale, sourceHeight, sourceWidth, xOffset, yOffset, transparent)
+			
 			if(operation) operation.resize(sourceWidth, sourceHeight)
 		}
 	}

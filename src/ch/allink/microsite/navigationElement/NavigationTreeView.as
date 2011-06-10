@@ -47,8 +47,7 @@ public class NavigationTreeView extends AbstractView
 	private function initializeNavigation(navigationView:NavigationView):void
 	{
 		addChild(navigationView)
-		navigationView.addEventListener(MouseEvent.CLICK, 
-										navigationView_clickHandler)
+		navigationView.addEventListener(MouseEvent.CLICK, navigationView_clickHandler)
 		navigationView.addEventListener(NavigationViewEvent.ACTIVATED,
 										navigationView_activatedHandler)
 		navigationView.addEventListener(NavigationViewEvent.REQUEST_ACTIVATE,
@@ -70,8 +69,7 @@ public class NavigationTreeView extends AbstractView
 	public function activateNavigationView(
 		toActivateNavigationView:NavigationView):void
 	{
-		report.print("Activate navigationView: " + 
-					 toActivateNavigationView.name + 
+		report.print("Activate navigationView: " + toActivateNavigationView.name + 
 					 ", deactivating the rest.")
 		for each(var navigationView:NavigationView in navigationViews)
 		{
@@ -99,12 +97,9 @@ public class NavigationTreeView extends AbstractView
 	
 	public function activateNavigationViewByURL(url:String):void
 	{
-		var targetNavigationView:NavigationView = 
-			navigationViewByURL(url, this)
+		var targetNavigationView:NavigationView = navigationViewByURL(url, this)
 		if(targetNavigationView)
-		{
 			targetNavigationView.requestActivate()
-		}
 	}
 	
 	public function doOnAllNavigationViews(funktion:Function,
@@ -115,8 +110,7 @@ public class NavigationTreeView extends AbstractView
 		{
 			funktion.call(null, navigationView)
 			if(navigationView.navigationTreeView.navigationViews.length > 0)
-				doOnAllNavigationViews(funktion, 
-							  navigationView.navigationTreeView.navigationViews)
+				doOnAllNavigationViews(funktion, navigationView.navigationTreeView.navigationViews)
 		}
 	}
 	
@@ -206,8 +200,9 @@ public class NavigationTreeView extends AbstractView
 	public function set parentNavigationView(value:NavigationView):void
 	{
 		_parentNavigationView = value
-		_parentNavigationView.addEventListener(NavigationViewEvent.DEACTIVATED,
-										    parentNavigationV_deactivateHandler)
+		if(_parentNavigationView)
+			_parentNavigationView.addEventListener(NavigationViewEvent.DEACTIVATED,
+											    parentNavigationV_deactivateHandler)
 	}
 	
 	public function get parentNavigationView():NavigationView

@@ -103,8 +103,8 @@ public class AccordionNavigationOperation extends EventDispatcher implements INa
 			//Formatting subnavigations
 			if(navigationView.navigationTreeView)
 			{
-				navigationView.navigationTreeView.y = navigationView.y + 
-					navigationView.height +	verticalSpacing  
+				navigationView.navigationTreeView.y = navigationView.y + navigationView.height +
+					verticalSpacing  
 				navigationView.navigationTreeView.x = subMenuIndent
 				
 				navigationView.navigationTreeView.mask.width = 

@@ -4,10 +4,10 @@ import ch.allink.microsite.cmsConnector.CMSXmlPath;
 import ch.allink.microsite.cmsConnector.ModelFactory;
 import ch.allink.microsite.cmsConnector.ModelRequest;
 import ch.allink.microsite.events.ResultEvent;
+import ch.allink.microsite.navigationElement.NavigationTreeView;
+import ch.allink.microsite.navigationElement.NavigationView;
 
 import flash.events.EventDispatcher;
-import ch.allink.microsite.navigationElement.NavigationView;
-import ch.allink.microsite.navigationElement.NavigationTreeView;
 
 /**
  * Create a Navigation from the FeinCMS.
@@ -48,8 +48,7 @@ public class NavigationFactory extends EventDispatcher
 	/**
 	 * Creates a tree of Navigation instances.
 	 */
-	private function makeNavigationTree(navigations:Vector.<Navigation>):
-		Vector.<Navigation>
+	private function makeNavigationTree(navigations:Vector.<Navigation>):Vector.<Navigation>
 	{
 		var topLevelNavigation:Vector.<Navigation> = new Vector.<Navigation>
 		for each(var navigation:Navigation in navigations)
@@ -133,6 +132,19 @@ public class NavigationFactory extends EventDispatcher
 		return hash
 	}
 	
+	protected function buildNavigation(navigations:Vector.<Navigation>):void
+	{
+		_navigationTreeView = new NavigationTreeView()
+		var topLevelNavigation:Vector.<Navigation> = makeNavigationTree(navigations)
+		navigationTreeView.navigationViews = 
+			makeNavigationViewTree(topLevelNavigation, navigationTreeView)
+		if(navigationOperation)
+		{
+			navigationOperation.targetView = navigationTreeView					
+			navigationOperation.initialize()
+		}
+	}
+	
 	//-------------------------------------------------------------------------
 	//
 	//	Public methods
@@ -177,15 +189,7 @@ public class NavigationFactory extends EventDispatcher
 	protected function modelRequest_dataLoadedHandler(event:ResultEvent):void
 	{
 		var navigations:Vector.<Navigation> = Vector.<Navigation>(event.collection)
-		_navigationTreeView = new NavigationTreeView()
-		var topLevelNavigation:Vector.<Navigation> = makeNavigationTree(navigations)
-		navigationTreeView.navigationViews = 
-			makeNavigationViewTree(topLevelNavigation, navigationTreeView)
-		if(navigationOperation)
-		{
-			navigationOperation.targetView = navigationTreeView					
-			navigationOperation.initialize()
-		}
+		buildNavigation(navigations)
 		dispatchEvent(event)
 	}
 	

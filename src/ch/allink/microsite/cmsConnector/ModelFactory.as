@@ -107,6 +107,11 @@ public class ModelFactory extends EventDispatcher
 		return result
 	}
 	
+	public function stopLoading():void
+	{
+		
+	}
+	
 	private function modelRequest_dataLoadedHandler(event:ResultEvent):void
 	{
 		dispatchEvent(event)
