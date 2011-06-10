@@ -53,10 +53,8 @@ public class ImageView extends AbstractView
 	{
 		var urlRequest:URLRequest = new URLRequest(image.url)
 		loader = new Loader()
-		loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS,
-			loader_progressHandler)
-		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, 
-			loader_onCompleteHandler)
+		loader.contentLoaderInfo.addEventListener(ProgressEvent.PROGRESS, loader_progressHandler)
+		loader.contentLoaderInfo.addEventListener(Event.COMPLETE, loader_onCompleteHandler)
 		loader.load(urlRequest)
 		
 		isLoading = true
@@ -82,16 +80,14 @@ public class ImageView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	private function draw(scaleX:Number, scaleY:Number, 
-						  sourceHeight:Number, sourceWidth:Number,
-						  xOffset:Number, yOffset:Number):void
+	private function draw(scaleX:Number, scaleY:Number, sourceHeight:Number, sourceWidth:Number,
+						  xOffset:Number, yOffset:Number, transparent:Boolean):void
 	{
 		removeChild(currentBitmap)
 		if(currentBitmap != loadedBitmap) currentBitmap.bitmapData.dispose()
 		
 		_currentBitmap = null
-		var bmpData:BitmapData = new BitmapData(sourceWidth, sourceHeight,
-			false, 0xFFFFFF)
+		var bmpData:BitmapData = new BitmapData(sourceWidth, sourceHeight, true, 0xFFFFFF)
 		var matrix:Matrix = new Matrix()
 		matrix.scale(scaleX, scaleY)
 		matrix.tx = xOffset
@@ -113,28 +109,21 @@ public class ImageView extends AbstractView
 								   transparent:Boolean = false):void
 	{
 		if(!loadedBitmap) return
-		
-		if (loadedBitmap.width == sourceWidth 
-			&& loadedBitmap.height == sourceHeigth) return
+		if (loadedBitmap.width == sourceWidth && loadedBitmap.height == sourceHeigth) return
 		
 		if(contains(currentBitmap))
 		{
-			draw(sourceWidth / loadedBitmap.width,
-				sourceHeigth / loadedBitmap.height, sourceHeigth, sourceWidth,
-				0, 0)
+			draw(sourceWidth / loadedBitmap.width, sourceHeigth / loadedBitmap.height, sourceHeigth,
+				sourceWidth, 0, 0, transparent)
 		}
 	}
 	
-	public function resizeBitmapAspectRatioTo(sourceWidth:Number, 
-											  sourceHeight:Number,
-						 		align:String = ImageViewResizeAlign.LEFT):void
+	public function resizeBitmapAspectRatioTo(sourceWidth:Number, sourceHeight:Number,
+						 		align:String = ImageViewResizeAlign.LEFT, 
+								transparent:Boolean = false):void
 	{
-		if(!loadedBitmap)
-			return
-		
-		if (loadedBitmap.width == sourceWidth 
-			&& loadedBitmap.height == sourceHeight)
-			return
+		if(!loadedBitmap) return
+		if (loadedBitmap.width == sourceWidth && loadedBitmap.height == sourceHeight) return
 		
 		if(contains(currentBitmap))
 		{
@@ -148,16 +137,12 @@ public class ImageView extends AbstractView
 				//xOffset sorgt dafür, dass das Bild in die Mitte von 
 				//sourceWidth zentriert wird.
 				if(align == ImageViewResizeAlign.CENTRE) 
-					xOffset = (sourceWidth - loadedBitmap.width * targetScale) 
-						/ 2
+					xOffset = (sourceWidth - loadedBitmap.width * targetScale) / 2
 			}
 			if(align == ImageViewResizeAlign.CENTRE)
-				yOffset = (sourceHeight - loadedBitmap.height * targetScale) 
-					/ 2
+				yOffset = (sourceHeight - loadedBitmap.height * targetScale) / 2
 			
-			draw(targetScale, targetScale, sourceHeight, sourceWidth, 
-			     xOffset, yOffset)
-			
+			draw(targetScale, targetScale, sourceHeight, sourceWidth, xOffset, yOffset, transparent)
 			if(operation) operation.resize(sourceWidth, sourceHeight)
 		}
 	}
@@ -201,9 +186,8 @@ public class ImageView extends AbstractView
 	
 	private function loader_progressHandler(event:ProgressEvent):void
 	{
-		var bubbleProgressEvent:ProgressEvent = new ProgressEvent(event.type, 
-			event.bubbles, event.cancelable, event.bytesLoaded, 
-			event.bytesTotal)
+		var bubbleProgressEvent:ProgressEvent = new ProgressEvent(event.type, event.bubbles,
+			event.cancelable, event.bytesLoaded, event.bytesTotal)
 		dispatchEvent(bubbleProgressEvent)
 	}
 	

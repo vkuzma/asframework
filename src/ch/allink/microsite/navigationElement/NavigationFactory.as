@@ -176,7 +176,6 @@ public class NavigationFactory extends EventDispatcher
 	
 	protected function modelRequest_dataLoadedHandler(event:ResultEvent):void
 	{
-		trace("navigation got")
 		var navigations:Vector.<Navigation> = Vector.<Navigation>(event.collection)
 		_navigationTreeView = new NavigationTreeView()
 		var topLevelNavigation:Vector.<Navigation> = makeNavigationTree(navigations)

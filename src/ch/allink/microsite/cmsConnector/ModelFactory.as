@@ -109,7 +109,6 @@ public class ModelFactory extends EventDispatcher
 	
 	private function modelRequest_dataLoadedHandler(event:ResultEvent):void
 	{
-		trace("model finished")
 		dispatchEvent(event)
 	}
 	

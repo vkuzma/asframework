@@ -18,6 +18,7 @@ public class AccordionNavigationOperation extends EventDispatcher implements INa
 	//-------------------------------------------------------------------------
 	
 	private var _navigationTreeView:NavigationTreeView
+	public var textFieldAction:Function
 	public var styleSheet:StyleSheet
 	public var verticalSpacing:Number
 	public var subMenuIndent:Number
@@ -69,6 +70,10 @@ public class AccordionNavigationOperation extends EventDispatcher implements INa
 		var prevNavigationView:NavigationView
 		for each(var navigationView:NavigationView in navigationViews)
 		{
+			//do textfield action
+			if(textFieldAction != null)
+				textFieldAction.call(this, navigationView.textField)	 
+			
 			//set stylesheet
 			if(styleSheet) 
 			{
