@@ -11,6 +11,7 @@ import ch.allink.microsite.sectionElement.sectionType.TextSection;
 import flash.display.DisplayObject;
 import flash.display.Sprite;
 import flash.utils.Dictionary;
+import flash.utils.getDefinitionByName;
 
 public class PageView extends AbstractView
 {
@@ -75,6 +76,7 @@ public class PageView extends AbstractView
 		sectionViews = null
 	}
 	
+	
 	//-------------------------------------------------------------------------
 	//
 	//  Public methods
@@ -85,7 +87,7 @@ public class PageView extends AbstractView
 	 * Loads a Page instance by the pageid and will be buildded by the loaded Page instance.
 	 **/
 	public function buildPageByURL(url:String, modelClass:Class = null):void
-	{ 
+	{
 		if(!modelClass) modelClass = Page
 		if(isLoading) stopLoading()
 		modelFactory = new ModelFactory()
@@ -150,6 +152,8 @@ public class PageView extends AbstractView
 	
 	private function modelRequest_dataLoadedHandler(event:ResultEvent):void
 	{
+		dispose()
+		build()
 		_isLoading = false
 		page = event.model as Page
 		buildByPage(page)
