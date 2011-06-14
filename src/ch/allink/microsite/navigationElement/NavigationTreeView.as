@@ -98,8 +98,8 @@ public class NavigationTreeView extends AbstractView
 	public function activateNavigationViewByURL(url:String):void
 	{
 		var targetNavigationView:NavigationView = navigationViewByURL(url, this)
-		if(targetNavigationView)
-			targetNavigationView.requestActivate()
+		if(targetNavigationView) targetNavigationView.requestActivate()
+		else deactivateNavigationViews()
 	}
 	
 	public function doOnAllNavigationViews(funktion:Function,
@@ -112,6 +112,12 @@ public class NavigationTreeView extends AbstractView
 			if(navigationView.navigationTreeView.navigationViews.length > 0)
 				doOnAllNavigationViews(funktion, navigationView.navigationTreeView.navigationViews)
 		}
+	}
+	
+	public function deactivateNavigationViews():void
+	{
+		for each(var navigationView:NavigationView in navigationViews)
+			navigationView.deactivate()
 	}
 	
 	//-------------------------------------------------------------------------
