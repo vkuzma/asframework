@@ -352,7 +352,8 @@ public class ScrollPaneView extends AbstractView
 	 **/
 	public function get isNecessary():Boolean
 	{
-		return scrollClipHolder.isNecessary
+		if(scrollContainer.height > contentArea.height) return true
+		else return false
 	}
 	
 	/**

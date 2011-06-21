@@ -183,11 +183,6 @@ public class TextImageOperation implements ISectionOperation
 		return _targetView
 	}
 	
-	public function get contentType():String
-	{
-		return TextImageSection.TYPE
-	}
-	
 	public static function get TYPE():String
 	{
 		return TextImageSection.TYPE
@@ -196,7 +191,7 @@ public class TextImageOperation implements ISectionOperation
 	public  function set pageFormatter(value:PageFormatter):void
 	{
 		_pageFormatter = value
-		_textImageStyle = _pageFormatter.getSectionStyleByContentType(contentType) as TextImageStyle 
+		_textImageStyle = _pageFormatter.getSectionStyleByContentType(TYPE) as TextImageStyle 
 	}
 	
 	public function get pageFormatter():PageFormatter

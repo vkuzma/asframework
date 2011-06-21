@@ -59,10 +59,9 @@ public class SectionContentTypes
 		return contentTypeModels[type] 
 	}
 	
-	public static function addContentTypeModel(value:Class,
-											   type:String):void
+	public static function addContentTypeModel(value:Class):void
 	{
-		contentTypeModels[type] = value		
+		contentTypeModels[value.TYPE] = value		
 	}
 }
 }

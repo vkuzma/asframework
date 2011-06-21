@@ -1,10 +1,14 @@
-package ch.allink.jobservice
+package ch.allink.microsite.util
 {
+import ch.allink.microsite.widgets.YoutubePlayer;
+
+import flash.utils.Dictionary;
+
 /**
  * @author vkuzma
- * @date Dec 29, 2010
+ * @date Jun 15, 2011
  **/
-public class JobUtils
+public class DateFormatter
 {
 	//-------------------------------------------------------------------------
 	//
@@ -12,15 +16,19 @@ public class JobUtils
 	//
 	//-------------------------------------------------------------------------
 	
-	
-	
+	private static const months:Array = ["Januar", "Februar", "März", "April", "Mai", "Juni",
+	"Juli", "August", "September", "November", "December"]
+		
+	public static const US:String = "us"
+	public static const DAY_MONTH_YEAR:String = "dayMonthYear"
+		
 	//-------------------------------------------------------------------------
 	//
 	//	Constructor
 	//
 	//-------------------------------------------------------------------------
 	
-	public function JobUtils()
+	public function DateFormatter()
 	{
 	}
 	
@@ -38,24 +46,21 @@ public class JobUtils
 	//
 	//-------------------------------------------------------------------------
 	
-	public static function setTrue(value:Boolean):void
+	public static function transformDate(dateString:String, fromFormat:String, toFormat:String):String
 	{
-		value = true	
-	}
-	
-	public static function setFalse(value:Boolean):void
-	{
-		value = false
-	}
-	
-	public static function setValue(object:Object, value:Object):void
-	{
-		object = value
-	}
-	
-	public static function setValueToAtributte (object:Object, attribute:String, value:Object):void
-	{
-		object[attribute] = value
+		var transformedDataString:String = ""
+		var date:Date
+		if(fromFormat == US)
+		{
+			var tempDate:Array 
+			tempDate = dateString.split("-")
+			date = new Date(tempDate[0], tempDate[1], tempDate[2])
+		}
+		
+		if(toFormat == DAY_MONTH_YEAR)
+			transformedDataString = date.day + ". " + months[date.month] + " " + date.fullYear
+			
+		return transformedDataString
 	}
 	
 	//-------------------------------------------------------------------------

@@ -7,8 +7,6 @@ import ch.allink.microsite.sectionElement.operation.TextImageOperation;
 import ch.allink.microsite.sectionElement.operation.TextOperation;
 import ch.allink.microsite.sectionElement.sectionType.TextSection;
 
-import flash.display.Sprite;
-
 /**
  * @author Vladimir Kuzma
  * @date 03.12.2010
@@ -24,8 +22,8 @@ public final class MultipleSectionTypeOperation implements IPageOperation
 	private var _targetView:PageView
 	private var _pageFormatter:PageFormatter
 	private var _sectionViews:Vector.<SectionView>
-	private var sectionOperationClasses:Vector.<Class>
 	private var sectionOperations:Vector.<ISectionOperation>
+	private static var sectionOperationClasses:Vector.<Class> = new Vector.<Class>
 	
 	//-------------------------------------------------------------------------
 	//
@@ -35,7 +33,6 @@ public final class MultipleSectionTypeOperation implements IPageOperation
 	
 	public function MultipleSectionTypeOperation():void
 	{
-		sectionOperationClasses = new Vector.<Class>
 		sectionOperationClasses.push(TextOperation)
 		sectionOperationClasses.push(ImageContentOperation)
 		sectionOperationClasses.push(TextImageOperation)
@@ -170,7 +167,7 @@ public final class MultipleSectionTypeOperation implements IPageOperation
 	/**
 	 * Adds a contenttype class to the contenttype collection.
 	 */
-	public function addContentType(contentType:Class):void
+	public static function addContentType(contentType:Class):void
 	{
 		sectionOperationClasses.push(contentType)
 	}

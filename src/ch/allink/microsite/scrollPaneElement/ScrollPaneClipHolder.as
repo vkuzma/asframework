@@ -175,19 +175,5 @@ public class ScrollPaneClipHolder extends Sprite
 				
 		return _currentScrollPosition
 	}
-	
-	/**
-	 * State of the necessitative use of the scrollbar. 
-	 * Is true when the content can be scrolled, otherwise false.
-	 **/
-	public function get isNecessary():Boolean
-	{
-		if(effectiveScrollArea.height - scrollDraggerNominal > 0)
-			_isNecessery = true
-		else
-			_isNecessery = false
-				
-		return _isNecessery
-	}
 }
 }

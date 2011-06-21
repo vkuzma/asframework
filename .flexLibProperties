@@ -13,6 +13,7 @@
     <classEntry path="ch.allink.micrositeframework.widgets.ImageViewService"/>
     <classEntry path="ch.allink.microsite.sectionElement.style.TextImageStyle"/>
     <classEntry path="ch.allink.microsite.widgets.Reflection"/>
+    <classEntry path="ch.allink.microsite.util.DateFormatter"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

@@ -29,8 +29,7 @@ public class SoundPlayerEvent extends Event
 	//
 	//-------------------------------------------------------------------------
 	
-	public function SoundPlayerEvent(type:String, bubbles:Boolean=false, 
-									 cancelable:Boolean=false, 
+	public function SoundPlayerEvent(type:String, bubbles:Boolean=false, cancelable:Boolean=false, 
 									 progress:Number = 0.0)
 	{
 		super(type, bubbles, cancelable);
