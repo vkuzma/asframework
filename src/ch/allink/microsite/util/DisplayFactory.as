@@ -48,10 +48,10 @@ public class DisplayFactory
 		return mask
 	}
 	
-	public static function createDummy(displayContainer:Sprite):Shape
+	public static function createDummy(displayContainer:Sprite = null):Shape
 	{
 		var shape:Shape = new Shape()
-		displayContainer.addChild(shape)
+		if(displayContainer) displayContainer.addChild(shape)
 		shape.graphics.beginFill(0xFF0000)
 		shape.graphics.drawRect(0, 0, 100, 100)
 		shape.graphics.endFill()

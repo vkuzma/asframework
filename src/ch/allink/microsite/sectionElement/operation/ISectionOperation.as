@@ -12,5 +12,6 @@ public interface ISectionOperation
 	function get targetView():SectionView
 	function set pageFormatter(value:PageFormatter):void
 	function get pageFormatter():PageFormatter
+	function get contentType():String
 }
 }

@@ -51,7 +51,7 @@ public final class WebsiteView extends AbstractWebsiteView
 		addChild(contentView)
 		contentView.build()
 		contentView.x = 100
-			
+		
 		addEventListener(Event.RESIZE, resizeHandler)
 		resizeHandler(null)
 	}		
@@ -88,7 +88,7 @@ public final class WebsiteView extends AbstractWebsiteView
 		var url:String = event.navigationView.navigation.url
 		SWFAddress.setValue(url)
 	}
-
+	
 	private function resizeHandler(event:Event):void
 	{
 		//Resize

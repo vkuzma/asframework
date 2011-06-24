@@ -1,4 +1,4 @@
-from shebangSeo.views import search_engine_view
+from ajax_page_loader.views import search_engine_view
 
 class SeoMiddleware(object):
     def process_view(self, request, view_func, view_args, view_kwargs):

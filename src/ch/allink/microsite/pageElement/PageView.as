@@ -36,7 +36,7 @@ public class PageView extends AbstractView
 	public function PageView(operation:IPageOperation = null)
 	{
 		super()
-		this.operation = operation
+		if(operation) this.operation = operation
 	}
 	
 	//-------------------------------------------------------------------------

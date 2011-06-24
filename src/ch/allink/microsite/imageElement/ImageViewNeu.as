@@ -12,7 +12,7 @@ import flash.net.URLRequest;
 
 [Event (name='complete', type='flash.events.Event')]
 
-public class ImageView extends AbstractView
+public class ImageViewNeu extends AbstractView
 {
 	//-------------------------------------------------------------------------
 	//
@@ -33,7 +33,8 @@ public class ImageView extends AbstractView
 	//	Constructor
 	//
 	//-------------------------------------------------------------------------
-	public function ImageView(image:Image = null)
+	
+	public function ImageViewNeu(image:Image = null)
 	{
 		super()
 		this.image = image
@@ -103,7 +104,7 @@ public class ImageView extends AbstractView
 	//	Public methods
 	//
 	//-------------------------------------------------------------------------
-			
+	
 	public function resizeBitmapTo(sourceWidth:Number, sourceHeigth:Number, 
 								   transparent:Boolean = false):void
 	{
@@ -111,7 +112,7 @@ public class ImageView extends AbstractView
 		
 		if(sourceWidth == 0)
 			sourceWidth = loadedBitmap.width * sourceHeigth / loadedBitmap.height
-			
+		
 		if(contains(currentBitmap))
 		{
 			draw(sourceWidth / loadedBitmap.width, sourceHeigth / loadedBitmap.height, sourceHeigth,
@@ -120,8 +121,8 @@ public class ImageView extends AbstractView
 	}
 	
 	public function resizeBitmapAspectRatioTo(sourceWidth:Number, sourceHeight:Number,
-						 		align:String = ImageViewResizeAlign.LEFT_TOP, 
-								transparent:Boolean = false):void
+											  align:String = ImageViewResizeAlign.LEFT_TOP, 
+											  transparent:Boolean = false):void
 	{
 		if(!loadedBitmap) return
 		if (loadedBitmap.width == sourceWidth && loadedBitmap.height == sourceHeight) return
@@ -132,7 +133,7 @@ public class ImageView extends AbstractView
 			var yOffset:Number = 0
 			var differenceX:Number = sourceWidth - loadedBitmap.width
 			var differenceY:Number = sourceHeight - loadedBitmap.height
-				
+			
 			var targetScale:Number = sourceWidth / loadedBitmap.width
 			var heightInFuture:Number = targetScale * loadedBitmap.height
 			if(heightInFuture < sourceHeight)
@@ -145,8 +146,8 @@ public class ImageView extends AbstractView
 			}
 			if(align == ImageViewResizeAlign.CENTRE)
 				yOffset = (sourceHeight - loadedBitmap.height * targetScale) / 2
-					
-					
+			
+			
 			draw(targetScale, targetScale, sourceHeight, sourceWidth, xOffset, yOffset, transparent)
 			
 			if(operation) operation.resize(sourceWidth, sourceHeight)
@@ -179,14 +180,14 @@ public class ImageView extends AbstractView
 	{
 		isLoading = false
 		_loaded = true
-			
+		
 		var bitmap:Bitmap = event.target.content as Bitmap
 		_loadedBitmap = bitmap
 		_currentBitmap = _loadedBitmap
 		addChild(currentBitmap)
-			
+		
 		if(operation) operation.initialize(loadedBitmap)
-			
+		
 		dispatchEvent(event)
 	}
 	

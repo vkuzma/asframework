@@ -14,6 +14,8 @@ public class TextImageStyle implements ISectionStyle
 	//
 	//-------------------------------------------------------------------------
 	
+	public var imageOffsetX:Number
+	public var imageOffsetY:Number
 	public var textOffsetX:Number
 	public var textOffsetY:Number
 	public var titleOffsetX:Number
@@ -50,6 +52,8 @@ public class TextImageStyle implements ISectionStyle
 	
 	private function init():void
 	{
+		imageOffsetX = 0
+		imageOffsetY = 0
 		textOffsetX = 0
 		textOffsetY = 0
 		titleOffsetX = 0

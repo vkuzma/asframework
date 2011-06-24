@@ -89,6 +89,10 @@ public class ModelFactory extends EventDispatcher
 			{
 //				trace(error)
 			}
+			catch(error:ReferenceError)
+			{
+				trace(node.name() + " doesn't exist")	
+			}
 		}
 		return model
 	}

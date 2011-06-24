@@ -84,6 +84,8 @@ public class TextImageOperation implements ISectionOperation
 			imageView = new ImageView(image)
 			targetView.addChild(imageView)
 			imageView.build()
+			imageView.x += textImageStyle.imageOffsetX
+			imageView.y += textImageStyle.imageOffsetY
 		}
 		
 		//title
@@ -123,7 +125,7 @@ public class TextImageOperation implements ISectionOperation
 						textImageStyle.textOffsetX
 					textField.y = titleHeight + textImageStyle.textOffsetY
 						
-					imageView.y = titleHeight
+					imageView.y += titleHeight
 						
 				}
 			break
@@ -202,6 +204,11 @@ public class TextImageOperation implements ISectionOperation
 	public function get textImageStyle():TextImageStyle
 	{
 		return _textImageStyle
+	}
+	
+	public function get contentType():String
+	{
+		return TYPE
 	}
 	
 }
