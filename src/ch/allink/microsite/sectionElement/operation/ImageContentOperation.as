@@ -48,6 +48,7 @@ public class ImageContentOperation implements ISectionOperation
 		imageView = new ImageView(image)
 		targetView.addChild(imageView)
 		imageView.build()
+			
 	}
 	
 	public function resize(sourceWidth:Number, sourceHeight:Number):void

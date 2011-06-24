@@ -7,7 +7,7 @@ import ch.allink.microsite.sectionElement.SectionContentTypes;
  * @author vkuzma
  * @date Jan 6, 2011
  **/
-public class ImageSection extends Section
+public class ImageSection extends TextSection
 {
 	//-------------------------------------------------------------------------
 	//

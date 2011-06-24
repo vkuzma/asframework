@@ -3,8 +3,6 @@ package ch.allink.jobservice
 import flash.events.EventDispatcher;
 import flash.events.IEventDispatcher;
 
-import mx.core.DesignLayer;
-
 /**
  * @author vkuzma
  * @date Jan 2, 2011

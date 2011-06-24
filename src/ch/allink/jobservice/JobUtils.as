@@ -48,6 +48,16 @@ public class JobUtils
 		value = false
 	}
 	
+	public static function setValue(object:Object, value:Object):void
+	{
+		object = value
+	}
+	
+	public static function setValueToAtributte (object:Object, attribute:String, value:Object):void
+	{
+		object[attribute] = value
+	}
+	
 	//-------------------------------------------------------------------------
 	//
 	//	Event handlers

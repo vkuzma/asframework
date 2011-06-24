@@ -1,5 +1,7 @@
 package ch.allink.microsite.navigationElement
 {
+
+
 public interface INavigationOperation
 {
 	function initialize():void

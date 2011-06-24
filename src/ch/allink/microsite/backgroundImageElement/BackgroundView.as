@@ -36,8 +36,11 @@ public class BackgroundView extends AbstractView
 	private var currentImage:Image
 	private var blendJobs:JobService
 	public var imageView:ImageView
+	/** Duration time of the blendanimation **/
 	public var animationTime:Number
+	/** Custom blendin operation **/
 	public var blendInOperation:Function
+	/** Custom blendout operation **/
 	public var blendOutOperation:Function
 	
 	//-------------------------------------------------------------------------
@@ -57,6 +60,9 @@ public class BackgroundView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
+	/**
+	 * Initial object.
+	 **/
 	public override function build():void
 	{
 		imageView = new ImageView(new Image())
@@ -101,6 +107,9 @@ public class BackgroundView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
+	/**
+	 * Loads an builds an ImageView instance by image.
+	 **/
 	public function buildBackground(image:Image):void
 	{
 		if(currentImage.url == image.url) return
@@ -116,10 +125,13 @@ public class BackgroundView extends AbstractView
 		imageView.addEventListener(Event.COMPLETE, 
 								   imageView_completeHandler)
 		imageView.addEventListener(ProgressEvent.PROGRESS, 
-								   imageView_progressHanlder)
+								   imageView_progressHandler)
 		imageView.build()
 	}
 	
+	/**
+	 * Resize of the ImageView instance.
+	 **/
 	public function resize():void
 	{
 		imageView.resizeBitmapAspectRatioTo(stage.stageWidth, 
@@ -153,7 +165,7 @@ public class BackgroundView extends AbstractView
 		dispatchEvent(event)
 	}
 	
-	private function imageView_progressHanlder(event:ProgressEvent):void
+	private function imageView_progressHandler(event:ProgressEvent):void
 	{
 		dispatchEvent(event)
 	}
@@ -169,6 +181,9 @@ public class BackgroundView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
+	/**
+	 * Custom imageoperation.
+	 **/
 	public function set imageOperation(value:IImageViewOperation):void
 	{
 		_imageOperation = value

@@ -37,7 +37,7 @@ public class ScrollPaneClipHolder extends Sprite
 	public var scrollTop:Sprite
 	/**@copy ScrollPaneClipHolder#scrollBottom**/
 	public var scrollDragger:Sprite     
-	/**The neede height for the scrollDragger**/
+	/**The needed height for the scrollDragger**/
 	public var scrollDraggerNominal:Number
 	/**@copy ScrollPaneClipHolder#scrollBottom**/
 	public var scrollBarBackground:Sprite
@@ -174,20 +174,6 @@ public class ScrollPaneClipHolder extends Sprite
 			_currentScrollPosition = 100
 				
 		return _currentScrollPosition
-	}
-	
-	/**
-	 * State of the necessitative use of the scrollbar. 
-	 * Is true when the content can be scrolled, otherwise false.
-	 **/
-	public function get isNecessary():Boolean
-	{
-		if(effectiveScrollArea.height - scrollDraggerNominal> 0)
-			_isNecessery = true
-		else
-			_isNecessery = false
-				
-		return _isNecessery
 	}
 }
 }

@@ -35,13 +35,11 @@ public class AbstractModel extends Object
 	protected function fillCollection(klass:Class, values:Array):Array
 	{
 		//TODO: update method so it can distinguish between xml an array of objects
+		var collection:Array = []
 		if(values[0] is XML)
 		{
-			var collection:Array = [ ]
-			for each(var s:XML in values)
-			{
-				collection.push(modelFactory.create(klass, s))
-			}
+			for each(var xml:XML in values)
+				collection.push(modelFactory.create(klass, xml))
 		}	
 		return collection
 	}		

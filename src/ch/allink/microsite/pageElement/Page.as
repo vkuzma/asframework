@@ -1,6 +1,6 @@
 package ch.allink.microsite.pageElement
 {
-import ch.allink.microsite.core.CMSAbstractModel;
+import ch.allink.microsite.core.AbstractModel;
 import ch.allink.microsite.sectionElement.SectionContentTypes;
 
 /**
@@ -10,7 +10,7 @@ import ch.allink.microsite.sectionElement.SectionContentTypes;
  * @see ch.allink.microsite.pageElement.PageView
  **/
 
-public class Page extends CMSAbstractModel
+public class Page extends AbstractModel
 {
 	//-------------------------------------------------------------------------
 	//
@@ -28,6 +28,7 @@ public class Page extends CMSAbstractModel
 	public var language:String = ""
 	public var has_children:String = ""
 	public var _cached_url:String
+	public var template:String
 	
 	//-------------------------------------------------------------------------
 	//
@@ -57,15 +58,15 @@ public class Page extends CMSAbstractModel
 		_sections = []
 		for each(var xml:XML in values)
 		{
-			var sectionClass:Class = SectionContentTypes.
-									 getContentTypeModelByType(xml.type)
+			var sectionClass:Class = SectionContentTypes.getContentTypeModelByType(xml.type)
 			if(!sectionClass)
-				trace("Allink warning: Model with type: " + xml.type + 
-					  " doesn't exist")
+				trace("Allink warning: Model with type: " + xml.type + " doesn't exist")
 			//TODO throw error, when sectionClass is null
 			if(sectionClass && xml is XML)
 				_sections.push(modelFactory.create(sectionClass, xml))
 		}
+		
+		_sections.sortOn("ordering")
 	}
 	
 	public function get sections():Array

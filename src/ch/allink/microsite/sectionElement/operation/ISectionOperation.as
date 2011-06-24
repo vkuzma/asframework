@@ -10,8 +10,8 @@ public interface ISectionOperation
 	function resize(sourceWidth:Number, sourceHeight:Number):void
 	function set targetView(value:SectionView):void
 	function get targetView():SectionView
-	function get contentType():String
 	function set pageFormatter(value:PageFormatter):void
 	function get pageFormatter():PageFormatter
+	function get contentType():String
 }
 }

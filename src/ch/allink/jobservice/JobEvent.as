@@ -14,7 +14,6 @@ public class JobEvent extends Event
 	//
 	//-------------------------------------------------------------------------
 	
-	public static const COMPLETE:String = "jobComplete"
 	public static const COMPLETE_ALL:String = "jobsComplete"
 	public static const EXECUTED:String = "jobExecutet"
 	
@@ -24,7 +23,7 @@ public class JobEvent extends Event
 	//
 	//-------------------------------------------------------------------------
 	
-	
+	private var _job:Job
 	
 	//-------------------------------------------------------------------------
 	//
@@ -33,9 +32,10 @@ public class JobEvent extends Event
 	//-------------------------------------------------------------------------
 	
 	public function JobEvent(type:String, bubbles:Boolean = false, 
-							 cancelable:Boolean = false)
+							 cancelable:Boolean = false, job:Job = null)
 	{
 		super(type, bubbles, cancelable)
+		_job = job
 	}
 	
 	//-------------------------------------------------------------------------
@@ -46,7 +46,7 @@ public class JobEvent extends Event
 	
 	public override function clone():Event
 	{
-		return new JobEvent(type, bubbles, cancelable)
+		return new JobEvent(type, bubbles, cancelable, job)
 	}
 	
 	//-------------------------------------------------------------------------
@@ -63,7 +63,10 @@ public class JobEvent extends Event
 	//
 	//-------------------------------------------------------------------------
 	
-	
+	public function get job():Job
+	{
+		return _job
+	}
 	
 	//-------------------------------------------------------------------------
 	//

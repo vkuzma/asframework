@@ -1,1 +1,1 @@
-asdoc -doc-sources ./src/ch/allink/microsite/ -library-path ./lib/ -doc-sources ./src/com/ -target-player 10 -output 'Documentation'
+asdoc -doc-sources ./src/ch/allink/ -library-path ./lib/ -doc-sources ./src/com/ -target-player 10 -output 'Documentation'

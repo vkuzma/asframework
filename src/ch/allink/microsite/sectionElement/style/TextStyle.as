@@ -14,9 +14,6 @@ public class TextStyle implements ISectionStyle
 	//
 	//-------------------------------------------------------------------------
 	
-	public var enableEmbedFonts:Boolean = false
-	public var sectionTitleUpperCase:Boolean = false
-	
 	//-------------------------------------------------------------------------
 	//
 	//	Constructor
@@ -33,7 +30,7 @@ public class TextStyle implements ISectionStyle
 	//
 	//-------------------------------------------------------------------------
 	
-	public function get contentType():String
+	public function get CONTENT_TYPE():String
 	{
 		return SectionContentTypes.TEXT_ONLY
 	}

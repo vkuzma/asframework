@@ -14,14 +14,6 @@ public class AbstractView extends Sprite implements IAbstractView
 {
 	//-------------------------------------------------------------------------
 	//
-	//	Protected variables
-	//
-	//-------------------------------------------------------------------------
-	
-	protected var _model:AbstractModel
-	
-	//-------------------------------------------------------------------------
-	//
 	//	Constructor
 	//
 	//-------------------------------------------------------------------------
@@ -43,22 +35,6 @@ public class AbstractView extends Sprite implements IAbstractView
 	
 	public function dispose():void
 	{
-	}
-	
-	//-------------------------------------------------------------------------
-	//
-	//	Properties
-	//
-	//-------------------------------------------------------------------------
-	
-	public function get model():AbstractModel
-	{
-		return _model
-	}
-	
-	public function set model(value:AbstractModel):void
-	{
-		_model = value
 	}
 }
 }

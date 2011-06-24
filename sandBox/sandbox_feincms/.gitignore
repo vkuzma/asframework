@@ -1,0 +1,4 @@
+*.pyc
+*.sqlite
+*.mo
+settings.py

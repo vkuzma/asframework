@@ -1,10 +1,11 @@
 package ch.allink.microsite.navigationElement
 {
+import ch.allink.microsite.core.AbstractView;
 import ch.allink.microsite.events.NavigationViewEvent;
+import ch.allink.microsite.util.Report;
+import ch.allink.microsite.util.ReportService;
 
-import flash.display.Sprite;
 import flash.events.Event;
-import flash.events.IEventDispatcher;
 import flash.events.MouseEvent;
 
 /** 
@@ -12,7 +13,7 @@ import flash.events.MouseEvent;
  * 
  * @author Vladimir Kuzma
  **/
-public class NavigationTreeView extends Sprite
+public class NavigationTreeView extends AbstractView
 {
 	
 	//-------------------------------------------------------------------------
@@ -23,7 +24,7 @@ public class NavigationTreeView extends Sprite
 	
 	private var _navigationViews:Vector.<NavigationView>
 	private var _parentNavigationView:NavigationView
-	public var navigations:Vector.<Navigation>
+	public var report:Report
 	
 	//-------------------------------------------------------------------------
 	//
@@ -33,6 +34,8 @@ public class NavigationTreeView extends Sprite
 	
 	public function NavigationTreeView()
 	{
+		report = new Report(this)
+		ReportService.addReport(report)
 	}
 	
 	//-------------------------------------------------------------------------
@@ -41,17 +44,16 @@ public class NavigationTreeView extends Sprite
 	//
 	//-------------------------------------------------------------------------
 	
-	private function majorActivate(navigationView:NavigationView):void
+	private function initializeNavigation(navigationView:NavigationView):void
 	{
-		activate(navigationView)
-		
-		//Deaktiviert Unternavigationen
-		if(navigationView.navigationTreeView != null)
-			navigationView.navigationTreeView.activate(null)
-		
-		var bubbleEvent:NavigationViewEvent = new NavigationViewEvent(
-			NavigationViewEvent.NAVIGATION_CLICK, false, false, navigationView)
-		dispatchEvent(bubbleEvent)
+		addChild(navigationView)
+		navigationView.addEventListener(MouseEvent.CLICK, navigationView_clickHandler)
+		navigationView.addEventListener(NavigationViewEvent.ACTIVATED,
+										navigationView_activatedHandler)
+		navigationView.addEventListener(NavigationViewEvent.REQUEST_ACTIVATE,
+										navigationView_requestActivatedHandler)
+		navigationView.addEventListener(NavigationViewEvent.CAPTURED_FIRST,
+										navigationView_capturedFirstHandler)
 	}
 	
 	//-------------------------------------------------------------------------
@@ -60,21 +62,62 @@ public class NavigationTreeView extends Sprite
 	//
 	//-------------------------------------------------------------------------
 	
-	public function activate(activatedNavigationView:NavigationView):void
+	/**
+	 * Activates the given NavigationView instance and their parent NavigationView
+	 * instances. Deactivates the rest.
+	 **/
+	public function activateNavigationView(
+		toActivateNavigationView:NavigationView):void
 	{
-		for each(var navigationView:NavigationView in _navigationViews)
+		report.print("Activate navigationView: " + toActivateNavigationView.name + 
+					 ", deactivating the rest.")
+		for each(var navigationView:NavigationView in navigationViews)
 		{
-			if(activatedNavigationView == navigationView)
-				navigationView.active = true
+			if(toActivateNavigationView == navigationView)
+				navigationView.activate()
 			else
-				navigationView.active = false
+				navigationView.deactivate()
 		}
 	}
 	
-	public function reset():void
+	/**
+	 * Deactivates all NavigationView instances.
+	 **/
+	public function resetAll():void
 	{
-		for each(var navigationView:NavigationView in _navigationViews)
-			navigationView.active = false
+		for each(var navigationView:NavigationView in navigationViews)
+			navigationView.deactivate()
+	}
+	
+	public function addNavigationView(navigationView:NavigationView):void
+	{
+		initializeNavigation(navigationView)
+		navigationViews.push(navigationView)
+	}
+	
+	public function activateNavigationViewByURL(url:String):void
+	{
+		var targetNavigationView:NavigationView = navigationViewByURL(url, this)
+		if(targetNavigationView) targetNavigationView.requestActivate()
+		else deactivateNavigationViews()
+	}
+	
+	public function doOnAllNavigationViews(funktion:Function,
+							navigationViews:Vector.<NavigationView> = null):void
+	{
+		if(!navigationViews) navigationViews = this.navigationViews
+		for each(var navigationView:NavigationView in navigationViews)
+		{
+			funktion.call(null, navigationView)
+			if(navigationView.navigationTreeView.navigationViews.length > 0)
+				doOnAllNavigationViews(funktion, navigationView.navigationTreeView.navigationViews)
+		}
+	}
+	
+	public function deactivateNavigationViews():void
+	{
+		for each(var navigationView:NavigationView in navigationViews)
+			navigationView.deactivate()
 	}
 	
 	//-------------------------------------------------------------------------
@@ -83,49 +126,63 @@ public class NavigationTreeView extends Sprite
 	//
 	//-------------------------------------------------------------------------
 	
+	private function navigationViewByURL(url:String,
+		navigationTreeView:NavigationTreeView):NavigationView
+	{
+		var targetNavigationView:NavigationView
+		for each(var navigationView:NavigationView in 
+			navigationTreeView.navigationViews)
+		{
+			if(navigationView.navigation.url == url)
+			{
+				targetNavigationView = navigationView
+				break
+			}
+			if(navigationView.navigationTreeView.navigationViews.length > 0)
+			{
+				targetNavigationView = 
+					navigationViewByURL(url, navigationView.navigationTreeView)
+				if(targetNavigationView != null)
+					break
+			}
+		}
+		return targetNavigationView
+	}
+	
 	private function navigationView_clickHandler(event:MouseEvent):void
 	{
-		var navigationView:NavigationView = event.currentTarget 
-											as NavigationView
-		majorActivate(navigationView)
+		report.print(event.target.name + " has been clicked.")
+		var navigationView:NavigationView = event.target as NavigationView
+		navigationView.requestActivate()
 	}
 	
 	private function navigationView_activatedHandler(
 		event:NavigationViewEvent):void
 	{
-		if(parentNavigationView)
-			parentNavigationView.requestActivate()
-				
+		report.print("Current navigationTreeView: " + name)
+		if(parentNavigationView) 
+			parentNavigationView.requestActivate(false)
 	}
 	
-	public function navigationView_requestActivatedHandler(event:Event):void
+	public function navigationView_requestActivatedHandler(
+		event:NavigationViewEvent):void
 	{
 		var navigationView:NavigationView = event.target as NavigationView
-		if(!navigationView.active) activate(navigationView)
+		if(!navigationView.active) activateNavigationView(navigationView)
 	}
 	
 	private function parentNavigationV_deactivateHandler(
 		event:NavigationViewEvent):void
 	{
-		activate(null)	
+		resetAll()	
 	}
 	
-	private function navigationView_subNavigationClicked(
+	private function navigationView_capturedFirstHandler(
 		event:NavigationViewEvent):void
 	{
-		var navigationView:NavigationView = event.target as NavigationView
-		var navigationViewService:NavigationTreeView = navigationView.
-														  navigationTreeView
 		dispatchEvent(event)
+		if(parentNavigationView) parentNavigationView.dispatchEvent(event)
 	}
-	
-	private function navigationView_requestMajorActivate(event:Event):void
-	{
-		var navigationView:NavigationView = event.currentTarget 
-											as NavigationView
-		majorActivate(navigationView)	
-	}
-	
 	//-------------------------------------------------------------------------
 	//
 	//	Properties
@@ -135,38 +192,23 @@ public class NavigationTreeView extends Sprite
 	public function set navigationViews(value:Vector.<NavigationView>):void
 	{
 		_navigationViews = value
-//		Es ist nicht nötig die navigations und navigationViews zugleich 
-//		zu speichern
-		navigations = null
 			
 		for each(var navigationView:NavigationView in _navigationViews)
-		{
-			addChild(navigationView)
-			navigationView.addEventListener(MouseEvent.CLICK, 
-											navigationView_clickHandler)
-			navigationView.addEventListener(NavigationViewEvent.ACTIVATED,
-											navigationView_activatedHandler)
-			navigationView.addEventListener(NavigationView.REQUEST_ACTIVATE,
-										navigationView_requestActivatedHandler)
-			navigationView.addEventListener(
-										NavigationView.REQUEST_MAJOR_ACTIVATE,
-										navigationView_requestMajorActivate)
-			navigationView.addEventListener(NavigationViewEvent.
-											NAVIGATION_CLICK,
-											navigationView_subNavigationClicked)
-		}
+			initializeNavigation(navigationView)
 	}
 
 	public function get navigationViews():Vector.<NavigationView>
 	{
+		if(!_navigationViews) _navigationViews = new Vector.<NavigationView>()
 		return _navigationViews
 	}
 
 	public function set parentNavigationView(value:NavigationView):void
 	{
 		_parentNavigationView = value
-		_parentNavigationView.addEventListener(NavigationViewEvent.DEACTIVATED,
-										    parentNavigationV_deactivateHandler)
+		if(_parentNavigationView)
+			_parentNavigationView.addEventListener(NavigationViewEvent.DEACTIVATED,
+											    parentNavigationV_deactivateHandler)
 	}
 	
 	public function get parentNavigationView():NavigationView

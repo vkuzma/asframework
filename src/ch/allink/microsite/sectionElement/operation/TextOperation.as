@@ -3,9 +3,9 @@ package ch.allink.microsite.sectionElement.operation
 import ch.allink.microsite.pageElement.PageFormatter;
 import ch.allink.microsite.sectionElement.SectionContentTypes;
 import ch.allink.microsite.sectionElement.SectionView;
-import ch.allink.microsite.sectionElement.sectionType.Section;
+import ch.allink.microsite.sectionElement.sectionType.TextSection;
 import ch.allink.microsite.sectionElement.style.TextStyle;
-import ch.allink.microsite.widgets.TextFieldFactory;
+import ch.allink.microsite.util.TextFieldFactory;
 
 import flash.text.TextField;
 
@@ -16,12 +16,12 @@ public class TextOperation implements ISectionOperation
 	//	Variables
 	//
 	//-------------------------------------------------------------------------
-	
+	 
 	public var textField:TextField
 	private var _targetView:SectionView
 	private var _pageFormatter:PageFormatter
 	private var _textStyle:TextStyle
-	private var section:Section
+	private var section:TextSection
 	
 	//-------------------------------------------------------------------------
 	//

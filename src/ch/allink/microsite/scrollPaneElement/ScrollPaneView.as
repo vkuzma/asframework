@@ -1,19 +1,15 @@
 package ch.allink.microsite.scrollPaneElement
 {
-import caurina.transitions.Tweener;
-
 import ch.allink.microsite.core.AbstractView;
 
+import com.greensock.TweenLite;
 import com.osx.MacMouseWheel;
 
-import flash.display.Scene;
 import flash.display.Shape;
 import flash.display.Sprite;
 import flash.events.Event;
 import flash.events.MouseEvent;
 import flash.geom.Rectangle;
-
-import spark.primitives.Rect;
 
 /**
  * Darstellung eines Scrollbalken aus dem *_assets.fla
@@ -32,10 +28,13 @@ public class ScrollPaneView extends AbstractView
 	private var _scrollContainer:Sprite
 	private var scrolling:Boolean
 	private var scrollTimer:Object
+	private var scrollDragerMouseY:Number
+	private var mouseMask:Sprite = new Sprite()
 	public var contentArea:Rectangle
 	public var scrollStepHeight:Number
 	public var fixedDraggerSize:Boolean
 	public var extraHeight:Number
+	public var lazyScrollOffset:Number
 	
 	//---------------------------------
 	//	Layout
@@ -61,6 +60,7 @@ public class ScrollPaneView extends AbstractView
 		_scrollContainer = new Sprite()
 		scrollTimer = {}
 		extraHeight = 0
+		lazyScrollOffset = 0
 
 		scrolling = false
 	}
@@ -76,7 +76,7 @@ public class ScrollPaneView extends AbstractView
 	 **/ 
 	public override function build():void
 	{
-		this.addChild(scrollClipHolder)
+		addChild(scrollClipHolder)
 		scrollClipHolder.scrollPaneMask.height = contentArea.height
 		scrollClipHolder.scrollPaneMask.width = contentArea.width
 		scrollClipHolder.scrollBottom.addEventListener(MouseEvent.MOUSE_DOWN, 
@@ -101,14 +101,19 @@ public class ScrollPaneView extends AbstractView
 		moveContainer()
 	}
 	
-	private function moveContainer():void
+	private function moveContainer(enableLazyScrolling:Boolean = true):void
 	{
+		var targetY:Number
 		if(isNecessary)
-			scrollContainer.y = -scrollClipHolder.currentScrollPosition 
-				* (scrollContainer.height - contentArea.height)
-				/ 100  + y
-		else 
-			scrollContainer.y = y
+			targetY = -scrollClipHolder.currentScrollPosition 
+				* (scrollContainer.height - contentArea.height) / 100  + y
+		else
+			targetY = y
+				
+		if(lazyScrollOffset && enableLazyScrolling)
+			TweenLite.to(scrollContainer, lazyScrollOffset, {y: targetY})
+		else
+			scrollContainer.y = targetY
 	}
 	
 	private function scroll(scrollStep:Number):void
@@ -116,9 +121,8 @@ public class ScrollPaneView extends AbstractView
 		scrollPosition = scrollStep
 		moveContainer()
 		if(scrolling)
-			Tweener.addTween(scrollTimer,
+			TweenLite.to(scrollTimer, 0.05,
 				{
-					time: 0.05,
 					onComplete: scroll,
 					onCompleteParams: [scrollStep]
 				})
@@ -128,12 +132,38 @@ public class ScrollPaneView extends AbstractView
 	{
 		scroll(scrollStep)
 		scrolling = true
-		Tweener.addTween(scrollTimer,
+		TweenLite.to(scrollTimer, 1,
 			{
-				time: 1,
 				onComplete: scroll,
 				onCompleteParams: [scrollStep]
 			})	
+	}
+	
+	private function startDragDragger():void
+	{
+		scrollDragerMouseY = scrollClipHolder.scrollDragger.mouseY *
+			scrollClipHolder.scrollDragger.scaleY
+		if(stage)
+			stage.addEventListener(MouseEvent.MOUSE_MOVE, dragge_moveHandler)
+	}
+	
+	private function stopDragDragger():void
+	{
+		if(stage)
+			stage.removeEventListener(MouseEvent.MOUSE_MOVE, dragge_moveHandler)
+		
+	}
+	
+	private function dragge_moveHandler(event:MouseEvent):void
+	{
+		scrollClipHolder.scrollDragger.y = mouseY - scrollDragerMouseY 
+		
+		if(scrollClipHolder.scrollDragger.y >= scrollClipHolder.effectiveScrollArea.bottom)
+			scrollClipHolder.scrollDragger.y = scrollClipHolder.effectiveScrollArea.bottom
+				
+		if(scrollClipHolder.scrollDragger.y <= scrollClipHolder.effectiveScrollArea.top)
+			scrollClipHolder.scrollDragger.y = scrollClipHolder.effectiveScrollArea.top 
+			
 	}
 	
 	//-------------------------------------------------------------------------
@@ -148,11 +178,15 @@ public class ScrollPaneView extends AbstractView
 	 **/
 	public function setUpScrollBar():void
 	{
+		//mask for mouseactions
+		mouseMask.graphics.beginFill(0xFF0000, 0)
+		mouseMask.graphics.drawRect(0, 0, contentArea.width, scrollContainer.height)
+		mouseMask.graphics.endFill()
+			
 		scrollClipHolder.scrollPaneMask.height = contentArea.height
 		scrollClipHolder.scrollPaneMask.width = contentArea.width
 			
-		scrollClipHolder.scrollBar.x = contentArea.right
-			+ _contentScrollBarSpacing
+		scrollClipHolder.scrollBar.x = contentArea.right + _contentScrollBarSpacing
 		scrollClipHolder.scrollTop.y = contentArea.top
 		scrollClipHolder.scrollBottom.y = contentArea.bottom
 			- scrollClipHolder.scrollBottom.height
@@ -160,21 +194,22 @@ public class ScrollPaneView extends AbstractView
 			
 		scrollClipHolder.scrollDraggerNominal = ratioContentMask 
 									* scrollClipHolder.scrollArea.height / 100
+									
 		if(!fixedDraggerSize)
-			scrollClipHolder.scrollDragger.height = scrollClipHolder.
-													scrollDraggerNominal
+			scrollClipHolder.scrollDragger.height = scrollClipHolder.scrollDraggerNominal
 				
 		scrollClipHolder.scrollDragger.y = 
 			scrollClipHolder.currentScrollPosition 
 			* scrollClipHolder.effectiveScrollArea.height / 100
 			+ scrollClipHolder.effectiveScrollArea.top
-			
-		moveContainer()
+		
+		moveContainer(false)
 	}
 	
 	public function resetScrollDragger():void
 	{
 		scrollClipHolder.scrollDragger.y = 0
+		moveContainer(false)
 	}
 	
 	//-------------------------------------------------------------------------
@@ -201,8 +236,7 @@ public class ScrollPaneView extends AbstractView
 	
 	private function scrollDragger_mouseDownHandler(event:MouseEvent):void
 	{
-		scrollClipHolder.scrollDragger.startDrag(false, 
-			scrollClipHolder.effectiveScrollArea)
+		startDragDragger()
 		
 		stage.addEventListener(MouseEvent.MOUSE_MOVE, stage_mouseMoveHandler)
 	}
@@ -214,8 +248,8 @@ public class ScrollPaneView extends AbstractView
 	
 	private function stage_mouseUpHandler(event:MouseEvent):void
 	{
-		scrollClipHolder.scrollDragger.stopDrag()
-		Tweener.removeTweens(scrollTimer)
+		stopDragDragger()
+		TweenLite.killTweensOf(scrollTimer)
 		scrolling = false
 	}
 	
@@ -248,8 +282,7 @@ public class ScrollPaneView extends AbstractView
 	public function set scrollClip(value:Sprite):void
 	{
 		scrollClipHolder = new ScrollPaneClipHolder(value)
-		value.addEventListener(MouseEvent.MOUSE_WHEEL, 
-			scrollContainer_mouseWheelHandler)
+		value.addEventListener(MouseEvent.MOUSE_WHEEL, scrollContainer_mouseWheelHandler)
 	}
 	
 	/**
@@ -301,12 +334,12 @@ public class ScrollPaneView extends AbstractView
 	{
 		_scrollContainer = value
 		_scrollContainer.mask = scrollClipHolder.scrollPaneMask
-		_scrollContainer.addEventListener(MouseEvent.MOUSE_WHEEL, 
-										  scrollContainer_mouseWheelHandler)
-		_scrollContainer.addEventListener(MouseEvent.MOUSE_OVER,
-										  scrollContainer_mouseOverHandler)
-		_scrollContainer.addEventListener(MouseEvent.MOUSE_OUT,
-										  scrollContainer_mouseOutHandler)
+		_scrollContainer.addEventListener(MouseEvent.MOUSE_WHEEL, scrollContainer_mouseWheelHandler)
+		_scrollContainer.addEventListener(MouseEvent.MOUSE_OVER, scrollContainer_mouseOverHandler)
+		_scrollContainer.addEventListener(MouseEvent.MOUSE_OUT, scrollContainer_mouseOutHandler)
+			
+		mouseMask = new Sprite()
+		_scrollContainer.addChild(mouseMask)
 	}
 	
 	public function get scrollContainer():Sprite
@@ -319,7 +352,8 @@ public class ScrollPaneView extends AbstractView
 	 **/
 	public function get isNecessary():Boolean
 	{
-		return scrollClipHolder.isNecessary
+		if(scrollContainer.height > contentArea.height) return true
+		else return false
 	}
 	
 	/**
@@ -357,8 +391,7 @@ public class ScrollPaneView extends AbstractView
 	//TODO: formel korrigieren
 	private function get stepHeightInPercent():Number
 	{
-		var _stepHeightInPercent:Number = 
-			scrollStepHeight / scrollContainer.height * 100
+		var _stepHeightInPercent:Number = scrollStepHeight / scrollContainer.height * 100
 			
 		return _stepHeightInPercent
 	}

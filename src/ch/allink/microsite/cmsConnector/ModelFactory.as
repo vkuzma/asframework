@@ -2,6 +2,7 @@ package ch.allink.microsite.cmsConnector
 {
 
 import ch.allink.microsite.core.AbstractModel;
+import ch.allink.microsite.events.ResultEvent;
 
 import flash.events.EventDispatcher;
 import flash.events.IEventDispatcher;
@@ -19,24 +20,24 @@ public class ModelFactory extends EventDispatcher
 	
 	//-------------------------------------------------------------------------
 	//
+	//	Variables
+	//
+	//-------------------------------------------------------------------------
+		
+	private var _modelRequest:ModelRequest
+		
+	//-------------------------------------------------------------------------
+	//
 	//	Constructor
 	//
 	//-------------------------------------------------------------------------
 		
+	/**
+	 * Creates a new ModelFactory instance.
+	 **/
 	public function ModelFactory(target:IEventDispatcher = null)
 	{
 		super(target)
-	}
-	
-	//-------------------------------------------------------------------------
-	//
-	//	Private methods
-	//
-	//-------------------------------------------------------------------------
-	
-	private function getXMLWithChildren(xml:XMLList):XMLList
-	{
-		return null
 	}
 	
 	//-------------------------------------------------------------------------
@@ -45,11 +46,21 @@ public class ModelFactory extends EventDispatcher
 	//
 	//-------------------------------------------------------------------------
 
-	public function load(klass:Class, url:String, type:String):ModelRequest
+	/**
+	 * Loads a model from CMS.
+	 **/
+	public function load(klass:Class, url:String, type:String):void
 	{
-		return new ModelRequest(klass, url, this, type)
+		_modelRequest =  new ModelRequest(klass, url, this, type)
+		modelRequest.addEventListener(ResultEvent.DATA_LOADED, modelRequest_dataLoadedHandler)
+		modelRequest.load()
 	}
 	
+	/**
+	 * Creates and fills a model.
+	 * @param klass Class of the model
+	 * @param xml Source of data
+	 **/
 	public function create(klass:Class, xml:XML):AbstractModel
 	{
 		var model:AbstractModel = new klass
@@ -78,18 +89,41 @@ public class ModelFactory extends EventDispatcher
 			{
 //				trace(error)
 			}
+			catch(error:ReferenceError)
+			{
+				trace(node.name() + " doesn't exist")	
+			}
 		}
 		return model
 	}
 	
-	public function createCollection(klass:Class, 
-									 xml:XML):Vector.<AbstractModel>
+	/**
+	 * Creates and fills a collection of models.
+	 * @param klass Class of the model
+	 * @param xml Source of data
+	 **/
+	public function createCollection(klass:Class, xml:XML):Vector.<AbstractModel>
 	{
 		var result:Vector.<AbstractModel> = new Vector.<AbstractModel>
 		for each(var node:XML in xml.children())
 			result.push(create(klass, node))
 		
 		return result
+	}
+	
+	public function stopLoading():void
+	{
+		
+	}
+	
+	private function modelRequest_dataLoadedHandler(event:ResultEvent):void
+	{
+		dispatchEvent(event)
+	}
+	
+	public function get modelRequest():ModelRequest
+	{
+		return _modelRequest
 	}
 }
 }

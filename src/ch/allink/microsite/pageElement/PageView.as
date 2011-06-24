@@ -6,11 +6,12 @@ import ch.allink.microsite.cmsConnector.ModelRequest;
 import ch.allink.microsite.core.AbstractView;
 import ch.allink.microsite.events.ResultEvent;
 import ch.allink.microsite.sectionElement.SectionView;
-import ch.allink.microsite.sectionElement.sectionType.Section;
+import ch.allink.microsite.sectionElement.sectionType.TextSection;
 
 import flash.display.DisplayObject;
 import flash.display.Sprite;
 import flash.utils.Dictionary;
+import flash.utils.getDefinitionByName;
 
 public class PageView extends AbstractView
 {
@@ -22,7 +23,7 @@ public class PageView extends AbstractView
 	
 	public var page:Page
 	public var regions:Dictionary
-	private var modelRequest:ModelRequest
+	private var modelFactory:ModelFactory 
 	private var _operation:IPageOperation
 	private var _isLoading:Boolean
 	
@@ -32,10 +33,10 @@ public class PageView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	public function PageView()
+	public function PageView(operation:IPageOperation = null)
 	{
 		super()
-		
+		if(operation) this.operation = operation
 	}
 	
 	//-------------------------------------------------------------------------
@@ -53,7 +54,7 @@ public class PageView extends AbstractView
 	
 	public override function dispose():void
 	{
-		operation.dispose()
+		clearSectionViews(sectionViews)
 	}
 	
 	//-------------------------------------------------------------------------
@@ -66,7 +67,7 @@ public class PageView extends AbstractView
 	{
 		for each(var sectionView:SectionView in sectionViews)
 		{
-			var section:Section = sectionView.section
+			var section:TextSection = sectionView.section
 			var regionContainer:Sprite = regionByName(section.region)
 			if(regionContainer.contains(sectionView))
 				regionContainer.removeChild(sectionView)
@@ -74,6 +75,7 @@ public class PageView extends AbstractView
 		}
 		sectionViews = null
 	}
+	
 	
 	//-------------------------------------------------------------------------
 	//
@@ -85,14 +87,12 @@ public class PageView extends AbstractView
 	 * Loads a Page instance by the pageid and will be buildded by the loaded Page instance.
 	 **/
 	public function buildPageByURL(url:String, modelClass:Class = null):void
-	{ 
+	{
 		if(!modelClass) modelClass = Page
 		if(isLoading) stopLoading()
-		var modelFactory:ModelFactory = new ModelFactory()
-		modelRequest = modelFactory.load(modelClass, CMSXmlPath.getPagePathByURL(url),	
-										 ModelFactory.TYPE_MODEL)
-		modelRequest.addEventListener(ResultEvent.DATA_LOADED,
-			modelRequest_dataLoadedHandler)
+		modelFactory = new ModelFactory()
+		modelFactory.addEventListener(ResultEvent.DATA_LOADED, modelRequest_dataLoadedHandler)
+		modelFactory.load(modelClass, CMSXmlPath.getPagePathByURL(url),	ModelFactory.TYPE_MODEL)
 		_isLoading = true
 	}
 	
@@ -106,24 +106,18 @@ public class PageView extends AbstractView
 		var sections:Array = page.sections
  		operation.buildSectionViews(sections)
 		operation.formatSectionViews()
+			
 	}
 	
 	public function stopLoading():void
 	{
-		modelRequest.dispose()
+		modelFactory.stopLoading()
 	}
 	
+	/**
+	 * Adds a new regioncontainer.
+	 **/
 	public function addRegion(region:String):void
-	{
-		regionByName(region)
-	}
-	
-	public function addToRegion(region:String, displayObject:DisplayObject):void
-	{
-		regionByName(region).addChild(displayObject)
-	}
-	
-	public function regionByName(region:String):Sprite
 	{
 		if(!regions[region])
 		{
@@ -131,7 +125,23 @@ public class PageView extends AbstractView
 			addChild(regionContainer)
 			regions[region] = regionContainer
 		}
-		return regions[region]
+	}
+	
+	/**
+	 * Adds a displayObject to a region by name.
+	 **/
+	public function addToRegion(name:String, displayObject:DisplayObject):void
+	{
+		regionByName(name).addChild(displayObject)
+	}
+	
+	/**
+	 * Returns a regioncontainer bei regionname.
+	 **/
+	public function regionByName(name:String):Sprite
+	{
+		if(!regions[name]) addRegion(name)
+		return regions[name]
 	}
 	
 	//-------------------------------------------------------------------------
@@ -142,6 +152,8 @@ public class PageView extends AbstractView
 	
 	private function modelRequest_dataLoadedHandler(event:ResultEvent):void
 	{
+		dispose()
+		build()
 		_isLoading = false
 		page = event.model as Page
 		buildByPage(page)
@@ -167,6 +179,7 @@ public class PageView extends AbstractView
 	
 	public function get operation():IPageOperation
 	{
+		if(!_operation) throw new Error("No operation available, PageView can be only used with a IPageOperation!")
 		return _operation
 	}
 	

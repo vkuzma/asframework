@@ -4,6 +4,8 @@ import ch.allink.microsite.cmsConnector.CMSXmlPath;
 import ch.allink.microsite.cmsConnector.ModelFactory;
 import ch.allink.microsite.cmsConnector.ModelRequest;
 import ch.allink.microsite.events.ResultEvent;
+import ch.allink.microsite.navigationElement.NavigationTreeView;
+import ch.allink.microsite.navigationElement.NavigationView;
 
 import flash.events.EventDispatcher;
 
@@ -11,7 +13,7 @@ import flash.events.EventDispatcher;
  * Create a Navigation from the FeinCMS.
  * @author Vladimir Kuzma
  */
-public final class NavigationFactory extends EventDispatcher
+public class NavigationFactory extends EventDispatcher
 {
 	//-------------------------------------------------------------------------
 	//
@@ -46,8 +48,7 @@ public final class NavigationFactory extends EventDispatcher
 	/**
 	 * Creates a tree of Navigation instances.
 	 */
-	private function makeNavigationTree(navigations:Vector.<Navigation>):
-		Vector.<Navigation>
+	private function makeNavigationTree(navigations:Vector.<Navigation>):Vector.<Navigation>
 	{
 		var topLevelNavigation:Vector.<Navigation> = new Vector.<Navigation>
 		for each(var navigation:Navigation in navigations)
@@ -60,7 +61,7 @@ public final class NavigationFactory extends EventDispatcher
 					getNavigationByURL(navigation.url, navigations)
 				navigationURL.pop()
 				var parentNavigation:Navigation = 
-					getNavigationByURL(makeHash(navigationURL), navigations)
+					getNavigationByURL(cleanUrl(navigationURL), navigations)
 				parentNavigation.children.push(childNavigation)
 				childNavigation.parentNavigation = parentNavigation
 			}
@@ -77,11 +78,11 @@ public final class NavigationFactory extends EventDispatcher
 	private function makeNavigationViewTree(navigations:Vector.<Navigation>,
 		navigationTreeView:NavigationTreeView):Vector.<NavigationView>
 	{
-		var navigationChildren:Vector.<NavigationView> = 
-			new Vector.<NavigationView>
+		var navigationChildren:Vector.<NavigationView> = new Vector.<NavigationView>
 		for each(var navigation:Navigation in navigations)
 		{
 			var navigationView:NavigationView = new NavigationView(navigation)
+			navigationView.build()
 			navigationViews.push(navigationView)
 			navigationChildren.push(navigationView)
 			if(navigation.hasChildren())
@@ -89,8 +90,7 @@ public final class NavigationFactory extends EventDispatcher
 				navigationView.navigationTreeView = new NavigationTreeView()
 				navigationTreeView.addChild(navigationView.navigationTreeView)
 				navigationView.navigationTreeView.navigationViews = 
-					makeNavigationViewTree(navigation.children, 
-						navigationView.navigationTreeView)
+					makeNavigationViewTree(navigation.children, navigationView.navigationTreeView)
 			}
 		}
 		return navigationChildren
@@ -120,7 +120,7 @@ public final class NavigationFactory extends EventDispatcher
 	/**
 	 * Makes an URL from an array with paths. (Django-conform)
 	 */
-	private function makeHash(path:Array):String
+	private function cleanUrl(path:Array):String
 	{
 		var hash:String = "/"
 		var numPath:int = path.length
@@ -132,6 +132,19 @@ public final class NavigationFactory extends EventDispatcher
 		return hash
 	}
 	
+	protected function buildNavigation(navigations:Vector.<Navigation>):void
+	{
+		_navigationTreeView = new NavigationTreeView()
+		var topLevelNavigation:Vector.<Navigation> = makeNavigationTree(navigations)
+		navigationTreeView.navigationViews = 
+			makeNavigationViewTree(topLevelNavigation, navigationTreeView)
+		if(navigationOperation)
+		{
+			navigationOperation.targetView = navigationTreeView					
+			navigationOperation.initialize()
+		}
+	}
+	
 	//-------------------------------------------------------------------------
 	//
 	//	Public methods
@@ -141,16 +154,14 @@ public final class NavigationFactory extends EventDispatcher
 	/**
 	 * Builds a Navigation 
 	 **/
-	public function buildByLanguage(language:String):void
+	public function buildByLanguage(language:String, modelClass:Class = null):void
 	{
+		if(!modelClass) modelClass = Navigation
 		var modelFactory:ModelFactory = new ModelFactory()
-		var modelReqeust:ModelRequest = modelFactory.load(Navigation,
-			CMSXmlPath.getNavigationPathByLanguage(language),
+		modelFactory.addEventListener(ResultEvent.DATA_LOADED, modelRequest_dataLoadedHandler)
+		modelFactory.load(modelClass, CMSXmlPath.getNavigationPathByLanguage(language),
 			ModelFactory.TYPE_COLLECTION)
-		modelReqeust.addEventListener(ResultEvent.DATA_LOADED,
-			modelRequest_dataLoadedHandler)
 	}
-	
 	
 	/**
 	 * Return a NavigationView instance by url.
@@ -175,22 +186,10 @@ public final class NavigationFactory extends EventDispatcher
 	//
 	//-------------------------------------------------------------------------
 	
-	private function modelRequest_dataLoadedHandler(event:ResultEvent):void
+	protected function modelRequest_dataLoadedHandler(event:ResultEvent):void
 	{
-		var navigations:Vector.<Navigation> = Vector.<Navigation>(
-			event.collection)
-		_navigationTreeView = new NavigationTreeView()
-		var topLevelNavigation:Vector.<Navigation> = 
-			makeNavigationTree(navigations)
-		_navigationTreeView.navigationViews = 
-			makeNavigationViewTree(topLevelNavigation, _navigationTreeView)
-		
-		if(navigationOperation)
-		{
-			navigationOperation.targetView = navigationTreeView					
-			navigationOperation.initialize()
-		}
-		
+		var navigations:Vector.<Navigation> = Vector.<Navigation>(event.collection)
+		buildNavigation(navigations)
 		dispatchEvent(event)
 	}
 	
@@ -199,7 +198,6 @@ public final class NavigationFactory extends EventDispatcher
 	//	Properties
 	//
 	//-------------------------------------------------------------------------
-	
 	
 	/**
 	 * The Topelevel NavigationTreeView instance. 
