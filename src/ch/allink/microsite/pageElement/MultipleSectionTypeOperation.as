@@ -1,10 +1,8 @@
 package ch.allink.microsite.pageElement
 {
+import ch.allink.microsite.sectionElement.SectionContentTypes;
 import ch.allink.microsite.sectionElement.SectionView;
 import ch.allink.microsite.sectionElement.operation.ISectionOperation;
-import ch.allink.microsite.sectionElement.operation.ImageContentOperation;
-import ch.allink.microsite.sectionElement.operation.TextImageOperation;
-import ch.allink.microsite.sectionElement.operation.TextOperation;
 import ch.allink.microsite.sectionElement.sectionType.TextSection;
 
 /**
@@ -23,7 +21,6 @@ public final class MultipleSectionTypeOperation implements IPageOperation
 	private var _pageFormatter:PageFormatter
 	private var _sectionViews:Vector.<SectionView>
 	private var sectionOperations:Vector.<ISectionOperation>
-	private static var sectionOperationClasses:Vector.<Class> = new Vector.<Class>
 	
 	//-------------------------------------------------------------------------
 	//
@@ -33,9 +30,6 @@ public final class MultipleSectionTypeOperation implements IPageOperation
 	
 	public function MultipleSectionTypeOperation():void
 	{
-		sectionOperationClasses.push(TextOperation)
-		sectionOperationClasses.push(ImageContentOperation)
-		sectionOperationClasses.push(TextImageOperation)
 		sectionOperations = new Vector.<ISectionOperation>
 	}
 	
@@ -51,24 +45,6 @@ public final class MultipleSectionTypeOperation implements IPageOperation
 		error.name = "allink Error: Error #XXXX"
 		error.message = "A SectionOperation with type \""+type+"\" doesen't exist"
 		throw error
-	}
-	
-	/**
-	 * Returns an instance of a Class with the desired format.
-	 * @format Format of the Section, also known as contenttpe in FeinCMS.
-	 */
-	private function getOperationByFormat(type:String):ISectionOperation
-	{
-		var operationByFormat:ISectionOperation
-		for each(var operation:Class in sectionOperationClasses)
-		{
-			if(operation.TYPE == type)
-			{
-				operationByFormat = new operation()
-				break
-			}
-		}
-		return operationByFormat
 	}
 	
 	private function getSectionViewsByRegion(region:String):Vector.<SectionView>
@@ -117,15 +93,16 @@ public final class MultipleSectionTypeOperation implements IPageOperation
 		_sectionViews = new Vector.<SectionView>
 		for each(var section:TextSection in sections)
 		{
-			var sectionOperation:ISectionOperation =
-				getOperationByFormat(section.type)
+			var sectionOperationClass:Class = 
+				SectionContentTypes.getContentTypeByType(section.type).contentOperation
+			var sectionOperation:ISectionOperation = new sectionOperationClass()
 			if(!sectionOperation) missingSectionOperationError(section.type)
 			
 			sectionOperations.push(sectionOperation)
-			sectionOperation.pageFormatter = pageFormatter
 			var sectionView:SectionView = new SectionView(section)
 			
 			sectionView.operation = sectionOperation
+			sectionOperation.pageFormatter = pageFormatter
 			sectionView.build()
 			
 			targetView.addRegion(section.region)
@@ -164,14 +141,6 @@ public final class MultipleSectionTypeOperation implements IPageOperation
 		sectionOperation.resize(sourceWidth, sourceHeight)
 	}
 	
-	/**
-	 * Adds a contenttype class to the contenttype collection.
-	 */
-	public static function addContentType(contentType:Class):void
-	{
-		sectionOperationClasses.push(contentType)
-	}
-	
 	//-------------------------------------------------------------------------
 	//
 	// Properties
@@ -203,8 +172,7 @@ public final class MultipleSectionTypeOperation implements IPageOperation
 	
 	public function get pageFormatter():PageFormatter
 	{
-		if(!_pageFormatter)
-			_pageFormatter = new PageFormatter()
+		if(!_pageFormatter) _pageFormatter = new PageFormatter()
 		return _pageFormatter
 	}
 }

@@ -34,16 +34,5 @@ public class TextSection extends AbstractModel
 	{
 		super()
 	}
-	
-	//-------------------------------------------------------------------------
-	//
-	//	Properties
-	//
-	//-------------------------------------------------------------------------
-	
-	public static function get TYPE():String
-	{
-		return SectionContentTypes.TEXT_ONLY
-	}
 }
 }
