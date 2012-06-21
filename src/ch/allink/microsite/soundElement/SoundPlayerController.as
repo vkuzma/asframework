@@ -221,7 +221,7 @@ public class SoundPlayerController extends EventDispatcher
 	//
 	//-------------------------------------------------------------------------
 	
-	private function modelRequst_dataLoadedHandler(event:ResultEvent):void
+	protected function modelRequst_dataLoadedHandler(event:ResultEvent):void
 	{
 		tracks = Vector.<Track>(event.collection)
 		doFunctionOnSoundPlayerClip(modelRequst_dataLoadedHandler, [event])

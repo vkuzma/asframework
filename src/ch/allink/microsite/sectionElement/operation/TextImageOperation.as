@@ -51,7 +51,6 @@ public class TextImageOperation implements ISectionOperation
 	{
 	}
 	
-	
 	//-------------------------------------------------------------------------
 	//
 	//	Private methods
@@ -78,7 +77,7 @@ public class TextImageOperation implements ISectionOperation
 	public function build():void
 	{
 		//image
-		if(image.url)
+		if(image)
 		{
 			targetView.graphics.drawRect(0, 0, image.width, image.height)
 			imageView = new ImageView(image)
@@ -90,7 +89,7 @@ public class TextImageOperation implements ISectionOperation
 		
 		//title
 		var titleHeight:Number = 0
-		if(section.title)
+		if(section.title && textImageStyle.enableTitle)
 		{
 			titleField = new TextField()
 			targetView.addChild(titleField)
@@ -138,6 +137,12 @@ public class TextImageOperation implements ISectionOperation
 						titleHeight = titleField.y + titleField.height +
 							textImageStyle.titleTextVerticalSpacing
 					}
+					else
+					{
+						titleHeight = section.images[0].height +
+							textImageStyle.textImageVerticalSpacing + 
+							textImageStyle.titleTextVerticalSpacing
+					}
 					textField.y = titleHeight + textImageStyle.textOffsetY
 					textField.x = textImageStyle.textOffsetX
 				}
@@ -161,10 +166,15 @@ public class TextImageOperation implements ISectionOperation
 	/**
 	 *	Resizes the title and text. 
 	 */
-	public function resize(sourceWidth:Number, 
-						   sourceHeight:Number):void
+	public function resize(sourceWidth:Number, sourceHeight:Number):void
 	{
-		textField.x = pageFormatter.paddingLeft 
+		textField.x = pageFormatter.paddingLeft + textImageStyle.textOffsetX
+	}
+	
+	
+	public function dispose():void
+	{
+		
 	}
 	
 	//-------------------------------------------------------------------------
@@ -177,7 +187,8 @@ public class TextImageOperation implements ISectionOperation
 	{
 		_targetView = value
 		section = _targetView.section as TextImageSection
-		image = section.images[0]
+		if(section.images) image = section.images[0]
+		else section.alignment = ""
 	}
 	
 	public function get targetView():SectionView

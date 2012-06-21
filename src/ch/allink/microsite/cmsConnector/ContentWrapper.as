@@ -24,6 +24,8 @@ public class ContentWrapper extends EventDispatcher
 	private var Operation:Class
 	private var Model:Class
 	private var Style:Class
+	private var swfPaths:Vector.<String>
+	private var loadCounter:int
 	
 	//-------------------------------------------------------------------------
 	//
@@ -33,6 +35,8 @@ public class ContentWrapper extends EventDispatcher
 	
 	public function ContentWrapper()
 	{
+		swfPaths = new Vector.<String>()
+		loadCounter = 0
 	}
 	
 	//-------------------------------------------------------------------------
@@ -45,7 +49,7 @@ public class ContentWrapper extends EventDispatcher
 	{
 		Operation = swf.Operation
 		WrapperOperation.addOperation(swf.type, Operation)
-		SectionContentTypes.addContentType(swf.type, WrapperOperation, WrapperSection)
+		SectionContentTypes.addContentType(swf.type, WrapperOperation, swf.Model)
 	}
 	
 	//-------------------------------------------------------------------------
@@ -54,11 +58,20 @@ public class ContentWrapper extends EventDispatcher
 	//
 	//-------------------------------------------------------------------------
 	
-	public function loadContentSWF(pathToSWF:String):void
+	public function loadContentSWFs():void
 	{
-		var swfLoader:SWFLoader = new SWFLoader(pathToSWF)
-		swfLoader.addEventListener(LoaderEvent.COMPLETE, swfLoader_completeHandler)
-		swfLoader.load()
+		for each(var path:String in swfPaths)
+		{
+			loadCounter++
+			var swfLoader:SWFLoader = new SWFLoader(path)
+			swfLoader.addEventListener(LoaderEvent.COMPLETE, swfLoader_completeHandler)
+			swfLoader.load()
+		}
+	}
+	
+	public function addContentTypePath(pathToSwf:String):void
+	{
+		swfPaths.push(pathToSwf)
 	}
 	
 	//-------------------------------------------------------------------------
@@ -69,9 +82,10 @@ public class ContentWrapper extends EventDispatcher
 	
 	private function swfLoader_completeHandler(event:LoaderEvent):void
 	{
+		loadCounter--
 		var swfLoader:SWFLoader = event.target as SWFLoader
 		assignClasses(swfLoader.rawContent)
-		dispatchEvent(event)
+		if(loadCounter == 0) dispatchEvent(event)
 	}
 	
 	//-------------------------------------------------------------------------

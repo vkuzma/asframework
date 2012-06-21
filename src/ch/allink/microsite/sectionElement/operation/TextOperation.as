@@ -69,10 +69,15 @@ public class TextOperation implements ISectionOperation
 	/**
 	 *	Resizes the title and text. 
 	 */
-	public function resize(sourceWidth:Number, 
-									sourceHeight:Number):void
+	public function resize(sourceWidth:Number, sourceHeight:Number):void
 	{
 		textField.x = pageFormatter.paddingLeft
+	}
+	
+	
+	public function dispose():void
+	{
+		
 	}
 	
 	//-------------------------------------------------------------------------

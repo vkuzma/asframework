@@ -40,6 +40,7 @@ public class SectionView extends AbstractView
 	
 	public override function dispose():void
 	{
+		operation.dispose()
  	}
 	
 	//-------------------------------------------------------------------------

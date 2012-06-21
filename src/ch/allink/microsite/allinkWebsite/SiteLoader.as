@@ -47,14 +47,11 @@ public class SiteLoader extends Sprite
 	
 	protected function build():void
 	{
-		if(!stage)
-			addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler, false, 0, true)
-		else
-			addedToStageHandler()
-		loadWebsite()
+		if(!stage) addEventListener(Event.ADDED_TO_STAGE, addedToStageHandler, false, 0, true)
+		else addedToStageHandler()
 	}
 	
-	private function loadWebsite():void
+	public function loadWebsite():void
 	{
 		var swfLoader:SWFLoader = new SWFLoader(websiteFileName)
 		swfLoader.addEventListener(LoaderEvent.PROGRESS, swfLoader_progressHandler)

@@ -17,7 +17,7 @@ public class DateFormatter
 	//-------------------------------------------------------------------------
 	
 	private static const months:Array = ["Januar", "Februar", "März", "April", "Mai", "Juni",
-	"Juli", "August", "September", "November", "December"]
+	"Juli", "August", "September", "Oktober", "November", "Dezember"]
 		
 	public static const US:String = "us"
 	public static const DAY_MONTH_YEAR:String = "dayMonthYear"
@@ -54,11 +54,11 @@ public class DateFormatter
 		{
 			var tempDate:Array 
 			tempDate = dateString.split("-")
-			date = new Date(tempDate[0], tempDate[1], tempDate[2])
+			date = new Date(tempDate[0], tempDate[1]-1, tempDate[2])
 		}
 		
 		if(toFormat == DAY_MONTH_YEAR)
-			transformedDataString = date.day + ". " + months[date.month] + " " + date.fullYear
+			transformedDataString = date.date + ". " + months[date.month] + " " + date.fullYear
 			
 		return transformedDataString
 	}

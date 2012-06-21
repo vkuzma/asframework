@@ -70,9 +70,6 @@ public class AccordionNavigationOperation extends EventDispatcher implements INa
 		var prevNavigationView:NavigationView
 		for each(var navigationView:NavigationView in navigationViews)
 		{
-			//do textfield action
-			if(navigationViewAction != null)
-				navigationViewAction.call(this, navigationView)	 
 			
 			//set stylesheet
 			if(styleSheet) 
@@ -113,6 +110,10 @@ public class AccordionNavigationOperation extends EventDispatcher implements INa
 					navigationView.navigationTreeView.height
 			}
 			prevNavigationView = navigationView
+				
+			//do textfield action
+			if(navigationViewAction != null)
+				navigationViewAction.call(this, navigationView)
 		}
 	}
 	

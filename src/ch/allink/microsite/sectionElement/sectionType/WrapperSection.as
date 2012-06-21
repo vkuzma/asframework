@@ -4,7 +4,7 @@ package ch.allink.microsite.sectionElement.sectionType
  * @author vkuzma
  * @date Jun 26, 2011
  **/
-public class WrapperSection extends TextSection
+public dynamic class WrapperSection extends TextSection
 {
 	//-------------------------------------------------------------------------
 	//

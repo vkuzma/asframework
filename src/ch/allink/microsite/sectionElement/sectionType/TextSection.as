@@ -20,7 +20,7 @@ public class TextSection extends AbstractModel
 	
 	public var date:String
 	public var type:String
-	public var ordering:String
+	public var ordering:int
 	public var text:String
 	public var region:String
 	

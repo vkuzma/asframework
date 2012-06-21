@@ -6,6 +6,8 @@ import ch.allink.microsite.sectionElement.sectionType.WrapperSection;
 
 import flash.utils.Dictionary;
 
+import flashx.textLayout.operations.CopyOperation;
+
 /**
  * @author vkuzma
  * @date Jun 26, 2011
@@ -21,7 +23,7 @@ public class WrapperOperation implements ISectionOperation
 	private static var operations:Dictionary = new Dictionary()
 	private var currentOperation:Object
 	private var _targetView:SectionView
-	private var model:WrapperSection
+	private var model:Object
 	private var _pageFormatter:PageFormatter
 	
 	//-------------------------------------------------------------------------
@@ -47,7 +49,7 @@ public class WrapperOperation implements ISectionOperation
 	public function set targetView(value:SectionView):void
 	{
 		_targetView = value
-		model = _targetView.section as WrapperSection
+		model = _targetView.section
 		currentOperation = operations[model.type]
 		currentOperation.targetView = value
 	}
@@ -85,6 +87,12 @@ public class WrapperOperation implements ISectionOperation
 	public static function addOperation(type:String, operation:Class):void
 	{
 		operations[type] = new operation()
+	}
+	
+	
+	public function dispose():void
+	{
+		currentOperation.dispose()
 	}
 	
 	//-------------------------------------------------------------------------

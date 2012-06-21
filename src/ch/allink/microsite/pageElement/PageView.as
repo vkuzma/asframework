@@ -139,6 +139,15 @@ public class PageView extends AbstractView
 		if(!regions[name]) addRegion(name)
 		return regions[name]
 	}
+
+	/**
+	 * Resizes all sectionviews.
+	 **/
+	public function resize(stageWidth:Number, stageHeight:Number):void
+	{
+		for each(var sectionView:SectionView in sectionViews)
+			sectionView.operation.resize(stageWidth, stageHeight)
+	}
 	
 	//-------------------------------------------------------------------------
 	//

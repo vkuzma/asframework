@@ -65,7 +65,7 @@ public class Page extends AbstractModel
 			if(sectionClass && xml is XML)
 				_sections.push(modelFactory.create(sectionClass, xml))
 		}
-		_sections.sortOn("ordering")
+		_sections.sortOn("ordering", Array.NUMERIC)
 	}
 	
 	public function get sections():Array
