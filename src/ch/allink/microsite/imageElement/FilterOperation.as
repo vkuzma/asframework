@@ -6,6 +6,7 @@ import flash.display.Bitmap;
 import flash.display.BitmapData;
 import flash.display.Shape;
 import flash.display.Sprite;
+import flash.geom.Matrix;
 import flash.geom.Rectangle;
 
 /**
@@ -28,12 +29,14 @@ public class FilterOperation implements IImageViewOperation
 	
 	private var _targetSprite:Sprite
 	private var _filterArea:Rectangle
-	private var imageView:ImageView
+	private var _imageView:ImageView
+	private var originalBitmap:Bitmap
 	
 	/**
 	 * The Mask from the imageView instance with filters.
 	 **/
 	public var imageViewMask:Shape
+	public var imageViewArea:Rectangle
 	/**
 	 * An Array of filters.
 	 **/
@@ -51,6 +54,7 @@ public class FilterOperation implements IImageViewOperation
 	public function FilterOperation()
 	{
 		imageViewMask = DisplayFactory.createMask()
+		imageViewArea = new Rectangle()
 	}
 	
 	//-------------------------------------------------------------------------
@@ -67,13 +71,14 @@ public class FilterOperation implements IImageViewOperation
 		if(!bitmap) return
 		if(imageView) dispose()
 			
-		var bitmapData:BitmapData = bitmap.bitmapData
+		originalBitmap = bitmap
+			
+		var bitmapData:BitmapData = originalBitmap.bitmapData
 		var newBitmapData:BitmapData = bitmapData.clone()
 			
 		var newBitmap:Bitmap = new Bitmap(newBitmapData)
-		newBitmap.filters = filters
 			
-		imageView = new ImageView()
+		_imageView = new ImageView()
 		_targetSprite.addChild(imageView)
 		imageView.mask = imageViewMask
 		imageView.addChild(imageViewMask)
@@ -89,12 +94,25 @@ public class FilterOperation implements IImageViewOperation
 	{
 		if(!imageView) return
 			
+		if(imageViewArea.width == 0 || imageViewArea.height == 0) return
+			
+		imageView.attachBitmap(originalBitmap)
+			
 		if(_targetSprite.contains(imageView))
 			_targetSprite.setChildIndex(imageView, 
 										_targetSprite.numChildren - 1)
 				
 		imageView.resizeBitmapAspectRatioTo(sourceWidth, sourceHeight,
 											ImageViewResizeAlign.CENTRE)
+			
+		var matrix:Matrix = new Matrix()
+			
+		var newBitmapData:BitmapData = new BitmapData(imageViewArea.width, imageViewArea.height)
+		newBitmapData.draw(imageView.currentBitmap)
+		var newBitmap:Bitmap = new Bitmap(newBitmapData)
+			
+		imageView.attachBitmap(newBitmap)
+		imageView.currentBitmap.filters= filters
 	}
 	
 	/**
@@ -125,6 +143,11 @@ public class FilterOperation implements IImageViewOperation
 	public function get targetSprite():Sprite
 	{
 		return _targetSprite
+	}
+	
+	public function get imageView():ImageView 
+	{
+		return _imageView 
 	}
 }
 }

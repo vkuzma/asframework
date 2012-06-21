@@ -20,7 +20,7 @@ public class TextSection extends AbstractModel
 	
 	public var date:String
 	public var type:String
-	public var ordering:String
+	public var ordering:int
 	public var text:String
 	public var region:String
 	
@@ -33,17 +33,6 @@ public class TextSection extends AbstractModel
 	public function TextSection()
 	{
 		super()
-	}
-	
-	//-------------------------------------------------------------------------
-	//
-	//	Properties
-	//
-	//-------------------------------------------------------------------------
-	
-	public static function get TYPE():String
-	{
-		return SectionContentTypes.TEXT_ONLY
 	}
 }
 }

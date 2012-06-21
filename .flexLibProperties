@@ -14,7 +14,9 @@
     <classEntry path="ch.allink.microsite.sectionElement.style.TextImageStyle"/>
     <classEntry path="ch.allink.microsite.widgets.Reflection"/>
     <classEntry path="ch.allink.microsite.util.DateFormatter"/>
-    <classEntry path="ch.allink.microsite.imageElement.ImageViewNeu"/>
+    <classEntry path="ch.allink.microsite.cmsConnector.ContentWrapper"/>
+    <classEntry path="ch.allink.microsite.sectionElement.operation.WrapperOperation"/>
+    <classEntry path="ch.allink.microsite.sectionElement.sectionType.WrapperSection"/>
   </includeClasses>
   <includeResources/>
   <namespaceManifests/>

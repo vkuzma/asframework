@@ -46,18 +46,11 @@ public class PageFormatter extends AbstractModel
 	
 	//-------------------------------------------------------------------------
 	//
-	//	Private methods
-	//
-	//-------------------------------------------------------------------------
-	
-	//-------------------------------------------------------------------------
-	//
 	//	Public methods
 	//
 	//-------------------------------------------------------------------------
 	
-	public function getSectionStyleByContentType(contentType:String)
-		:ISectionStyle
+	public function getSectionStyleByContentType(contentType:String):ISectionStyle
 	{
 		var sectionStyleByContentType:ISectionStyle
 		for each(var sectionStyle:ISectionStyle in sectionStyles)
@@ -69,8 +62,7 @@ public class PageFormatter extends AbstractModel
 			}
 		}
 		if(!sectionStyleByContentType)
-			trace("Allink warning: ContentStyle for ContentType: " + 
-				  contentType + " doesn't exist")
+			trace("Allink warning: ContentStyle for ContentType: " + contentType + " doesn't exist")
 		return sectionStyleByContentType
 	}
 	
@@ -78,11 +70,5 @@ public class PageFormatter extends AbstractModel
 	{
 		sectionStyles.push(sectionStyle)
 	}
-	
-	//-------------------------------------------------------------------------
-	//
-	//	Properties
-	//
-	//-------------------------------------------------------------------------
 }
 }

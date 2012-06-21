@@ -1,14 +1,10 @@
-package ch.allink.microsite.util
+package ch.allink.microsite.sectionElement.sectionType
 {
-import ch.allink.microsite.widgets.YoutubePlayer;
-
-import flash.utils.Dictionary;
-
 /**
  * @author vkuzma
- * @date Jun 15, 2011
+ * @date Jun 26, 2011
  **/
-public class DateFormatter
+public dynamic class WrapperSection extends TextSection
 {
 	//-------------------------------------------------------------------------
 	//
@@ -16,20 +12,17 @@ public class DateFormatter
 	//
 	//-------------------------------------------------------------------------
 	
-	private static const months:Array = ["Januar", "Februar", "März", "April", "Mai", "Juni",
-	"Juli", "August", "September", "Oktober", "November", "Dezember"]
-		
-	public static const US:String = "us"
-	public static const DAY_MONTH_YEAR:String = "dayMonthYear"
-		
+	
+	
 	//-------------------------------------------------------------------------
 	//
 	//	Constructor
 	//
 	//-------------------------------------------------------------------------
 	
-	public function DateFormatter()
+	public function WrapperSection()
 	{
+		super();
 	}
 	
 	//-------------------------------------------------------------------------
@@ -46,22 +39,7 @@ public class DateFormatter
 	//
 	//-------------------------------------------------------------------------
 	
-	public static function transformDate(dateString:String, fromFormat:String, toFormat:String):String
-	{
-		var transformedDataString:String = ""
-		var date:Date
-		if(fromFormat == US)
-		{
-			var tempDate:Array 
-			tempDate = dateString.split("-")
-			date = new Date(tempDate[0], tempDate[1]-1, tempDate[2])
-		}
-		
-		if(toFormat == DAY_MONTH_YEAR)
-			transformedDataString = date.date + ". " + months[date.month] + " " + date.fullYear
-			
-		return transformedDataString
-	}
+	
 	
 	//-------------------------------------------------------------------------
 	//

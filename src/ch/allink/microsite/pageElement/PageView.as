@@ -2,7 +2,6 @@ package ch.allink.microsite.pageElement
 {
 import ch.allink.microsite.cmsConnector.CMSXmlPath;
 import ch.allink.microsite.cmsConnector.ModelFactory;
-import ch.allink.microsite.cmsConnector.ModelRequest;
 import ch.allink.microsite.core.AbstractView;
 import ch.allink.microsite.events.ResultEvent;
 import ch.allink.microsite.sectionElement.SectionView;
@@ -11,7 +10,6 @@ import ch.allink.microsite.sectionElement.sectionType.TextSection;
 import flash.display.DisplayObject;
 import flash.display.Sprite;
 import flash.utils.Dictionary;
-import flash.utils.getDefinitionByName;
 
 public class PageView extends AbstractView
 {
@@ -76,7 +74,6 @@ public class PageView extends AbstractView
 		sectionViews = null
 	}
 	
-	
 	//-------------------------------------------------------------------------
 	//
 	//  Public methods
@@ -101,8 +98,7 @@ public class PageView extends AbstractView
 	 **/	
 	public function buildByPage(page:Page):void
 	{
-		if(sectionViews)
-			clearSectionViews(sectionViews)
+		if(sectionViews) clearSectionViews(sectionViews)
 		var sections:Array = page.sections
  		operation.buildSectionViews(sections)
 		operation.formatSectionViews()
@@ -142,6 +138,15 @@ public class PageView extends AbstractView
 	{
 		if(!regions[name]) addRegion(name)
 		return regions[name]
+	}
+
+	/**
+	 * Resizes all sectionviews.
+	 **/
+	public function resize(stageWidth:Number, stageHeight:Number):void
+	{
+		for each(var sectionView:SectionView in sectionViews)
+			sectionView.operation.resize(stageWidth, stageHeight)
 	}
 	
 	//-------------------------------------------------------------------------

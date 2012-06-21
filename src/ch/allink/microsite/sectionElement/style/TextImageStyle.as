@@ -28,6 +28,8 @@ public class TextImageStyle implements ISectionStyle
 	public var titleUpperCase:Boolean
 	public var textUpperCase:Boolean
 	
+	public var enableTitle:Boolean
+	
 	//-------------------------------------------------------------------------
 	//
 	//	Constructor
@@ -65,6 +67,8 @@ public class TextImageStyle implements ISectionStyle
 		titleTextVerticalSpacing = 0
 		titleUpperCase = false
 		textUpperCase = false
+			
+		enableTitle = true
 	}
 	
 	//-------------------------------------------------------------------------

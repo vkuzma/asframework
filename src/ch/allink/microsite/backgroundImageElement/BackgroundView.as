@@ -31,6 +31,8 @@ public class BackgroundView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
+	public static const REQUEST_RESIZE:String = "requestResize"
+	
 	private var _imageOperation:IImageViewOperation
 	private var oldImageView:ImageView
 	private var currentImage:Image
@@ -49,9 +51,10 @@ public class BackgroundView extends AbstractView
 	//
 	//-------------------------------------------------------------------------
 	
-	public function BackgroundView(model:AbstractModel=null)
+	public function BackgroundView()
 	{
 		super()
+		animationTime = 1.2
 	}
 	
 	//-------------------------------------------------------------------------
@@ -67,7 +70,6 @@ public class BackgroundView extends AbstractView
 	{
 		imageView = new ImageView(new Image())
 		oldImageView = new ImageView(new Image())
-		animationTime = 1.2
 		currentImage = new Image()
 	}
 	
@@ -110,9 +112,9 @@ public class BackgroundView extends AbstractView
 	/**
 	 * Loads an builds an ImageView instance by image.
 	 **/
-	public function buildBackground(image:Image):void
+	public function buildBackground(image:Image):Boolean
 	{
-		if(currentImage.url == image.url) return
+		if(currentImage.url == image.url) return false
 		currentImage = image
 			
 		var oldModel:Image = oldImageView.image 
@@ -120,24 +122,20 @@ public class BackgroundView extends AbstractView
 
 		oldImageView = imageView
 		imageView = new ImageView(image)
-		imageView.addEventListener(Event.ADDED_TO_STAGE, 
-								   imageView_addedToStageHandler)
-		imageView.addEventListener(Event.COMPLETE, 
-								   imageView_completeHandler)
-		imageView.addEventListener(ProgressEvent.PROGRESS, 
-								   imageView_progressHandler)
+		imageView.addEventListener(Event.ADDED_TO_STAGE, imageView_addedToStageHandler)
+		imageView.addEventListener(Event.COMPLETE, imageView_completeHandler)
+		imageView.addEventListener(ProgressEvent.PROGRESS, imageView_progressHandler)
 		imageView.build()
+		return true
 	}
 	
 	/**
 	 * Resize of the ImageView instance.
 	 **/
-	public function resize():void
+	public function resize(stageWidth:Number, stageHeight:Number):void
 	{
-		imageView.resizeBitmapAspectRatioTo(stage.stageWidth, 
-			stage.stageHeight, ImageViewResizeAlign.CENTRE)
-		if(imageView.operation)
-			imageView.operation.resize(stage.stageWidth, stage.stageHeight)
+		imageView.resizeBitmapAspectRatioTo(stageWidth, stageHeight, ImageViewResizeAlign.CENTRE)
+		if(imageView.operation) imageView.operation.resize(stageWidth, stageHeight)
 	}
 	
 	//-------------------------------------------------------------------------
@@ -156,8 +154,7 @@ public class BackgroundView extends AbstractView
 		
 		blendJobs = new JobService()
 		if(oldImageView.currentBitmap != null)
-			blendJobs.addJob(new Job(blendOut, 
-									 {params: [oldImageView, blendJobs]}))
+			blendJobs.addJob(new Job(blendOut, {params: [oldImageView, blendJobs]}))
 		blendJobs.addJob(new Job(blendIn, {params: [imageView, blendJobs]}))
 		blendJobs.addJob(new Job(removeImageView, {params: [oldImageView]}))
 		blendJobs.doJob()
@@ -172,7 +169,7 @@ public class BackgroundView extends AbstractView
 	
 	private function imageView_addedToStageHandler(event:Event):void 
 	{
-		resize()
+		dispatchEvent(new Event(REQUEST_RESIZE))
 	}
 	
 	//-------------------------------------------------------------------------

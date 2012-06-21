@@ -91,7 +91,7 @@ public class ModelFactory extends EventDispatcher
 			}
 			catch(error:ReferenceError)
 			{
-				trace(node.name() + " doesn't exist")	
+//				trace(node.name() + " doesn't exist")	
 			}
 		}
 		return model

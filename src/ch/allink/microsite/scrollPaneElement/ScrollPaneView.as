@@ -332,6 +332,11 @@ public class ScrollPaneView extends AbstractView
 	 **/
 	public function set scrollContainer(value:Sprite):void
 	{
+		if(_scrollContainer)
+		{
+			if(_scrollContainer.contains(mouseMask)) _scrollContainer.removeChild(mouseMask)
+			_scrollContainer = null
+		}
 		_scrollContainer = value
 		_scrollContainer.mask = scrollClipHolder.scrollPaneMask
 		_scrollContainer.addEventListener(MouseEvent.MOUSE_WHEEL, scrollContainer_mouseWheelHandler)
@@ -339,6 +344,7 @@ public class ScrollPaneView extends AbstractView
 		_scrollContainer.addEventListener(MouseEvent.MOUSE_OUT, scrollContainer_mouseOutHandler)
 			
 		mouseMask = new Sprite()
+		mouseMask.mouseEnabled = false
 		_scrollContainer.addChild(mouseMask)
 	}
 	
@@ -375,12 +381,12 @@ public class ScrollPaneView extends AbstractView
 	 **/
 	public function set scrollPosition(value:Number):void
 	{
-		if(scrollClipHolder.currentScrollPosition - value > 100)
+		if(scrollClipHolder.currentScrollPosition - value * contentScrollAreaRation > 100)
 			scrollClipHolder.currentScrollPosition = 100
-		else if(scrollClipHolder.currentScrollPosition - value < 0)
+		else if(scrollClipHolder.currentScrollPosition - value * contentScrollAreaRation < 0)
 			scrollClipHolder.currentScrollPosition = 0
 		else
-			scrollClipHolder.currentScrollPosition -= value
+			scrollClipHolder.currentScrollPosition -= value * contentScrollAreaRation
 	}
 	
 	public function get scrollPosition():Number
@@ -394,6 +400,11 @@ public class ScrollPaneView extends AbstractView
 		var _stepHeightInPercent:Number = scrollStepHeight / scrollContainer.height * 100
 			
 		return _stepHeightInPercent
+	}
+	
+	private function get contentScrollAreaRation():Number
+	{
+		return contentArea.height / scrollContainer.height
 	}
 }
 }

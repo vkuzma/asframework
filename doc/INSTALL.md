@@ -26,8 +26,8 @@ Settings anpassen
         FEINCMS_ADMIN_MEDIA = '/media/feincms/'  
         FEINCMS_TINYMCE_INIT_TEMPLATE = 'admin/content/richtext/init_tinymce.html'  
         FEINCMS_RICHTEXT_INIT_CONTEXT  = {
-            'TINYMCE_JS_URL': os.path.join(MEDIA_URL, 'javascript/tiny_mce/tiny_mce.js'),  
-            'TINYMCE_CONTENT_CSS_URL': MEDIA_URL + 'stylesheets/tiny_mce.css',
+            'TINYMCE_JS_URL': os.path.join(STATIC_URL, 'javascript/tiny_mce/tiny_mce.js'),  
+            'TINYMCE_CONTENT_CSS_URL': STATIC_URL + 'stylesheets/tiny_mce.css',
             'TINYMCE_LINK_LIST_URL': '/admin/javascript/tiny_mce_links.js'
         }       
         
@@ -42,15 +42,14 @@ Settings anpassen
         INSTALLED_APPS = (
             ...
             'robots',   
-            'config',      
-            'imagetree',    
+            'config',        
         )
 4. Flash Pfade setzen:
 
     _Im settings\_development.py:_
 
-        SWF_PATH = '/media/flash/debug/flash_loader.swf'
-        MAIN_SWF_PATH = '/media/flash/debug/flash.swf'   
+        SWF_PATH = STATIC_URL + 'flash/debug/flash_loader.swf'
+        MAIN_SWF_PATH = STATIC_URL + 'flash/debug/flash.swf'   
 
     _Im settings\_production.py und settings\_staging.py:_
 
@@ -69,15 +68,15 @@ Settings anpassen
             #piston 
                 url(r'^api/', include('ajax_page_loader.urls')),  
             #FeinCMS
-                url(r'^(.*)/$|^$', 'feincms.views.applicationcontent.handler'),   
+                url(r'', include('feincms.urls')),   
         ) 
         
 6. Ins Django-Projektverzeichnis wechseln.  
 
 7. Order für Flashdateien erstellen:
 
-        mkdir media/flash
-        mkdir media/flash/debug
+        mkdir static/flash
+        mkdir static/flash/debug
 
 8. views.py kopieren:
     
@@ -85,17 +84,17 @@ Settings anpassen
 
 9. Wichtige Javascriptscripts hinzufügen:
 
-        cp path/to/asframework/django_includes/media/javascript/flash_utils/* media/javascript/
+        cp path/to/asframework/django_includes/static/javascript/flash_utils/* static/javascript/
 
 10. TinyMCE
         
     _Applikations-Ordner kopieren:_
 
-        cp -R path/to/asframework/django_includes/javascript/tiny_mce media/javascript/
+        cp -R path/to/asframework/django_includes/javascript/tiny_mce static/javascript/
 
     _Config kopieren:_  
     
-        cp -R path/to/asframework/django_includes/tiny_config/admin templates/
+        cp -R path/to/asframework/django_includes/tinyMCE_config/admin templates/
         
 11. HTML-Fallback kopieren:
 

@@ -1,5 +1,8 @@
 package ch.allink.microsite.sectionElement
 {
+import ch.allink.microsite.sectionElement.operation.ImageContentOperation;
+import ch.allink.microsite.sectionElement.operation.TextImageOperation;
+import ch.allink.microsite.sectionElement.operation.TextOperation;
 import ch.allink.microsite.sectionElement.sectionType.ImageSection;
 import ch.allink.microsite.sectionElement.sectionType.TextImageSection;
 import ch.allink.microsite.sectionElement.sectionType.TextSection;
@@ -12,11 +15,9 @@ public class SectionContentTypes
 	//	Standard section models
 	//---------------------------------
 	{
-		contentTypeModels[TEXT_ONLY] = TextSection
-		contentTypeModels[IMAGE] = ImageSection
-		contentTypeModels[TEXT_IMAGE] = TextImageSection
-		contentTypeModels[TEXT_IMAGE] = TextImageSection
-		
+		contentTypes[TEXT_ONLY] = {contentOperation: TextOperation, contentSection: TextSection}
+		contentTypes[IMAGE] = {contentOperation: ImageContentOperation, contentSection: ImageSection}
+		contentTypes[TEXT_IMAGE] = {contentOperation: TextImageOperation, contentSection: TextImageSection}
 	}
 	
 	//-------------------------------------------------------------------------
@@ -36,7 +37,7 @@ public class SectionContentTypes
 	//
 	//-------------------------------------------------------------------------
 		
-	private static var contentTypeModels:Dictionary = new Dictionary()
+	private static var contentTypes:Dictionary = new Dictionary()
 	
 	//-------------------------------------------------------------------------
 	//
@@ -54,14 +55,16 @@ public class SectionContentTypes
 	//
 	//-------------------------------------------------------------------------
 	
-	public static function getContentTypeModelByType(type:String):Class
+	public static function getContentTypeByType(type:String):Object
 	{
-		return contentTypeModels[type] 
+		return contentTypes[type]
 	}
 	
-	public static function addContentTypeModel(value:Class):void
+	public static function addContentType(type:String, contentOperation:Class, 
+										  contentSection:Class):void
 	{
-		contentTypeModels[value.TYPE] = value		
+		contentTypes[type] = {contentOperation: contentOperation, contentSection: contentSection}
 	}
+	
 }
 }

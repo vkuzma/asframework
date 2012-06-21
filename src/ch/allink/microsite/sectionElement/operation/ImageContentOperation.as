@@ -51,8 +51,15 @@ public class ImageContentOperation implements ISectionOperation
 			
 	}
 	
-	public function resize(sourceWidth:Number, sourceHeight:Number):void
+	
+	public function dispose():void
 	{
+		
+	}
+	
+	public function resize(stageWidth:Number, stageHeight:Number):void
+	{
+		
 	}
 	
 	//-------------------------------------------------------------------------

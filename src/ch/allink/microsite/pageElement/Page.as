@@ -58,15 +58,14 @@ public class Page extends AbstractModel
 		_sections = []
 		for each(var xml:XML in values)
 		{
-			var sectionClass:Class = SectionContentTypes.getContentTypeModelByType(xml.type)
+			var sectionClass:Class = SectionContentTypes.getContentTypeByType(xml.type).contentSection
 			if(!sectionClass)
 				trace("Allink warning: Model with type: " + xml.type + " doesn't exist")
 			//TODO throw error, when sectionClass is null
 			if(sectionClass && xml is XML)
 				_sections.push(modelFactory.create(sectionClass, xml))
 		}
-		
-		_sections.sortOn("ordering")
+		_sections.sortOn("ordering", Array.NUMERIC)
 	}
 	
 	public function get sections():Array
